@@ -1,0 +1,350 @@
+// ==========================================================================
+// KL'élite Luxury Bakery - Design System Variables
+// Following claudekit-engineer aesthetic principles
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Color System - Luxury Bakery Brand
+// --------------------------------------------------------------------------
+
+// Primary Colors - Gold tones for luxury feel
+$primary-color: #D4AF37;
+$primary-light: #E8C547;
+$primary-dark: #B8962F;
+$primary-50: rgba(212, 175, 55, 0.05);
+$primary-100: rgba(212, 175, 55, 0.1);
+$primary-200: rgba(212, 175, 55, 0.2);
+
+// Gold Palette Aliases (used in components)
+$gold-primary: $primary-color;
+$gold-light: $primary-light;
+$gold-dark: $primary-dark;
+$gold-accent: #C9A962;
+$gold-muted: #B8A66B;
+$gold-secondary: #C9A962;
+$gold-hover: #E8C547;
+
+// Secondary Colors - Deep elegant tones
+$secondary-color: #1A1A2E;
+$secondary-light: #2D2D44;
+$secondary-dark: #0F0F1A;
+
+// Dark Theme Aliases (used in components)
+$dark-primary: $secondary-color;
+$dark-secondary: $secondary-light;
+$dark-deeper: $secondary-dark;
+
+// Light Theme Aliases
+$light-primary: #FFFFFF;
+$light-secondary: #F8F9FA;
+$light-text: #FFFFFF;
+
+// Accent Colors
+$accent-color: #C9A962;
+$accent-rose: #E8B4B8;
+$accent-cream: #FDF8F3;
+$accent-light: #ff6b81;
+$accent-dark: #c73e54;
+
+// Color Aliases
+$cream: $accent-cream;
+$rose: $accent-rose;
+
+// Semantic Colors
+$success-color: #4CAF50;
+$success-light: #81C784;
+$warning-color: #FF9800;
+$warning-light: #FFB74D;
+$error-color: #F44336;
+$error-light: #E57373;
+$info-color: #2196F3;
+$info-light: #64B5F6;
+
+// Neutral Colors
+$white: #FFFFFF;
+$black: #000000;
+$gray-50: #FAFAFA;
+$gray-100: #F5F5F5;
+$gray-200: #EEEEEE;
+$gray-300: #E0E0E0;
+$gray-400: #BDBDBD;
+$gray-500: #9E9E9E;
+$gray-600: #757575;
+$gray-700: #616161;
+$gray-800: #424242;
+$gray-900: #212121;
+
+// Background Colors
+$bg-primary: $white;
+$bg-secondary: $gray-50;
+$bg-tertiary: $gray-100;
+$bg-cream: $accent-cream;
+$bg-dark: $secondary-color;
+$bg-overlay: rgba(0, 0, 0, 0.5);
+$bg-overlay-light: rgba(255, 255, 255, 0.9);
+$background-muted: $gray-100;
+
+// Text Colors
+$text-primary: $gray-900;
+$text-secondary: $gray-600;
+$text-muted: $gray-500;
+$text-light: $white;
+$text-gold: $primary-color;
+
+// Border Colors
+$border-color: $gray-200;
+$border-light: $gray-200;
+$border-dark: $gray-400;
+$border-gold: $primary-color;
+
+// --------------------------------------------------------------------------
+// Gradients - Luxury effects
+// --------------------------------------------------------------------------
+
+$gradient-gold: linear-gradient(135deg, $primary-color 0%, $primary-light 50%, $primary-color 100%);
+$gradient-gold-radial: radial-gradient(circle, $primary-light 0%, $primary-color 100%);
+$gradient-dark: linear-gradient(180deg, $secondary-color 0%, $secondary-dark 100%);
+$gradient-cream: linear-gradient(180deg, $accent-cream 0%, #F0E5D8 100%);
+$gradient-hero: linear-gradient(180deg, rgba($black, 0.3) 0%, rgba($black, 0.6) 100%);
+$gradient-overlay: linear-gradient(180deg, transparent 0%, rgba($black, 0.8) 100%);
+
+// --------------------------------------------------------------------------
+// Icon Sizes
+// --------------------------------------------------------------------------
+
+$icon-xs: 0.875rem;     // 14px
+$icon-sm: 1rem;         // 16px
+$icon-md: 1.25rem;      // 20px
+$icon-lg: 1.5rem;       // 24px
+$icon-xl: 2rem;         // 32px
+$icon-2xl: 2.5rem;      // 40px
+$icon-3xl: 3rem;        // 48px
+
+// --------------------------------------------------------------------------
+// Typography System - Elegant Font Pairing
+// --------------------------------------------------------------------------
+
+// Font Families
+$font-primary: 'Poppins', 'Segoe UI', sans-serif;
+$font-heading: 'Playfair Display', Georgia, serif;
+$font-accent: 'Cormorant Garamond', Georgia, serif;
+$font-body: $font-primary;  // Alias for body text
+$font-display: $font-heading;  // Alias for display/headline
+
+// Font Sizes - Based on 1.25 scale ratio
+$font-size-xs: 0.75rem;      // 12px
+$font-size-sm: 0.875rem;     // 14px
+$font-size-base: 1rem;       // 16px
+$font-size-md: 1.125rem;     // 18px
+$font-size-lg: 1.25rem;      // 20px
+$font-size-xl: 1.5rem;       // 24px
+$font-size-2xl: 1.875rem;    // 30px
+$font-size-3xl: 2.25rem;     // 36px
+$font-size-4xl: 3rem;        // 48px
+$font-size-5xl: 3.75rem;     // 60px
+$font-size-6xl: 4.5rem;      // 72px
+
+// Text Size Aliases (shorthand for components)
+$text-2xs: 0.625rem;     // 10px - extra small
+$text-xs: $font-size-xs;
+$text-sm: $font-size-sm;
+$text-base: $font-size-base;
+$text-md: $font-size-md;
+$text-lg: $font-size-lg;
+$text-xl: $font-size-xl;
+$text-2xl: $font-size-2xl;
+$text-3xl: $font-size-3xl;
+$text-4xl: $font-size-4xl;
+$text-5xl: $font-size-5xl;
+$text-6xl: $font-size-6xl;
+
+// Font Weights
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// Font Weight Aliases
+$font-light: $font-weight-light;
+$font-normal: $font-weight-normal;
+$font-medium: $font-weight-medium;
+$font-semibold: $font-weight-semibold;
+$font-bold: $font-weight-bold;
+
+// Line Heights
+$line-height-tight: 1.2;
+$line-height-snug: 1.375;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.625;
+$line-height-loose: 2;
+
+// Letter Spacing
+$letter-spacing-tight: -0.025em;
+$letter-spacing-normal: 0;
+$letter-spacing-wide: 0.025em;
+$letter-spacing-wider: 0.05em;
+$letter-spacing-widest: 0.1em;
+
+// --------------------------------------------------------------------------
+// Spacing System - 8px base grid
+// --------------------------------------------------------------------------
+
+$spacing-0: 0;
+$spacing-1: 0.25rem;    // 4px
+$spacing-2: 0.5rem;     // 8px
+$spacing-2xs: 0.125rem; // 2px
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-3: 0.75rem;    // 12px
+$spacing-4: 1rem;       // 16px
+$spacing-md: 1rem;
+$spacing-5: 1.25rem;    // 20px
+$spacing-6: 1.5rem;     // 24px
+$spacing-lg: 1.5rem;
+$spacing-8: 2rem;       // 32px
+$spacing-xl: 2rem;
+$spacing-10: 2.5rem;    // 40px
+$spacing-12: 3rem;      // 48px
+$spacing-2xl: 3rem;
+$spacing-16: 4rem;      // 64px
+$spacing-3xl: 4rem;
+$spacing-4xl: 5rem;     // 80px
+$spacing-20: 5rem;      // 80px
+$spacing-24: 6rem;      // 96px
+$spacing-32: 8rem;      // 128px
+
+// --------------------------------------------------------------------------
+// Border Radius
+// --------------------------------------------------------------------------
+
+$radius-none: 0;
+$radius-sm: 0.25rem;     // 4px
+$radius-md: 0.5rem;      // 8px
+$radius-default: 0.5rem;
+$radius-lg: 0.75rem;     // 12px
+$radius-xl: 1rem;        // 16px
+$radius-2xl: 1.5rem;     // 24px
+$radius-3xl: 2rem;       // 32px
+$radius-full: 9999px;
+
+// --------------------------------------------------------------------------
+// Shadows - Subtle luxury feel
+// --------------------------------------------------------------------------
+
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-default: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+$shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+$shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+
+// Gold glow shadows for CTAs
+$shadow-gold: 0 4px 14px 0 rgba(212, 175, 55, 0.3);
+$shadow-gold-lg: 0 10px 30px 0 rgba(212, 175, 55, 0.4);
+$shadow-gold-hover: 0 8px 25px 0 rgba(212, 175, 55, 0.5);
+
+// --------------------------------------------------------------------------
+// Transitions & Animations - Micro-interactions (150-300ms)
+// --------------------------------------------------------------------------
+
+// Durations
+$duration-instant: 0ms;
+$duration-fast: 150ms;
+$duration-normal: 200ms;
+$duration-slow: 300ms;
+$duration-slower: 400ms;
+$duration-slowest: 500ms;
+
+// Easing curves (Following claudekit aesthetic principles)
+$ease-linear: linear;
+$ease-in: cubic-bezier(0.4, 0, 1, 1);              // Elements leaving
+$ease-out: cubic-bezier(0, 0, 0.2, 1);             // Elements entering (most common)
+$ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);        // General transitions
+$ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);  // Playful bounce
+$ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);        // Smooth natural
+
+// Combined transitions
+$transition-fast: all $duration-fast $ease-out;
+$transition-normal: all $duration-normal $ease-out;
+$transition-slow: all $duration-slow $ease-out;
+$transition-micro: $duration-fast;  // 150ms for micro-interactions
+$transition-colors: color $duration-fast $ease-out, 
+                    background-color $duration-fast $ease-out,
+                    border-color $duration-fast $ease-out;
+$transition-transform: transform $duration-normal $ease-out;
+$transition-opacity: opacity $duration-normal $ease-out;
+$transition-shadow: box-shadow $duration-normal $ease-out;
+
+// --------------------------------------------------------------------------
+// Z-Index Scale
+// --------------------------------------------------------------------------
+
+$z-negative: -1;
+$z-0: 0;
+$z-10: 10;
+$z-20: 20;
+$z-30: 30;
+$z-40: 40;
+$z-50: 50;
+$z-dropdown: 100;
+$z-sticky: 200;
+$z-fixed: 300;
+$z-modal-backdrop: 400;
+$z-modal: 500;
+$z-popover: 600;
+$z-tooltip: 700;
+$z-toast: 800;
+
+// --------------------------------------------------------------------------
+// Breakpoints - Mobile-first responsive
+// --------------------------------------------------------------------------
+
+$breakpoint-xs: 480px;
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+$breakpoint-2xl: 1536px;
+
+// --------------------------------------------------------------------------
+// Container
+// --------------------------------------------------------------------------
+
+$container-sm: 640px;
+$container-md: 768px;
+$container-lg: 1024px;
+$container-xl: 1280px;
+$container-max-width: 1400px;
+$container-padding: $spacing-md;
+
+// --------------------------------------------------------------------------
+// Component-specific variables
+// --------------------------------------------------------------------------
+
+// Header
+$header-height: 80px;
+$header-height-scrolled: 64px;
+
+// Footer
+$footer-bg: $secondary-color;
+
+// Card
+$card-padding: $spacing-6;
+$card-radius: $radius-lg;
+$card-shadow: $shadow-md;
+
+// Button
+$button-height-sm: 36px;
+$button-height-md: 44px;
+$button-height-lg: 52px;
+
+// Input
+$input-height: 48px;
+$input-padding: $spacing-3 $spacing-4;
+$input-border-width: 1px;
+
+// Product Card
+$product-card-image-ratio: 4/3;
+$product-card-radius: $radius-lg;

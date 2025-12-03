@@ -1,0 +1,314 @@
+// ============================================
+// KL'élite Button Component
+// Following claudekit-engineer: SATISFYING (16ms response, 150-300ms animations)
+// ============================================
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-lg;
+  font-family: $font-body;
+  font-size: $text-sm;
+  font-weight: $font-semibold;
+  line-height: 1.5;
+  text-decoration: none;
+  border: 2px solid transparent;
+  border-radius: $radius-md;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  
+  // Micro-interaction timing: 150ms for instant feedback
+  transition: 
+    transform $transition-micro $ease-out,
+    box-shadow $transition-fast $ease-out,
+    background-color $transition-fast $ease-out,
+    border-color $transition-fast $ease-out,
+    color $transition-fast $ease-out;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba($gold-primary, 0.3);
+  }
+  
+  // Active state: 16ms feel
+  &:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+}
+
+// ============================================
+// Primary Variant - Gold Luxury
+// ============================================
+.primary {
+  background: $gradient-gold;
+  color: $dark-primary;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba($gold-primary, 0.25);
+
+  // Shimmer overlay
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.35),
+      transparent
+    );
+    transition: left 0.6s ease;
+  }
+
+  &:hover:not(:disabled) {
+    box-shadow: $shadow-gold;
+    transform: translateY(-2px);
+    
+    &::before {
+      left: 100%;
+    }
+  }
+}
+
+// ============================================
+// Secondary Variant - Dark Elegant
+// ============================================
+.secondary {
+  background: $dark-primary;
+  color: $light-text;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba($dark-primary, 0.2);
+
+  &:hover:not(:disabled) {
+    background: #2D2D44; // lighten($dark-primary, 8%)
+    box-shadow: 0 6px 20px rgba($dark-primary, 0.35);
+    transform: translateY(-2px);
+  }
+}
+
+// ============================================
+// Outline Variant - Refined Border
+// ============================================
+.outline {
+  background: transparent;
+  color: $gold-primary;
+  border-color: $gold-primary;
+  box-shadow: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: $gradient-gold;
+    opacity: 0;
+    transition: opacity $transition-fast $ease-out;
+    z-index: -1;
+  }
+
+  &:hover:not(:disabled) {
+    color: $dark-primary;
+    border-color: $gold-primary;
+    box-shadow: $shadow-gold;
+    transform: translateY(-2px);
+    
+    &::before {
+      opacity: 1;
+    }
+  }
+}
+
+// ============================================
+// Ghost Variant - Subtle Interaction
+// ============================================
+.ghost {
+  background: transparent;
+  color: $text-secondary;
+  border-color: transparent;
+  box-shadow: none;
+
+  &:hover:not(:disabled) {
+    background: rgba($gold-primary, 0.08);
+    color: $gold-primary;
+  }
+}
+
+// ============================================
+// Dark Variant - For Light Backgrounds
+// ============================================
+.dark {
+  background: transparent;
+  color: $dark-primary;
+  border-color: $dark-primary;
+  box-shadow: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: $dark-primary;
+    opacity: 0;
+    transition: opacity $transition-fast $ease-out;
+    z-index: -1;
+  }
+
+  &:hover:not(:disabled) {
+    color: $light-text;
+    transform: translateY(-2px);
+    
+    &::before {
+      opacity: 1;
+    }
+  }
+}
+
+// ============================================
+// Danger Variant - Warning Actions
+// ============================================
+.danger {
+  background: #e53935;
+  color: $light-text;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(#e53935, 0.25);
+
+  &:hover:not(:disabled) {
+    background: #c62828;
+    box-shadow: 0 6px 20px rgba(#e53935, 0.35);
+    transform: translateY(-2px);
+  }
+}
+
+// ============================================
+// White Variant - For Dark Backgrounds
+// ============================================
+.white {
+  background: $light-text;
+  color: $dark-primary;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  &:hover:not(:disabled) {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+}
+
+// ============================================
+// Size Variants
+// ============================================
+.sm {
+  padding: $spacing-xs $spacing-md;
+  font-size: $text-xs;
+  border-radius: $radius-sm;
+  gap: $spacing-2xs;
+}
+
+.md {
+  padding: $spacing-sm $spacing-lg;
+  font-size: $text-sm;
+}
+
+.lg {
+  padding: $spacing-md $spacing-xl;
+  font-size: $text-base;
+  border-radius: $radius-lg;
+}
+
+.xl {
+  padding: $spacing-lg $spacing-2xl;
+  font-size: $text-lg;
+  border-radius: $radius-lg;
+}
+
+// ============================================
+// Full Width Modifier
+// ============================================
+.fullWidth {
+  width: 100%;
+}
+
+// ============================================
+// Loading State
+// ============================================
+.loading {
+  pointer-events: none;
+  
+  .text {
+    opacity: 0.7;
+  }
+}
+
+.spinner {
+  display: inline-flex;
+  animation: buttonSpin 0.8s linear infinite;
+
+  svg {
+    width: 1.25em;
+    height: 1.25em;
+  }
+
+  circle {
+    stroke-dasharray: 60;
+    stroke-dashoffset: 45;
+  }
+}
+
+@keyframes buttonSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ============================================
+// Icon Styling
+// ============================================
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform $transition-micro $ease-out;
+  
+  svg {
+    width: 1.125em;
+    height: 1.125em;
+  }
+}
+
+// Icon animation on hover
+.button:hover:not(:disabled) .icon {
+  transform: scale(1.1);
+}
+
+.text {
+  display: inline-flex;
+  align-items: center;
+}
+
+// ============================================
+// Icon Only Button (Circle)
+// ============================================
+.iconOnly {
+  padding: $spacing-sm;
+  border-radius: $radius-full;
+  
+  &.sm {
+    padding: $spacing-xs;
+  }
+  
+  &.lg {
+    padding: $spacing-md;
+  }
+}

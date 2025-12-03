@@ -1,0 +1,790 @@
+// ==========================================================================
+// KL'élite Luxury Bakery - Global Styles
+// Following claudekit-engineer aesthetic principles
+// ==========================================================================
+
+// Import all partials - using @import for global scope
+@import './variables';
+@import './mixins';
+@import './animations';
+
+// --------------------------------------------------------------------------
+// Reset & Base - Clean foundation
+// --------------------------------------------------------------------------
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  
+  @media (prefers-reduced-motion: reduce) {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  font-family: $font-primary;
+  font-size: $font-size-base;
+  font-weight: $font-weight-normal;
+  line-height: $line-height-relaxed;
+  color: $text-primary;
+  background-color: $bg-primary;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  @include custom-scrollbar;
+}
+
+// Selection color
+::selection {
+  background-color: $primary-200;
+  color: $secondary-color;
+}
+
+// --------------------------------------------------------------------------
+// Typography - Elegant hierarchy
+// --------------------------------------------------------------------------
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-heading;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  color: $text-primary;
+  margin-bottom: $spacing-4;
+  letter-spacing: $letter-spacing-tight;
+}
+
+h1 {
+  font-size: $font-size-3xl;
+  
+  @include md {
+    font-size: $font-size-4xl;
+  }
+  
+  @include lg {
+    font-size: $font-size-5xl;
+  }
+}
+
+h2 {
+  font-size: $font-size-2xl;
+  
+  @include md {
+    font-size: $font-size-3xl;
+  }
+  
+  @include lg {
+    font-size: $font-size-4xl;
+  }
+}
+
+h3 {
+  font-size: $font-size-xl;
+  
+  @include md {
+    font-size: $font-size-2xl;
+  }
+  
+  @include lg {
+    font-size: $font-size-3xl;
+  }
+}
+
+h4 {
+  font-size: $font-size-lg;
+  
+  @include md {
+    font-size: $font-size-xl;
+  }
+}
+
+h5 {
+  font-size: $font-size-base;
+  
+  @include md {
+    font-size: $font-size-lg;
+  }
+}
+
+h6 {
+  font-size: $font-size-sm;
+  
+  @include md {
+    font-size: $font-size-base;
+  }
+}
+
+p {
+  margin-bottom: $spacing-4;
+  color: $text-secondary;
+  line-height: $line-height-relaxed;
+}
+
+a {
+  color: $primary-color;
+  text-decoration: none;
+  transition: color $duration-fast $ease-out;
+  
+  &:hover {
+    color: $primary-dark;
+  }
+  
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+    border-radius: $radius-sm;
+  }
+}
+
+strong, b {
+  font-weight: $font-weight-semibold;
+}
+
+small {
+  font-size: $font-size-sm;
+}
+
+// --------------------------------------------------------------------------
+// Lists
+// --------------------------------------------------------------------------
+
+ul, ol {
+  list-style: none;
+}
+
+// --------------------------------------------------------------------------
+// Images & Media
+// --------------------------------------------------------------------------
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+svg {
+  display: block;
+}
+
+// --------------------------------------------------------------------------
+// Form Elements - Reset
+// --------------------------------------------------------------------------
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  
+  &:focus {
+    outline: none;
+  }
+}
+
+// --------------------------------------------------------------------------
+// Container
+// --------------------------------------------------------------------------
+
+.container {
+  @include container;
+}
+
+.container-sm {
+  max-width: $container-sm;
+  margin: 0 auto;
+  padding: 0 $spacing-4;
+}
+
+.container-md {
+  max-width: $container-md;
+  margin: 0 auto;
+  padding: 0 $spacing-4;
+}
+
+.container-lg {
+  max-width: $container-lg;
+  margin: 0 auto;
+  padding: 0 $spacing-4;
+}
+
+// --------------------------------------------------------------------------
+// Section
+// --------------------------------------------------------------------------
+
+.section {
+  @include section;
+}
+
+.section-sm {
+  padding: $spacing-8 0;
+  
+  @include md {
+    padding: $spacing-12 0;
+  }
+}
+
+.section-lg {
+  padding: $spacing-16 0;
+  
+  @include md {
+    padding: $spacing-24 0;
+  }
+}
+
+// --------------------------------------------------------------------------
+// Section Header - Elegant titles with gold accents
+// --------------------------------------------------------------------------
+
+.section-header {
+  text-align: center;
+  margin-bottom: $spacing-10;
+  
+  @include md {
+    margin-bottom: $spacing-12;
+  }
+}
+
+.section-subtitle {
+  @include subheading;
+  margin-bottom: $spacing-2;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: $spacing-8;
+  
+  @include md {
+    margin-bottom: $spacing-10;
+  }
+  
+  h2 {
+    position: relative;
+    display: inline-block;
+    margin-bottom: $spacing-4;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -$spacing-3;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, $primary-color, transparent);
+      border-radius: $radius-full;
+    }
+  }
+  
+  p {
+    max-width: 600px;
+    margin: $spacing-6 auto 0;
+    color: $text-secondary;
+    font-size: $font-size-md;
+  }
+}
+
+// --------------------------------------------------------------------------
+// Dividers
+// --------------------------------------------------------------------------
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: $border-color;
+  margin: $spacing-8 0;
+}
+
+.divider-gold {
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, $primary-color, transparent);
+  margin: $spacing-6 auto;
+}
+
+// --------------------------------------------------------------------------
+// Text Utilities
+// --------------------------------------------------------------------------
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-gold {
+  color: $primary-color;
+}
+
+.text-muted {
+  color: $text-muted;
+}
+
+.text-white {
+  color: $white;
+}
+
+.text-gradient {
+  @include gradient-text;
+}
+
+.font-heading {
+  font-family: $font-heading;
+}
+
+.font-accent {
+  font-family: $font-accent;
+}
+
+.uppercase {
+  text-transform: uppercase;
+  letter-spacing: $letter-spacing-wider;
+}
+
+.italic {
+  font-style: italic;
+}
+
+// --------------------------------------------------------------------------
+// Accessibility
+// --------------------------------------------------------------------------
+
+.visually-hidden {
+  @include visually-hidden;
+}
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: $primary-color;
+  color: $secondary-color;
+  padding: $spacing-2 $spacing-4;
+  z-index: $z-toast;
+  transition: top $duration-fast $ease-out;
+  
+  &:focus {
+    top: 0;
+  }
+}
+
+// --------------------------------------------------------------------------
+// Display Utilities
+// --------------------------------------------------------------------------
+
+.d-none {
+  display: none !important;
+}
+
+.d-block {
+  display: block !important;
+}
+
+.d-inline {
+  display: inline !important;
+}
+
+.d-inline-block {
+  display: inline-block !important;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.d-inline-flex {
+  display: inline-flex !important;
+}
+
+.d-grid {
+  display: grid !important;
+}
+
+// Responsive display
+@include sm {
+  .d-sm-none { display: none !important; }
+  .d-sm-block { display: block !important; }
+  .d-sm-flex { display: flex !important; }
+}
+
+@include md {
+  .d-md-none { display: none !important; }
+  .d-md-block { display: block !important; }
+  .d-md-flex { display: flex !important; }
+}
+
+@include lg {
+  .d-lg-none { display: none !important; }
+  .d-lg-block { display: block !important; }
+  .d-lg-flex { display: flex !important; }
+}
+
+@include xl {
+  .d-xl-none { display: none !important; }
+  .d-xl-block { display: block !important; }
+  .d-xl-flex { display: flex !important; }
+}
+
+// --------------------------------------------------------------------------
+// Flex Utilities
+// --------------------------------------------------------------------------
+
+.flex-center {
+  @include flex-center;
+}
+
+.flex-between {
+  @include flex-between;
+}
+
+.flex-start {
+  @include flex-start;
+}
+
+.flex-end {
+  @include flex-end;
+}
+
+.flex-column {
+  @include flex-column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.items-start {
+  align-items: flex-start;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.items-end {
+  align-items: flex-end;
+}
+
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+// Gap utilities
+.gap-1 { gap: $spacing-1; }
+.gap-2 { gap: $spacing-2; }
+.gap-3 { gap: $spacing-3; }
+.gap-4 { gap: $spacing-4; }
+.gap-5 { gap: $spacing-5; }
+.gap-6 { gap: $spacing-6; }
+.gap-8 { gap: $spacing-8; }
+
+// --------------------------------------------------------------------------
+// Spacing Utilities
+// --------------------------------------------------------------------------
+
+@each $prop, $abbrev in (margin: m, padding: p) {
+  @each $size, $value in (
+    0: 0, 
+    1: $spacing-1, 
+    2: $spacing-2, 
+    3: $spacing-3, 
+    4: $spacing-4, 
+    5: $spacing-5, 
+    6: $spacing-6, 
+    8: $spacing-8,
+    10: $spacing-10,
+    12: $spacing-12
+  ) {
+    .#{$abbrev}-#{$size} {
+      #{$prop}: $value !important;
+    }
+    .#{$abbrev}t-#{$size} {
+      #{$prop}-top: $value !important;
+    }
+    .#{$abbrev}b-#{$size} {
+      #{$prop}-bottom: $value !important;
+    }
+    .#{$abbrev}l-#{$size} {
+      #{$prop}-left: $value !important;
+    }
+    .#{$abbrev}r-#{$size} {
+      #{$prop}-right: $value !important;
+    }
+    .#{$abbrev}x-#{$size} {
+      #{$prop}-left: $value !important;
+      #{$prop}-right: $value !important;
+    }
+    .#{$abbrev}y-#{$size} {
+      #{$prop}-top: $value !important;
+      #{$prop}-bottom: $value !important;
+    }
+  }
+}
+
+.mx-auto {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+// --------------------------------------------------------------------------
+// Width & Height
+// --------------------------------------------------------------------------
+
+.w-full {
+  width: 100%;
+}
+
+.w-auto {
+  width: auto;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.h-screen {
+  height: 100vh;
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+// --------------------------------------------------------------------------
+// Position Utilities
+// --------------------------------------------------------------------------
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.fixed {
+  position: fixed;
+}
+
+.sticky {
+  position: sticky;
+}
+
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+// --------------------------------------------------------------------------
+// Border Utilities
+// --------------------------------------------------------------------------
+
+.rounded {
+  border-radius: $radius-default;
+}
+
+.rounded-sm {
+  border-radius: $radius-sm;
+}
+
+.rounded-md {
+  border-radius: $radius-md;
+}
+
+.rounded-lg {
+  border-radius: $radius-lg;
+}
+
+.rounded-xl {
+  border-radius: $radius-xl;
+}
+
+.rounded-full {
+  border-radius: $radius-full;
+}
+
+// --------------------------------------------------------------------------
+// Shadow Utilities
+// --------------------------------------------------------------------------
+
+.shadow-sm {
+  box-shadow: $shadow-sm;
+}
+
+.shadow {
+  box-shadow: $shadow-default;
+}
+
+.shadow-md {
+  box-shadow: $shadow-md;
+}
+
+.shadow-lg {
+  box-shadow: $shadow-lg;
+}
+
+.shadow-xl {
+  box-shadow: $shadow-xl;
+}
+
+.shadow-gold {
+  box-shadow: $shadow-gold;
+}
+
+// --------------------------------------------------------------------------
+// Overflow
+// --------------------------------------------------------------------------
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.overflow-auto {
+  overflow: auto;
+}
+
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
+// --------------------------------------------------------------------------
+// Cursor
+// --------------------------------------------------------------------------
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+
+// --------------------------------------------------------------------------
+// Z-Index
+// --------------------------------------------------------------------------
+
+.z-0 { z-index: $z-0; }
+.z-10 { z-index: $z-10; }
+.z-20 { z-index: $z-20; }
+.z-30 { z-index: $z-30; }
+.z-40 { z-index: $z-40; }
+.z-50 { z-index: $z-50; }
+
+// --------------------------------------------------------------------------
+// App Layout
+// --------------------------------------------------------------------------
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+// --------------------------------------------------------------------------
+// Toast Customization
+// --------------------------------------------------------------------------
+
+.Toastify__toast {
+  font-family: $font-primary;
+  border-radius: $radius-md;
+  box-shadow: $shadow-lg;
+}
+
+.Toastify__toast--success {
+  background-color: $success-color;
+}
+
+.Toastify__toast--error {
+  background-color: $error-color;
+}
+
+.Toastify__toast--warning {
+  background-color: $warning-color;
+  color: $text-primary;
+}
+
+.Toastify__toast--info {
+  background-color: $info-color;
+}
+
+// --------------------------------------------------------------------------
+// Print Styles
+// --------------------------------------------------------------------------
+
+@media print {
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+  
+  img {
+    max-width: 100% !important;
+  }
+  
+  @page {
+    margin: 2cm;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+}

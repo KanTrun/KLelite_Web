@@ -1,0 +1,644 @@
+// ============================================
+// KL'élite Header - Glassmorphism Luxury Design
+// Following claudekit-engineer: BEAUTIFUL + SATISFYING
+// Variables auto-injected via Vite
+// ============================================
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: $z-sticky;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba($gold-primary, 0.1);
+  transition: all $transition-normal $ease-out;
+  
+  // Subtle shadow on scroll (applied via JS)
+  &.scrolled {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: $shadow-md;
+  }
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 $spacing-md;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+
+  @media (min-width: 768px) {
+    padding: 0 $spacing-lg;
+    height: 88px;
+  }
+
+  @media (min-width: 1200px) {
+    padding: 0 $spacing-2xl;
+  }
+}
+
+// ============================================
+// Logo with Elegant Animation
+// ============================================
+.logo {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  line-height: 1.1;
+  position: relative;
+  transition: transform $transition-micro $ease-out;
+  
+  &:hover {
+    transform: scale(1.02);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.logoText {
+  font-family: $font-heading;
+  font-size: $text-xl;
+  font-weight: $font-bold;
+  background: $gradient-gold;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.5px;
+  position: relative;
+
+  @media (min-width: 768px) {
+    font-size: $text-2xl;
+  }
+  
+  @media (min-width: 992px) {
+    font-size: 1.875rem;
+  }
+}
+
+.logoSubtext {
+  font-family: $font-accent;
+  font-size: 0.5625rem;
+  font-weight: $font-medium;
+  color: $text-muted;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: 2px;
+
+  @media (min-width: 768px) {
+    font-size: 0.625rem;
+    letter-spacing: 4px;
+  }
+}
+
+// ============================================
+// Navigation with Micro-interactions
+// ============================================
+.nav {
+  display: none;
+
+  @media (min-width: 992px) {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xl;
+  }
+  
+  @media (min-width: 1200px) {
+    gap: $spacing-2xl;
+  }
+}
+
+.navLink {
+  font-family: $font-body;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $text-secondary;
+  text-decoration: none;
+  position: relative;
+  padding: $spacing-xs 0;
+  transition: color $transition-micro $ease-out;
+
+  // Animated underline
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: $gradient-gold;
+    border-radius: 1px;
+    transition: all $transition-fast $ease-out;
+    transform: translateX(-50%);
+  }
+
+  &:hover {
+    color: $gold-primary;
+
+    &::after {
+      width: 100%;
+    }
+  }
+  
+  &.active {
+    color: $gold-primary;
+    font-weight: $font-semibold;
+    
+    &::after {
+      width: 100%;
+    }
+  }
+}
+
+// ============================================
+// Action Buttons with Micro-interactions
+// ============================================
+.actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+
+  @media (min-width: 768px) {
+    gap: $spacing-sm;
+  }
+}
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: none;
+  color: $text-secondary;
+  cursor: pointer;
+  border-radius: $radius-full;
+  position: relative;
+  text-decoration: none;
+  
+  // Micro-interaction timing: 150ms
+  transition: 
+    color $transition-micro $ease-out,
+    background-color $transition-micro $ease-out,
+    transform $transition-micro $ease-out;
+
+  svg {
+    width: 22px;
+    height: 22px;
+    transition: transform $transition-micro $ease-out;
+  }
+
+  &:hover {
+    color: $gold-primary;
+    background-color: rgba($gold-primary, 0.08);
+    
+    svg {
+      transform: scale(1.1);
+    }
+  }
+  
+  &:active {
+    transform: scale(0.92);
+  }
+  
+  // Focus state for accessibility
+  &:focus-visible {
+    outline: 2px solid $gold-primary;
+    outline-offset: 2px;
+  }
+}
+
+.badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: $gradient-gold;
+  color: $dark-primary;
+  font-family: $font-body;
+  font-size: 0.625rem;
+  font-weight: $font-bold;
+  border-radius: $radius-full;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba($gold-primary, 0.4);
+  
+  // Pulse animation for attention
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+// ============================================
+// Login/CTA Button
+// ============================================
+.loginButton {
+  display: none;
+  padding: $spacing-sm $spacing-lg;
+  background: $gradient-gold;
+  color: $dark-primary;
+  font-family: $font-body;
+  font-size: $text-sm;
+  font-weight: $font-semibold;
+  text-decoration: none;
+  border-radius: $radius-md;
+  box-shadow: $shadow-gold;
+  position: relative;
+  overflow: hidden;
+  transition: 
+    transform $transition-micro $ease-out,
+    box-shadow $transition-fast $ease-out;
+
+  // Shimmer effect
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    transition: left 0.5s ease;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba($gold-primary, 0.5);
+    
+    &::before {
+      left: 100%;
+    }
+  }
+  
+  &:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  @media (min-width: 768px) {
+    display: block;
+  }
+}
+
+// ============================================
+// User Menu Dropdown
+// ============================================
+.userMenu {
+  position: relative;
+}
+
+.userButton {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-xs $spacing-sm;
+  background: transparent;
+  border: 1px solid $border-light;
+  border-radius: $radius-md;
+  color: $text-secondary;
+  font-family: $font-body;
+  font-size: $text-sm;
+  cursor: pointer;
+  transition: all $transition-micro $ease-out;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    transition: transform $transition-micro $ease-out;
+    
+    &.rotated {
+      transform: rotate(180deg);
+    }
+  }
+
+  span {
+    display: none;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    @media (min-width: 768px) {
+      display: inline;
+    }
+  }
+
+  &:hover {
+    border-color: $gold-primary;
+    color: $gold-primary;
+    background: rgba($gold-primary, 0.05);
+  }
+  
+  &[aria-expanded="true"] {
+    border-color: $gold-primary;
+    color: $gold-primary;
+  }
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba($gold-primary, 0.1);
+  border-radius: $radius-lg;
+  box-shadow: $shadow-lg;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.95);
+  transform-origin: top right;
+  transition: all $transition-fast $ease-out;
+  overflow: hidden;
+  z-index: $z-dropdown;
+  
+  &.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  font-family: $font-body;
+  font-size: $text-sm;
+  color: $text-secondary;
+  text-decoration: none;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all $transition-micro $ease-out;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    opacity: 0.7;
+    transition: opacity $transition-micro $ease-out;
+  }
+
+  &:hover {
+    background: rgba($gold-primary, 0.08);
+    color: $gold-primary;
+    
+    svg {
+      opacity: 1;
+    }
+  }
+  
+  &.danger {
+    color: #e53935;
+    
+    &:hover {
+      background: rgba(#e53935, 0.08);
+      color: #c62828;
+    }
+  }
+}
+
+.dropdownDivider {
+  height: 1px;
+  background: $border-light;
+  margin: $spacing-xs 0;
+}
+
+// ============================================
+// Mobile Menu Toggle
+// ============================================
+.menuToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: none;
+  color: $text-secondary;
+  cursor: pointer;
+  border-radius: $radius-md;
+  transition: all $transition-micro $ease-out;
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  &:hover {
+    color: $gold-primary;
+    background: rgba($gold-primary, 0.08);
+  }
+  
+  &:active {
+    transform: scale(0.92);
+  }
+
+  @media (min-width: 992px) {
+    display: none;
+  }
+}
+
+// ============================================
+// Search Bar
+// ============================================
+.searchBar {
+  padding: $spacing-md;
+  background: rgba($cream, 0.5);
+  border-top: 1px solid $border-light;
+  animation: slideDown $transition-normal $ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.searchForm {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  gap: $spacing-sm;
+}
+
+.searchInput {
+  flex: 1;
+  padding: $spacing-sm $spacing-md;
+  font-family: $font-body;
+  font-size: $text-base;
+  color: $text-primary;
+  background: white;
+  border: 1px solid $border-light;
+  border-radius: $radius-md;
+  outline: none;
+  transition: all $transition-micro $ease-out;
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:focus {
+    border-color: $gold-primary;
+    box-shadow: 0 0 0 3px rgba($gold-primary, 0.15);
+  }
+}
+
+.searchButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-sm $spacing-md;
+  background: $gradient-gold;
+  color: $dark-primary;
+  border: none;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: all $transition-micro $ease-out;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: $shadow-gold;
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// ============================================
+// Mobile Menu - Slide Animation
+// ============================================
+.mobileMenu {
+  position: fixed;
+  top: 72px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: $z-modal - 1;
+  overflow-y: auto;
+  animation: fadeIn $transition-normal $ease-out;
+  
+  @media (min-width: 768px) {
+    top: 88px;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  padding: $spacing-md;
+}
+
+.mobileNavLink {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-md;
+  font-family: $font-body;
+  font-size: $text-base;
+  font-weight: $font-medium;
+  color: $text-secondary;
+  text-decoration: none;
+  border-bottom: 1px solid $border-light;
+  transition: all $transition-micro $ease-out;
+  
+  // Staggered animation
+  opacity: 0;
+  animation: slideInLeft $transition-normal $ease-out forwards;
+  
+  @for $i from 1 through 8 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 50}ms;
+    }
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    opacity: 0.6;
+  }
+
+  &:hover, &:active {
+    color: $gold-primary;
+    background: rgba($gold-primary, 0.05);
+    padding-left: $spacing-lg;
+  }
+  
+  &.active {
+    color: $gold-primary;
+    font-weight: $font-semibold;
+    border-left: 3px solid $gold-primary;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// ============================================
+// Overlay for Mobile Menu
+// ============================================
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: $z-modal - 2;
+  animation: fadeIn $transition-fast $ease-out;
+}

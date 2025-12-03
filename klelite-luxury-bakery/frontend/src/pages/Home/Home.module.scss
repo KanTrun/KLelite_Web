@@ -1,0 +1,1194 @@
+// ============================================
+// KL'élite Home Page - Professional Design
+// Following claudekit-engineer: BEAUTIFUL + SATISFYING + PEAK
+// Variables auto-injected via Vite
+// ============================================
+
+.home {
+  overflow: hidden;
+}
+
+// ============================================
+// Hero Section - Storytelling First Impression
+// ============================================
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.heroBackground {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.heroBgImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.15;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(255, 255, 255, 0.9) 50%,
+    rgba($cream, 0.85) 100%
+  );
+}
+
+.heroContainer {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: $spacing-3xl $spacing-md;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-2xl;
+  align-items: center;
+  
+  @media (min-width: 992px) {
+    grid-template-columns: 1fr 1fr;
+    padding: $spacing-3xl $spacing-2xl;
+    min-height: 100vh;
+  }
+}
+
+.heroContent {
+  text-align: center;
+  
+  @media (min-width: 992px) {
+    text-align: left;
+    padding-right: $spacing-xl;
+  }
+}
+
+.heroTagline {
+  display: inline-block;
+  font-family: $font-accent;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $gold-secondary;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: $spacing-md;
+  
+  @media (min-width: 768px) {
+    font-size: $text-base;
+  }
+}
+
+.heroTitle {
+  font-family: $font-heading;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: $font-bold;
+  color: $text-primary;
+  line-height: 1.1;
+  margin-bottom: $spacing-lg;
+}
+
+.heroTitleAccent {
+  display: block;
+  font-weight: $font-normal;
+  font-style: italic;
+  color: $text-secondary;
+}
+
+.heroTitleHighlight {
+  display: block;
+  background: $gradient-gold;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.heroDescription {
+  font-family: $font-body;
+  font-size: $text-lg;
+  color: $text-secondary;
+  line-height: 1.8;
+  margin-bottom: $spacing-xl;
+  max-width: 540px;
+  
+  @media (max-width: 991px) {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.heroActions {
+  display: flex;
+  gap: $spacing-md;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: $spacing-2xl;
+  
+  @media (min-width: 992px) {
+    justify-content: flex-start;
+  }
+}
+
+.heroPrimaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-md $spacing-xl;
+  background: $gradient-gold;
+  color: $dark-primary;
+  font-family: $font-body;
+  font-size: $text-base;
+  font-weight: $font-semibold;
+  text-decoration: none;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-gold;
+  position: relative;
+  overflow: hidden;
+  transition: all $transition-fast $ease-out;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    transition: left 0.5s ease;
+  }
+  
+  svg {
+    transition: transform $transition-micro $ease-out;
+  }
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba($gold-primary, 0.5);
+    
+    &::before {
+      left: 100%;
+    }
+    
+    svg {
+      transform: translateX(4px);
+    }
+  }
+  
+  &:active {
+    transform: translateY(-1px) scale(0.98);
+  }
+}
+
+.heroSecondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: $spacing-md $spacing-xl;
+  background: transparent;
+  color: $text-primary;
+  font-family: $font-body;
+  font-size: $text-base;
+  font-weight: $font-semibold;
+  text-decoration: none;
+  border: 2px solid $dark-primary;
+  border-radius: $radius-lg;
+  transition: all $transition-fast $ease-out;
+  
+  &:hover {
+    background: $dark-primary;
+    color: $light-text;
+    transform: translateY(-3px);
+  }
+  
+  &:active {
+    transform: translateY(-1px) scale(0.98);
+  }
+}
+
+.heroStats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-lg;
+  
+  @media (min-width: 992px) {
+    justify-content: flex-start;
+  }
+}
+
+.heroStat {
+  text-align: center;
+  
+  @media (min-width: 992px) {
+    text-align: left;
+  }
+}
+
+.heroStatNumber {
+  display: block;
+  font-family: $font-heading;
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  color: $gold-primary;
+  
+  @media (min-width: 768px) {
+    font-size: $text-3xl;
+  }
+}
+
+.heroStatLabel {
+  font-size: $text-sm;
+  color: $text-muted;
+}
+
+.heroStatDivider {
+  width: 1px;
+  height: 40px;
+  background: $border-light;
+}
+
+// Hero Image Composition
+.heroImageWrapper {
+  position: relative;
+  display: none;
+  
+  @media (min-width: 992px) {
+    display: block;
+  }
+}
+
+.heroImageMain {
+  position: relative;
+  border-radius: $radius-2xl;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.15);
+  
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: $radius-2xl;
+    border: 1px solid rgba($gold-primary, 0.2);
+    pointer-events: none;
+  }
+}
+
+.heroImageFloat1,
+.heroImageFloat2 {
+  position: absolute;
+  border-radius: $radius-xl;
+  overflow: hidden;
+  box-shadow: $shadow-lg;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.heroImageFloat1 {
+  width: 140px;
+  height: 140px;
+  top: -30px;
+  left: -50px;
+  
+  @media (min-width: 1200px) {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+.heroImageFloat2 {
+  width: 120px;
+  height: 120px;
+  bottom: 60px;
+  right: -40px;
+  
+  @media (min-width: 1200px) {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+.heroDecoration {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: $spacing-sm $spacing-lg;
+  background: $dark-primary;
+  border-radius: $radius-full;
+}
+
+.heroDecorationText {
+  font-family: $font-accent;
+  font-size: $text-xs;
+  font-weight: $font-medium;
+  color: $gold-primary;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+// Scroll Indicator
+.scrollIndicator {
+  position: absolute;
+  bottom: $spacing-xl;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-xs;
+  color: $text-muted;
+  
+  span {
+    font-size: $text-xs;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+}
+
+.scrollMouse {
+  width: 24px;
+  height: 38px;
+  border: 2px solid $border-light;
+  border-radius: 12px;
+  position: relative;
+}
+
+.scrollWheel {
+  width: 4px;
+  height: 8px;
+  background: $gold-primary;
+  border-radius: 2px;
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: scrollWheelMove 1.5s infinite;
+}
+
+@keyframes scrollWheelMove {
+  0%, 100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translateX(-50%) translateY(8px);
+  }
+}
+
+// ============================================
+// Features Section
+// ============================================
+.features {
+  padding: $spacing-3xl 0;
+  background: white;
+  
+  @media (min-width: 768px) {
+    padding: $spacing-4xl 0;
+  }
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 $spacing-md;
+  
+  @media (min-width: 768px) {
+    padding: 0 $spacing-lg;
+  }
+  
+  @media (min-width: 1200px) {
+    padding: 0 $spacing-2xl;
+  }
+}
+
+.featureGrid {
+  display: grid;
+  gap: $spacing-lg;
+  
+  @media (min-width: 576px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (min-width: 992px) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacing-xl;
+  }
+}
+
+.featureCard {
+  text-align: center;
+  padding: $spacing-xl $spacing-lg;
+  background: $background-muted;
+  border-radius: $radius-xl;
+  transition: all $transition-fast $ease-out;
+  
+  &:hover {
+    background: white;
+    transform: translateY(-8px);
+    box-shadow: $shadow-xl;
+    
+    .featureIcon {
+      background: $gradient-gold;
+      color: $dark-primary;
+      transform: scale(1.1);
+    }
+  }
+}
+
+.featureIcon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto $spacing-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba($gold-primary, 0.1);
+  border-radius: $radius-xl;
+  transition: all $transition-fast $ease-out;
+  
+  svg {
+    width: 32px;
+    height: 32px;
+    color: $gold-primary;
+  }
+}
+
+.featureTitle {
+  font-family: $font-heading;
+  font-size: $text-lg;
+  font-weight: $font-semibold;
+  color: $text-primary;
+  margin-bottom: $spacing-xs;
+}
+
+.featureDescription {
+  font-size: $text-sm;
+  color: $text-muted;
+  line-height: 1.7;
+}
+
+// ============================================
+// Section Header (Reusable)
+// ============================================
+.sectionHeader {
+  text-align: center;
+  margin-bottom: $spacing-2xl;
+  
+  @media (min-width: 768px) {
+    margin-bottom: $spacing-3xl;
+  }
+}
+
+.sectionLabel {
+  display: inline-block;
+  font-family: $font-accent;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $gold-secondary;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: $spacing-sm;
+}
+
+.sectionTitle {
+  font-family: $font-heading;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: $font-bold;
+  color: $text-primary;
+  margin-bottom: $spacing-sm;
+  position: relative;
+  display: inline-block;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: $gradient-gold;
+    border-radius: 2px;
+  }
+}
+
+.sectionSubtitle {
+  font-size: $text-base;
+  color: $text-muted;
+  max-width: 600px;
+  margin: $spacing-md auto 0;
+  line-height: 1.7;
+  
+  @media (min-width: 768px) {
+    font-size: $text-lg;
+  }
+}
+
+// ============================================
+// Categories Section
+// ============================================
+.categories {
+  padding: $spacing-3xl 0;
+  background: $cream;
+  
+  @media (min-width: 768px) {
+    padding: $spacing-4xl 0;
+  }
+}
+
+.categoryGrid {
+  display: grid;
+  gap: $spacing-lg;
+  
+  @media (min-width: 576px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (min-width: 992px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.categoryCard {
+  position: relative;
+  display: block;
+  border-radius: $radius-xl;
+  overflow: hidden;
+  text-decoration: none;
+  aspect-ratio: 3 / 4;
+  
+  &:hover {
+    .categoryImageWrapper img {
+      transform: scale(1.1);
+    }
+    
+    .categoryOverlay {
+      background: linear-gradient(
+        to top,
+        rgba($gold-primary, 0.9) 0%,
+        rgba($gold-primary, 0.4) 50%,
+        transparent 100%
+      );
+    }
+    
+    .categoryLink {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+.categoryImageWrapper {
+  position: absolute;
+  inset: 0;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform $transition-normal $ease-out;
+  }
+}
+
+.categoryOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba($dark-primary, 0.8) 0%,
+    rgba($dark-primary, 0.3) 50%,
+    transparent 100%
+  );
+  transition: background $transition-fast $ease-out;
+}
+
+.categoryContent {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: $spacing-lg;
+  z-index: 1;
+}
+
+.categoryCount {
+  font-size: $text-xs;
+  color: rgba(white, 0.7);
+  margin-bottom: $spacing-2xs;
+}
+
+.categoryName {
+  font-family: $font-heading;
+  font-size: $text-xl;
+  font-weight: $font-semibold;
+  color: white;
+  margin-bottom: $spacing-2xs;
+}
+
+.categoryDescription {
+  font-size: $text-sm;
+  color: rgba(white, 0.8);
+  margin-bottom: $spacing-sm;
+}
+
+.categoryLink {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-2xs;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: white;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all $transition-fast $ease-out;
+  
+  svg {
+    transition: transform $transition-micro $ease-out;
+  }
+  
+  &:hover svg {
+    transform: translateX(4px);
+  }
+}
+
+// ============================================
+// Featured Products Section
+// ============================================
+.featured {
+  padding: $spacing-3xl 0;
+  background: white;
+  
+  @media (min-width: 768px) {
+    padding: $spacing-4xl 0;
+  }
+}
+
+.productGrid {
+  display: grid;
+  gap: $spacing-lg;
+  
+  @media (min-width: 576px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (min-width: 992px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.productCard {
+  background: white;
+  border-radius: $radius-xl;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+  transition: all $transition-fast $ease-out;
+  
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: $shadow-xl;
+    
+    .productImageWrapper img {
+      transform: scale(1.08);
+    }
+  }
+}
+
+.productImageWrapper {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  display: block;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform $transition-normal $ease-out;
+  }
+}
+
+.productOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 60%,
+    rgba($dark-primary, 0.2) 100%
+  );
+}
+
+.productBadgeNew,
+.productBadgeBest,
+.productBadgeSale {
+  position: absolute;
+  top: $spacing-sm;
+  left: $spacing-sm;
+  padding: $spacing-2xs $spacing-sm;
+  font-size: $text-2xs;
+  font-weight: $font-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: $radius-sm;
+}
+
+.productBadgeNew {
+  background: $gradient-gold;
+  color: $dark-primary;
+}
+
+.productBadgeBest {
+  background: $dark-primary;
+  color: $gold-primary;
+}
+
+.productBadgeSale {
+  background: #e53935;
+  color: white;
+}
+
+.productContent {
+  padding: $spacing-md;
+}
+
+.productCategory {
+  font-family: $font-accent;
+  font-size: $text-xs;
+  font-weight: $font-medium;
+  color: $gold-secondary;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.productName {
+  font-family: $font-heading;
+  font-size: $text-lg;
+  font-weight: $font-semibold;
+  margin: $spacing-2xs 0 $spacing-xs;
+  
+  a {
+    color: $text-primary;
+    text-decoration: none;
+    transition: color $transition-micro $ease-out;
+    
+    &:hover {
+      color: $gold-primary;
+    }
+  }
+}
+
+.productRating {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-sm;
+  
+  span {
+    font-size: $text-sm;
+    color: $text-muted;
+  }
+}
+
+.productStars {
+  display: flex;
+  gap: 2px;
+  
+  svg {
+    width: 14px;
+    height: 14px;
+    color: #e0e0e0;
+    
+    &.starFilled {
+      color: #ffc107;
+      fill: #ffc107;
+    }
+  }
+}
+
+.productPricing {
+  display: flex;
+  align-items: baseline;
+  gap: $spacing-xs;
+}
+
+.productPrice {
+  font-family: $font-heading;
+  font-size: $text-xl;
+  font-weight: $font-bold;
+  color: $gold-primary;
+}
+
+.productOriginalPrice {
+  font-size: $text-sm;
+  color: $text-muted;
+  text-decoration: line-through;
+}
+
+.viewAllWrapper {
+  text-align: center;
+  margin-top: $spacing-2xl;
+}
+
+.viewAllBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-md $spacing-xl;
+  background: transparent;
+  color: $dark-primary;
+  font-family: $font-body;
+  font-size: $text-base;
+  font-weight: $font-semibold;
+  text-decoration: none;
+  border: 2px solid $dark-primary;
+  border-radius: $radius-lg;
+  transition: all $transition-fast $ease-out;
+  
+  svg {
+    transition: transform $transition-micro $ease-out;
+  }
+  
+  &:hover {
+    background: $dark-primary;
+    color: $light-text;
+    
+    svg {
+      transform: translateX(4px);
+    }
+  }
+}
+
+// ============================================
+// Testimonials Section
+// ============================================
+.testimonials {
+  padding: $spacing-3xl 0;
+  background: $cream;
+  
+  @media (min-width: 768px) {
+    padding: $spacing-4xl 0;
+  }
+}
+
+.testimonialGrid {
+  display: grid;
+  gap: $spacing-lg;
+  
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.testimonialCard {
+  background: white;
+  padding: $spacing-xl;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-sm;
+  transition: all $transition-fast $ease-out;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: $shadow-lg;
+  }
+}
+
+.testimonialStars {
+  display: flex;
+  gap: 2px;
+  margin-bottom: $spacing-md;
+  
+  svg {
+    width: 18px;
+    height: 18px;
+    color: #e0e0e0;
+    
+    &.starFilled {
+      color: #ffc107;
+      fill: #ffc107;
+    }
+  }
+}
+
+.testimonialContent {
+  font-family: $font-accent;
+  font-size: $text-lg;
+  font-style: italic;
+  color: $text-secondary;
+  line-height: 1.7;
+  margin-bottom: $spacing-lg;
+}
+
+.testimonialAuthor {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  
+  img {
+    width: 48px;
+    height: 48px;
+    border-radius: $radius-full;
+    object-fit: cover;
+  }
+  
+  strong {
+    display: block;
+    font-family: $font-body;
+    font-size: $text-base;
+    font-weight: $font-semibold;
+    color: $text-primary;
+  }
+  
+  span {
+    font-size: $text-sm;
+    color: $text-muted;
+  }
+}
+
+// ============================================
+// CTA Section
+// ============================================
+.cta {
+  position: relative;
+  padding: $spacing-4xl 0;
+  overflow: hidden;
+}
+
+.ctaBackground {
+  position: absolute;
+  inset: 0;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.ctaOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba($dark-primary, 0.95) 0%,
+    rgba($dark-primary, 0.85) 100%
+  );
+}
+
+.ctaContent {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.ctaLabel {
+  display: inline-block;
+  font-family: $font-accent;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $gold-primary;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: $spacing-md;
+}
+
+.ctaTitle {
+  font-family: $font-heading;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: $font-bold;
+  color: $light-text;
+  margin-bottom: $spacing-md;
+}
+
+.ctaDescription {
+  font-size: $text-lg;
+  color: rgba($light-text, 0.8);
+  line-height: 1.7;
+  margin-bottom: $spacing-xl;
+  
+  strong {
+    color: $gold-primary;
+  }
+}
+
+.ctaActions {
+  display: flex;
+  gap: $spacing-md;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.ctaPrimaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-md $spacing-xl;
+  background: $gradient-gold;
+  color: $dark-primary;
+  font-family: $font-body;
+  font-size: $text-base;
+  font-weight: $font-semibold;
+  text-decoration: none;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-gold;
+  transition: all $transition-fast $ease-out;
+  
+  svg {
+    transition: transform $transition-micro $ease-out;
+  }
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba($gold-primary, 0.5);
+    
+    svg {
+      transform: translateX(4px);
+    }
+  }
+}
+
+.ctaSecondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: $spacing-md $spacing-xl;
+  background: transparent;
+  color: $light-text;
+  font-family: $font-body;
+  font-size: $text-base;
+  font-weight: $font-semibold;
+  text-decoration: none;
+  border: 2px solid rgba($light-text, 0.3);
+  border-radius: $radius-lg;
+  transition: all $transition-fast $ease-out;
+  
+  &:hover {
+    border-color: $light-text;
+    background: rgba($light-text, 0.1);
+  }
+}
+
+// ============================================
+// Newsletter Section
+// ============================================
+.newsletter {
+  padding: $spacing-3xl 0;
+  background: white;
+  border-top: 1px solid $border-light;
+}
+
+.newsletterContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-lg;
+  text-align: center;
+  
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+.newsletterText {
+  h3 {
+    font-family: $font-heading;
+    font-size: $text-xl;
+    font-weight: $font-semibold;
+    color: $text-primary;
+    margin-bottom: $spacing-2xs;
+    
+    @media (min-width: 768px) {
+      font-size: $text-2xl;
+    }
+  }
+  
+  p {
+    font-size: $text-base;
+    color: $text-muted;
+  }
+}
+
+.newsletterForm {
+  display: flex;
+  gap: $spacing-sm;
+  width: 100%;
+  max-width: 420px;
+  
+  input {
+    flex: 1;
+    padding: $spacing-sm $spacing-md;
+    font-family: $font-body;
+    font-size: $text-base;
+    color: $text-primary;
+    background: $background-muted;
+    border: 1px solid $border-light;
+    border-radius: $radius-md;
+    outline: none;
+    transition: all $transition-micro $ease-out;
+    
+    &::placeholder {
+      color: $text-muted;
+    }
+    
+    &:focus {
+      border-color: $gold-primary;
+      box-shadow: 0 0 0 3px rgba($gold-primary, 0.15);
+    }
+  }
+  
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: $spacing-sm $spacing-lg;
+    background: $gradient-gold;
+    color: $dark-primary;
+    font-family: $font-body;
+    font-size: $text-base;
+    font-weight: $font-semibold;
+    border: none;
+    border-radius: $radius-md;
+    cursor: pointer;
+    transition: all $transition-micro $ease-out;
+    white-space: nowrap;
+    
+    svg {
+      transition: transform $transition-micro $ease-out;
+    }
+    
+    &:hover {
+      box-shadow: $shadow-gold;
+      
+      svg {
+        transform: translateX(4px);
+      }
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}

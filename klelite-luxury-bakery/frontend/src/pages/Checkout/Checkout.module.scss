@@ -1,0 +1,1176 @@
+// Checkout Page Styles
+
+@import '@/styles/variables';
+@import '@/styles/mixins';
+
+.checkoutPage {
+  min-height: 100vh;
+  padding: $spacing-2xl 0;
+  background: $bg-secondary;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-lg;
+}
+
+// Loading & Empty States
+.loadingWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.emptyCart {
+  text-align: center;
+  padding: $spacing-3xl;
+  background: $bg-primary;
+  border-radius: $radius-xl;
+
+  .emptyIcon {
+    font-size: 4rem;
+    color: $gold-primary;
+    margin-bottom: $spacing-lg;
+  }
+
+  h2 {
+    font-family: $font-heading;
+    font-size: 1.75rem;
+    margin-bottom: $spacing-sm;
+    color: $text-primary;
+  }
+
+  p {
+    color: $text-secondary;
+    margin-bottom: $spacing-xl;
+  }
+
+  .shopBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-md $spacing-xl;
+    background: $gold-primary;
+    color: $dark-primary;
+    font-weight: 600;
+    border-radius: $radius-md;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: darken($gold-primary, 10%);
+    }
+  }
+}
+
+// Header
+.checkoutHeader {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xl;
+  margin-bottom: $spacing-xl;
+
+  .backBtn {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    color: $text-secondary;
+    font-size: 0.875rem;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: $gold-primary;
+    }
+  }
+
+  h1 {
+    font-family: $font-heading;
+    font-size: 2rem;
+    color: $text-primary;
+  }
+}
+
+// Progress Steps
+.progressSteps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: $spacing-2xl;
+  padding: $spacing-lg;
+  background: $bg-primary;
+  border-radius: $radius-lg;
+
+  @media (max-width: 576px) {
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+  }
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &.active .stepNumber {
+    background: $gold-primary;
+    color: $dark-primary;
+  }
+
+  &.completed .stepNumber {
+    background: $success-color;
+    color: white;
+  }
+
+  &:not(.active):not(.completed) {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.stepNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: $border-color;
+  color: $text-secondary;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.stepLabel {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: $text-primary;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.stepLine {
+  width: 60px;
+  height: 2px;
+  background: $border-color;
+  margin: 0 $spacing-md;
+  transition: background 0.3s ease;
+
+  &.active {
+    background: $gold-primary;
+  }
+
+  @media (max-width: 768px) {
+    width: 30px;
+    margin: 0 $spacing-sm;
+  }
+}
+
+// Error Message
+.errorMessage {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-md $spacing-lg;
+  background: rgba($error-color, 0.1);
+  border: 1px solid rgba($error-color, 0.2);
+  border-radius: $radius-md;
+  margin-bottom: $spacing-lg;
+  color: $error-color;
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  span {
+    flex: 1;
+  }
+
+  button {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: $error-color;
+    cursor: pointer;
+    padding: 0;
+  }
+}
+
+// Layout
+.checkoutLayout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: $spacing-xl;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Main Content
+.checkoutMain {
+  background: $bg-primary;
+  border-radius: $radius-xl;
+  padding: $spacing-xl;
+}
+
+.stepContent {
+  min-height: 300px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-lg;
+
+  svg {
+    font-size: 1.25rem;
+    color: $gold-primary;
+  }
+
+  h2, h3 {
+    font-family: $font-heading;
+    font-size: 1.25rem;
+    color: $text-primary;
+  }
+}
+
+// Address Section
+.addressList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+}
+
+.addressCard {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  border: 2px solid $border-color;
+  border-radius: $radius-lg;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: rgba($gold-primary, 0.5);
+  }
+
+  &.selected {
+    border-color: $gold-primary;
+    background: rgba($gold-primary, 0.05);
+  }
+}
+
+.addressRadio, .paymentRadio {
+  position: relative;
+  flex-shrink: 0;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .radioMark {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid $border-color;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 10px;
+      height: 10px;
+      background: $gold-primary;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+    }
+  }
+
+  input:checked ~ .radioMark {
+    border-color: $gold-primary;
+
+    &::after {
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+}
+
+.addressInfo {
+  flex: 1;
+}
+
+.addressName {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-xs;
+
+  strong {
+    font-size: 1rem;
+    color: $text-primary;
+  }
+}
+
+.defaultTag {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  background: rgba($gold-primary, 0.15);
+  color: $gold-primary;
+  border-radius: $radius-sm;
+  font-weight: 500;
+}
+
+.addressPhone {
+  font-size: 0.9375rem;
+  color: $text-secondary;
+  margin-bottom: $spacing-xs;
+}
+
+.addressDetail {
+  font-size: 0.875rem;
+  color: $text-secondary;
+  line-height: 1.5;
+}
+
+.noAddress {
+  text-align: center;
+  padding: $spacing-xl;
+  color: $text-secondary;
+}
+
+.addAddressBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  width: 100%;
+  padding: $spacing-md;
+  border: 2px dashed $border-color;
+  border-radius: $radius-lg;
+  background: none;
+  color: $text-secondary;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: $gold-primary;
+    color: $gold-primary;
+  }
+}
+
+// Address Form
+.addressForm {
+  padding: $spacing-lg;
+  background: $bg-secondary;
+  border-radius: $radius-lg;
+  margin-top: $spacing-lg;
+
+  h3 {
+    font-family: $font-heading;
+    font-size: 1.125rem;
+    margin-bottom: $spacing-lg;
+    color: $text-primary;
+  }
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-md;
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.formGroup {
+  margin-bottom: $spacing-md;
+
+  label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: $text-primary;
+    margin-bottom: $spacing-xs;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: $spacing-sm $spacing-md;
+    border: 1px solid $border-color;
+    border-radius: $radius-md;
+    font-size: 0.9375rem;
+    transition: border-color 0.3s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $gold-primary;
+    }
+
+    &::placeholder {
+      color: $text-muted;
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+}
+
+.formCheckbox {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-lg;
+
+  input {
+    width: 18px;
+    height: 18px;
+    accent-color: $gold-primary;
+  }
+
+  label {
+    font-size: 0.9375rem;
+    color: $text-secondary;
+    cursor: pointer;
+  }
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-md;
+}
+
+.cancelBtn {
+  padding: $spacing-sm $spacing-lg;
+  background: none;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  color: $text-secondary;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: $bg-secondary;
+  }
+}
+
+.submitBtn {
+  padding: $spacing-sm $spacing-lg;
+  background: $gold-primary;
+  border: none;
+  border-radius: $radius-md;
+  color: $dark-primary;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    background: darken($gold-primary, 10%);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Payment Section
+.paymentList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  margin-bottom: $spacing-xl;
+}
+
+.paymentCard {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  border: 2px solid $border-color;
+  border-radius: $radius-lg;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: rgba($gold-primary, 0.5);
+  }
+
+  &.selected {
+    border-color: $gold-primary;
+    background: rgba($gold-primary, 0.05);
+  }
+}
+
+.paymentIcon {
+  font-size: 1.75rem;
+  flex-shrink: 0;
+}
+
+.paymentInfo {
+  flex: 1;
+
+  strong {
+    display: block;
+    font-size: 1rem;
+    color: $text-primary;
+    margin-bottom: 4px;
+  }
+
+  p {
+    font-size: 0.875rem;
+    color: $text-secondary;
+  }
+}
+
+// Voucher Section
+.voucherSection {
+  padding: $spacing-lg;
+  background: $bg-secondary;
+  border-radius: $radius-lg;
+  margin-bottom: $spacing-lg;
+}
+
+.voucherInput {
+  display: flex;
+  gap: $spacing-sm;
+
+  input {
+    flex: 1;
+    padding: $spacing-sm $spacing-md;
+    border: 1px solid $border-color;
+    border-radius: $radius-md;
+    font-size: 0.9375rem;
+
+    &:focus {
+      outline: none;
+      border-color: $gold-primary;
+    }
+    
+    &:disabled {
+      background: $bg-tertiary;
+    }
+  }
+
+  button {
+    padding: $spacing-sm $spacing-lg;
+    background: $gold-primary;
+    border: none;
+    border-radius: $radius-md;
+    color: $dark-primary;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+    &:hover:not(:disabled) {
+      background: darken($gold-primary, 10%);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.voucherError {
+  color: $error-color;
+  font-size: 0.8125rem;
+  margin-top: $spacing-xs;
+}
+
+.appliedVoucher {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md;
+  background: rgba($success-color, 0.1);
+  border: 1px solid rgba($success-color, 0.3);
+  border-radius: $radius-md;
+}
+
+.appliedVoucherInfo {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  
+  .checkIcon {
+    color: $success-color;
+    font-size: 1.25rem;
+  }
+  
+  strong {
+    display: block;
+    color: $success-color;
+    font-weight: 600;
+  }
+  
+  span {
+    font-size: 0.8125rem;
+    color: $text-secondary;
+  }
+}
+
+.removeVoucherBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: none;
+  color: $text-muted;
+  cursor: pointer;
+  border-radius: $radius-sm;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba($error-color, 0.1);
+    color: $error-color;
+  }
+}
+
+.availableVouchers {
+  margin-top: $spacing-md;
+}
+
+.showVouchersBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xs;
+  width: 100%;
+  padding: $spacing-sm;
+  background: transparent;
+  border: 1px dashed $gold-primary;
+  border-radius: $radius-sm;
+  color: $gold-primary;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba($gold-primary, 0.05);
+  }
+}
+
+.voucherList {
+  margin-top: $spacing-sm;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid $border-color;
+  border-radius: $radius-sm;
+  background: $bg-primary;
+}
+
+.voucherItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-sm $spacing-md;
+  border-bottom: 1px solid $border-color;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  &:hover {
+    background: $bg-secondary;
+  }
+}
+
+.voucherItemInfo {
+  display: flex;
+  flex-direction: column;
+  
+  strong {
+    color: $gold-primary;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+  
+  span {
+    font-size: 0.75rem;
+    color: $text-secondary;
+  }
+}
+
+.maxDiscount {
+  color: $warning-color !important;
+  font-style: italic;
+}
+
+.voucherExpiry {
+  font-size: 0.6875rem;
+  color: $text-muted;
+  white-space: nowrap;
+}
+
+// Note Section
+.noteSection {
+  label {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: $text-primary;
+    margin-bottom: $spacing-sm;
+  }
+
+  textarea {
+    width: 100%;
+    padding: $spacing-md;
+    border: 1px solid $border-color;
+    border-radius: $radius-md;
+    font-size: 0.9375rem;
+    resize: vertical;
+
+    &:focus {
+      outline: none;
+      border-color: $gold-primary;
+    }
+
+    &::placeholder {
+      color: $text-muted;
+    }
+  }
+}
+
+// Confirmation Section
+.confirmSection {
+  padding: $spacing-lg;
+  background: $bg-secondary;
+  border-radius: $radius-lg;
+  margin-bottom: $spacing-lg;
+}
+
+.confirmHeader {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+
+  svg {
+    color: $gold-primary;
+  }
+
+  h3 {
+    flex: 1;
+    font-size: 1rem;
+    font-weight: 600;
+    color: $text-primary;
+  }
+
+  .editBtn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.875rem;
+    color: $gold-primary;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: darken($gold-primary, 10%);
+    }
+  }
+}
+
+.confirmContent {
+  p {
+    font-size: 0.9375rem;
+    color: $text-secondary;
+    line-height: 1.6;
+
+    strong {
+      color: $text-primary;
+    }
+  }
+}
+
+// Order Items in Confirmation
+.orderItems {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.orderItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-sm;
+  background: $bg-primary;
+  border-radius: $radius-md;
+
+  img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: $radius-sm;
+  }
+}
+
+.orderItemInfo {
+  flex: 1;
+
+  h4 {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: $text-primary;
+    margin-bottom: 4px;
+  }
+
+  span {
+    font-size: 0.8125rem;
+    color: $text-secondary;
+  }
+}
+
+.orderItemQty {
+  margin-left: $spacing-sm;
+}
+
+.orderItemPrice {
+  font-weight: 600;
+  color: $gold-primary;
+}
+
+// Step Navigation
+.stepNavigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: $spacing-xl;
+  padding-top: $spacing-lg;
+  border-top: 1px solid $border-color;
+}
+
+.prevBtn {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-md $spacing-lg;
+  background: none;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  color: $text-secondary;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: $text-secondary;
+    color: $text-primary;
+  }
+}
+
+.nextBtn, .placeOrderBtn {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-md $spacing-xl;
+  background: $gold-primary;
+  border: none;
+  border-radius: $radius-md;
+  color: $dark-primary;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: auto;
+
+  &:hover:not(:disabled) {
+    background: darken($gold-primary, 10%);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Order Summary Sidebar
+.orderSummary {
+  background: $bg-primary;
+  border-radius: $radius-xl;
+  padding: $spacing-xl;
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+
+  h3 {
+    font-family: $font-heading;
+    font-size: 1.25rem;
+    color: $text-primary;
+    margin-bottom: $spacing-lg;
+  }
+
+  @media (max-width: 992px) {
+    position: static;
+  }
+}
+
+.summaryItems {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+}
+
+.summaryItem {
+  display: flex;
+  gap: $spacing-md;
+}
+
+.summaryItemImg {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: $radius-md;
+  }
+
+  .itemQty {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $gold-primary;
+    color: $dark-primary;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 50%;
+  }
+}
+
+.summaryItemInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.summaryItemName {
+  font-size: 0.9375rem;
+  color: $text-primary;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.summaryItemPrice {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $gold-primary;
+}
+
+.moreItems {
+  text-align: center;
+  font-size: 0.875rem;
+  color: $text-secondary;
+  font-style: italic;
+}
+
+.summaryDivider {
+  height: 1px;
+  background: $border-color;
+  margin: $spacing-md 0;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9375rem;
+  color: $text-secondary;
+  margin-bottom: $spacing-sm;
+
+  &.discount {
+    color: $success-color;
+  }
+}
+
+.summaryTotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: $text-primary;
+  padding-top: $spacing-sm;
+
+  span:last-child {
+    font-size: 1.25rem;
+    color: $gold-primary;
+  }
+}
+
+.freeShipNote {
+  text-align: center;
+  font-size: 0.8125rem;
+  color: $text-secondary;
+  margin-top: $spacing-md;
+  padding: $spacing-sm;
+  background: rgba($gold-primary, 0.1);
+  border-radius: $radius-md;
+
+  strong {
+    color: $gold-primary;
+  }
+}
+
+// Order Success
+.orderSuccess {
+  text-align: center;
+  padding: $spacing-3xl;
+  background: $bg-primary;
+  border-radius: $radius-xl;
+  max-width: 500px;
+  margin: 0 auto;
+
+  .successIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto $spacing-lg;
+    background: rgba($success-color, 0.1);
+    border-radius: 50%;
+    color: $success-color;
+    font-size: 2.5rem;
+  }
+
+  h1 {
+    font-family: $font-heading;
+    font-size: 1.75rem;
+    color: $text-primary;
+    margin-bottom: $spacing-sm;
+  }
+
+  > p {
+    color: $text-secondary;
+    margin-bottom: $spacing-xl;
+  }
+}
+
+.orderInfo {
+  background: $bg-secondary;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-xl;
+  text-align: left;
+}
+
+.orderInfoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-sm 0;
+  border-bottom: 1px solid $border-color;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  span {
+    color: $text-secondary;
+    font-size: 0.9375rem;
+  }
+
+  strong {
+    color: $text-primary;
+    font-size: 1rem;
+  }
+}
+
+.bankInfo {
+  background: rgba($gold-primary, 0.1);
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-xl;
+  text-align: left;
+
+  h3 {
+    font-size: 1rem;
+    color: $gold-primary;
+    margin-bottom: $spacing-md;
+  }
+
+  p {
+    font-size: 0.9375rem;
+    color: $text-primary;
+    margin-bottom: $spacing-xs;
+
+    strong {
+      color: $gold-primary;
+    }
+  }
+}
+
+.successActions {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.viewOrderBtn {
+  display: block;
+  padding: $spacing-md $spacing-xl;
+  background: $gold-primary;
+  color: $dark-primary;
+  font-weight: 600;
+  border-radius: $radius-md;
+  text-align: center;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: darken($gold-primary, 10%);
+  }
+}
+
+.continueBtn {
+  display: block;
+  padding: $spacing-md $spacing-xl;
+  background: none;
+  border: 1px solid $border-color;
+  color: $text-secondary;
+  font-weight: 500;
+  border-radius: $radius-md;
+  text-align: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: $text-secondary;
+    color: $text-primary;
+  }
+}

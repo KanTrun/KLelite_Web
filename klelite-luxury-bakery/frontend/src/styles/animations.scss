@@ -1,0 +1,610 @@
+// ==========================================================================
+// KL'élite Luxury Bakery - Animations
+// Following claudekit-engineer micro-interactions principles:
+// - 150-300ms for micro-interactions
+// - ease-out for entering elements
+// - ease-in for leaving elements
+// - ease-in-out for general transitions
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Base Keyframes - Fade animations
+// --------------------------------------------------------------------------
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// --------------------------------------------------------------------------
+// Slide animations
+// --------------------------------------------------------------------------
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+}
+
+@keyframes slideOutDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+}
+
+// --------------------------------------------------------------------------
+// Scale animations
+// --------------------------------------------------------------------------
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes zoomOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+// --------------------------------------------------------------------------
+// Attention seekers
+// --------------------------------------------------------------------------
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+  40%, 43% {
+    transform: translateY(-30px);
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+  }
+  70% {
+    transform: translateY(-15px);
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+  }
+  90% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.2);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.2);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-3deg);
+  }
+  75% {
+    transform: rotate(3deg);
+  }
+}
+
+// --------------------------------------------------------------------------
+// Continuous animations
+// --------------------------------------------------------------------------
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-5px) rotate(1deg);
+  }
+  75% {
+    transform: translateY(5px) rotate(-1deg);
+  }
+}
+
+// --------------------------------------------------------------------------
+// Special effects - Gold shine for luxury feel
+// --------------------------------------------------------------------------
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) rotate(30deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(30deg);
+  }
+}
+
+@keyframes goldGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(212, 175, 55, 0.3),
+                0 0 10px rgba(212, 175, 55, 0.2),
+                0 0 15px rgba(212, 175, 55, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5),
+                0 0 20px rgba(212, 175, 55, 0.3),
+                0 0 30px rgba(212, 175, 55, 0.2);
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+// --------------------------------------------------------------------------
+// Reveal animations - For scroll-based storytelling
+// --------------------------------------------------------------------------
+
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes revealLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes revealRight {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes textReveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+// --------------------------------------------------------------------------
+// Counter/number animations
+// --------------------------------------------------------------------------
+
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// --------------------------------------------------------------------------
+// Animation Utility Classes
+// Duration based on micro-interaction guidelines: 150-300ms
+// --------------------------------------------------------------------------
+
+// Fade animations
+.animate-fadeIn {
+  animation: fadeIn 300ms $ease-out forwards;
+}
+
+.animate-fadeOut {
+  animation: fadeOut 300ms $ease-in forwards;
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 400ms $ease-out forwards;
+}
+
+.animate-fadeInDown {
+  animation: fadeInDown 400ms $ease-out forwards;
+}
+
+// Slide animations
+.animate-slideInUp {
+  animation: slideInUp 400ms $ease-out forwards;
+}
+
+.animate-slideInDown {
+  animation: slideInDown 400ms $ease-out forwards;
+}
+
+.animate-slideInLeft {
+  animation: slideInLeft 400ms $ease-out forwards;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 400ms $ease-out forwards;
+}
+
+// Scale animations
+.animate-scaleIn {
+  animation: scaleIn 300ms $ease-out forwards;
+}
+
+.animate-scaleOut {
+  animation: scaleOut 300ms $ease-in forwards;
+}
+
+.animate-zoomIn {
+  animation: zoomIn 400ms $ease-out forwards;
+}
+
+// Attention seekers
+.animate-bounce {
+  animation: bounce 1s $ease-in-out infinite;
+}
+
+.animate-pulse {
+  animation: pulse 2s $ease-in-out infinite;
+}
+
+.animate-shake {
+  animation: shake 500ms $ease-in-out;
+}
+
+.animate-heartbeat {
+  animation: heartbeat 1.5s $ease-in-out infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 1s $ease-in-out infinite;
+}
+
+// Continuous animations
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.animate-float {
+  animation: float 3s $ease-in-out infinite;
+}
+
+.animate-floatSlow {
+  animation: floatSlow 6s $ease-in-out infinite;
+}
+
+// Special effects
+.animate-goldGlow {
+  animation: goldGlow 2s $ease-in-out infinite;
+}
+
+.animate-gradientShift {
+  background-size: 200% 200%;
+  animation: gradientShift 3s $ease-in-out infinite;
+}
+
+// Reveal animations
+.animate-revealUp {
+  animation: revealUp 600ms $ease-out forwards;
+}
+
+.animate-revealLeft {
+  animation: revealLeft 600ms $ease-out forwards;
+}
+
+.animate-revealRight {
+  animation: revealRight 600ms $ease-out forwards;
+}
+
+.animate-textReveal {
+  animation: textReveal 500ms $ease-out forwards;
+}
+
+// --------------------------------------------------------------------------
+// Skeleton Loading - For perceived performance
+// --------------------------------------------------------------------------
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    $gray-200 25%,
+    $gray-100 50%,
+    $gray-200 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s $ease-in-out infinite;
+  border-radius: $radius-md;
+}
+
+.skeleton-text {
+  @extend .skeleton;
+  height: 1em;
+  margin-bottom: 0.5em;
+  
+  &:last-child {
+    width: 70%;
+  }
+}
+
+.skeleton-avatar {
+  @extend .skeleton;
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-full;
+}
+
+.skeleton-image {
+  @extend .skeleton;
+  width: 100%;
+  aspect-ratio: 4/3;
+}
+
+// --------------------------------------------------------------------------
+// Transition Utilities
+// --------------------------------------------------------------------------
+
+.transition-none {
+  transition: none !important;
+}
+
+.transition-all {
+  transition: all $duration-normal $ease-out;
+}
+
+.transition-fast {
+  transition: all $duration-fast $ease-out;
+}
+
+.transition-slow {
+  transition: all $duration-slow $ease-out;
+}
+
+.transition-colors {
+  transition: color $duration-fast $ease-out,
+              background-color $duration-fast $ease-out,
+              border-color $duration-fast $ease-out;
+}
+
+.transition-opacity {
+  transition: opacity $duration-normal $ease-out;
+}
+
+.transition-transform {
+  transition: transform $duration-normal $ease-out;
+}
+
+.transition-shadow {
+  transition: box-shadow $duration-normal $ease-out;
+}
+
+// --------------------------------------------------------------------------
+// Animation Delays - For staggered animations
+// --------------------------------------------------------------------------
+
+@for $i from 1 through 10 {
+  .delay-#{$i * 100} {
+    animation-delay: #{$i * 0.1}s;
+  }
+}
+
+// --------------------------------------------------------------------------
+// Reduced motion - Accessibility
+// --------------------------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

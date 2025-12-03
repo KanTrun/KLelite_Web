@@ -1,0 +1,456 @@
+// ============================================
+// KL'élite Footer - Elegant Dark Theme
+// Following claudekit-engineer: BEAUTIFUL + PEAK
+// Variables auto-injected via Vite
+// ============================================
+
+.footer {
+  background: linear-gradient(180deg, $dark-primary 0%, #141422 100%);
+  color: $light-text;
+  padding-top: $spacing-3xl;
+  position: relative;
+  overflow: hidden;
+  
+  // Subtle pattern overlay
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(rgba($gold-primary, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
+  }
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 $spacing-md;
+  position: relative;
+  z-index: 1;
+
+  @media (min-width: 768px) {
+    padding: 0 $spacing-lg;
+  }
+  
+  @media (min-width: 1200px) {
+    padding: 0 $spacing-2xl;
+  }
+}
+
+.grid {
+  display: grid;
+  gap: $spacing-xl;
+  padding-bottom: $spacing-3xl;
+
+  @media (min-width: 576px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 992px) {
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: $spacing-2xl;
+  }
+}
+
+// ============================================
+// Brand Section
+// ============================================
+.brand {
+  @media (min-width: 576px) {
+    grid-column: span 2;
+  }
+
+  @media (min-width: 992px) {
+    grid-column: span 1;
+  }
+}
+
+.logo {
+  display: inline-flex;
+  flex-direction: column;
+  text-decoration: none;
+  margin-bottom: $spacing-md;
+  transition: transform $transition-micro $ease-out;
+  
+  &:hover {
+    transform: scale(1.02);
+  }
+}
+
+.logoText {
+  font-family: $font-heading;
+  font-size: $text-2xl;
+  font-weight: $font-bold;
+  background: linear-gradient(135deg, $gold-primary, $gold-light);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.5px;
+}
+
+.logoSubtext {
+  font-family: $font-accent;
+  font-size: 0.625rem;
+  font-weight: $font-medium;
+  color: $text-muted;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.description {
+  font-family: $font-body;
+  font-size: $text-sm;
+  color: rgba($light-text, 0.7);
+  line-height: 1.8;
+  margin-bottom: $spacing-lg;
+  max-width: 280px;
+}
+
+// ============================================
+// Social Links with Micro-interactions
+// ============================================
+.social {
+  display: flex;
+  gap: $spacing-sm;
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba($light-text, 0.05);
+    border: 1px solid rgba($light-text, 0.1);
+    border-radius: $radius-full;
+    color: $light-text;
+    transition: all $transition-fast $ease-out;
+    position: relative;
+    overflow: hidden;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      position: relative;
+      z-index: 1;
+      transition: transform $transition-micro $ease-out;
+    }
+    
+    // Glow effect on hover
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: $gradient-gold;
+      opacity: 0;
+      transition: opacity $transition-fast $ease-out;
+    }
+
+    &:hover {
+      border-color: $gold-primary;
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba($gold-primary, 0.3);
+      
+      &::before {
+        opacity: 1;
+      }
+      
+      svg {
+        color: $dark-primary;
+        transform: scale(1.1);
+      }
+    }
+    
+    &:active {
+      transform: translateY(-2px) scale(0.95);
+    }
+  }
+}
+
+// ============================================
+// Footer Columns
+// ============================================
+.column {
+  h4 {
+    font-family: $font-heading;
+    font-size: $text-lg;
+    font-weight: $font-semibold;
+    color: $light-text;
+    margin-bottom: $spacing-lg;
+    position: relative;
+    padding-bottom: $spacing-sm;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 32px;
+      height: 2px;
+      background: $gradient-gold;
+      border-radius: 1px;
+      transition: width $transition-normal $ease-out;
+    }
+  }
+  
+  &:hover h4::after {
+    width: 48px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    margin-bottom: $spacing-xs;
+  }
+
+  a {
+    font-family: $font-body;
+    font-size: $text-sm;
+    color: rgba($light-text, 0.6);
+    text-decoration: none;
+    display: inline-block;
+    padding: $spacing-2xs 0;
+    position: relative;
+    transition: all $transition-micro $ease-out;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 1px;
+      background: $gold-primary;
+      transition: width $transition-fast $ease-out;
+    }
+
+    &:hover {
+      color: $gold-primary;
+      transform: translateX(4px);
+      
+      &::before {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// ============================================
+// Contact Information
+// ============================================
+.contact {
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-sm;
+
+    svg {
+      width: 18px;
+      height: 18px;
+      color: $gold-primary;
+      flex-shrink: 0;
+      margin-top: 3px;
+      transition: transform $transition-micro $ease-out;
+    }
+
+    span,
+    a {
+      font-family: $font-body;
+      font-size: $text-sm;
+      color: rgba($light-text, 0.7);
+      line-height: 1.6;
+      text-decoration: none;
+      transition: color $transition-micro $ease-out;
+    }
+    
+    a:hover {
+      color: $gold-primary;
+    }
+    
+    &:hover svg {
+      transform: scale(1.15);
+    }
+  }
+}
+
+// ============================================
+// Newsletter Subscription (Optional Enhancement)
+// ============================================
+.newsletter {
+  h4 {
+    font-family: $font-heading;
+    font-size: $text-lg;
+    font-weight: $font-semibold;
+    color: $light-text;
+    margin-bottom: $spacing-sm;
+  }
+  
+  p {
+    font-size: $text-sm;
+    color: rgba($light-text, 0.6);
+    margin-bottom: $spacing-md;
+  }
+}
+
+.subscribeForm {
+  display: flex;
+  gap: $spacing-xs;
+}
+
+.subscribeInput {
+  flex: 1;
+  padding: $spacing-sm $spacing-md;
+  font-family: $font-body;
+  font-size: $text-sm;
+  color: $light-text;
+  background: rgba($light-text, 0.05);
+  border: 1px solid rgba($light-text, 0.15);
+  border-radius: $radius-md;
+  outline: none;
+  transition: all $transition-micro $ease-out;
+  
+  &::placeholder {
+    color: rgba($light-text, 0.4);
+  }
+  
+  &:focus {
+    border-color: $gold-primary;
+    background: rgba($light-text, 0.08);
+    box-shadow: 0 0 0 3px rgba($gold-primary, 0.15);
+  }
+}
+
+.subscribeButton {
+  padding: $spacing-sm $spacing-md;
+  background: $gradient-gold;
+  color: $dark-primary;
+  font-family: $font-body;
+  font-size: $text-sm;
+  font-weight: $font-semibold;
+  border: none;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: all $transition-micro $ease-out;
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba($gold-primary, 0.4);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// ============================================
+// Footer Bottom Bar
+// ============================================
+.bottom {
+  border-top: 1px solid rgba($light-text, 0.08);
+  padding: $spacing-lg 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+  
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  p {
+    font-family: $font-body;
+    font-size: $text-xs;
+    color: rgba($light-text, 0.5);
+    margin: 0;
+    text-align: center;
+    
+    @media (min-width: 768px) {
+      text-align: left;
+    }
+  }
+}
+
+.bottomLinks {
+  display: flex;
+  gap: $spacing-md;
+  
+  a {
+    font-size: $text-xs;
+    color: rgba($light-text, 0.5);
+    text-decoration: none;
+    transition: color $transition-micro $ease-out;
+    
+    &:hover {
+      color: $gold-primary;
+    }
+  }
+}
+
+// ============================================
+// Decorative Elements
+// ============================================
+.divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba($gold-primary, 0.3),
+    transparent
+  );
+  margin: $spacing-xl 0;
+}
+
+// Back to Top Button
+.backToTop {
+  position: fixed;
+  bottom: $spacing-lg;
+  right: $spacing-lg;
+  width: 48px;
+  height: 48px;
+  background: $gradient-gold;
+  color: $dark-primary;
+  border: none;
+  border-radius: $radius-full;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all $transition-normal $ease-out;
+  box-shadow: $shadow-gold;
+  z-index: $z-fixed;
+  
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba($gold-primary, 0.5);
+  }
+  
+  &:active {
+    transform: scale(0.92);
+  }
+}

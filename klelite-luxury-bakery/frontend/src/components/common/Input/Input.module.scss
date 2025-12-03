@@ -1,0 +1,204 @@
+// ============================================
+// KL'élite Input Component
+// Following claudekit-engineer: SATISFYING micro-interactions
+// Variables auto-injected via Vite
+// ============================================
+
+.inputWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+
+  &.fullWidth {
+    width: 100%;
+  }
+
+  &.hasError {
+    .input {
+      border-color: $error;
+
+      &:focus {
+        border-color: $error;
+        box-shadow: 0 0 0 3px rgba($error, 0.15);
+      }
+    }
+    
+    .label {
+      color: $error;
+    }
+  }
+}
+
+.label {
+  font-family: $font-body;
+  font-size: $text-sm;
+  font-weight: $font-medium;
+  color: $text-primary;
+  transition: color $transition-micro $ease-out;
+}
+
+.inputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  font-family: $font-body;
+  font-size: $text-base;
+  color: $text-primary;
+  background-color: white;
+  border: 1px solid $border-light;
+  border-radius: $radius-md;
+  transition: 
+    border-color $transition-micro $ease-out,
+    box-shadow $transition-fast $ease-out,
+    background-color $transition-micro $ease-out;
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:hover:not(:disabled):not(:focus) {
+    border-color: #D5D5D5; // darken($border-light, 10%)
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $gold-primary;
+    box-shadow: 0 0 0 3px rgba($gold-primary, 0.15);
+    background-color: rgba($gold-light, 0.02);
+  }
+
+  &:disabled {
+    background-color: $background-muted;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  &.hasLeftIcon {
+    padding-left: 2.75rem;
+  }
+
+  &.hasRightIcon {
+    padding-right: 2.75rem;
+  }
+}
+
+// Size Variants
+.sm {
+  padding: $spacing-xs $spacing-sm;
+  font-size: $text-sm;
+  border-radius: $radius-sm;
+}
+
+.lg {
+  padding: $spacing-md $spacing-lg;
+  font-size: $text-lg;
+  border-radius: $radius-lg;
+}
+
+// Icons
+.leftIcon,
+.rightIcon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $text-muted;
+  pointer-events: none;
+  transition: color $transition-micro $ease-out;
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+.leftIcon {
+  left: $spacing-sm;
+}
+
+.rightIcon {
+  right: $spacing-sm;
+}
+
+// Focus state changes icon color
+.inputContainer:focus-within {
+  .leftIcon,
+  .rightIcon {
+    color: $gold-primary;
+  }
+}
+
+// Clickable right icon (e.g., password toggle)
+.rightIconClickable {
+  pointer-events: auto;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: $spacing-2xs;
+  border-radius: $radius-sm;
+  transition: all $transition-micro $ease-out;
+  
+  &:hover {
+    color: $gold-primary;
+    background: rgba($gold-primary, 0.08);
+  }
+}
+
+// Error & Helper Text
+.error {
+  font-family: $font-body;
+  font-size: $text-xs;
+  color: $error;
+  display: flex;
+  align-items: center;
+  gap: $spacing-2xs;
+  
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.helperText {
+  font-family: $font-body;
+  font-size: $text-xs;
+  color: $text-muted;
+}
+
+// Success State
+.hasSuccess {
+  .input {
+    border-color: $success;
+    
+    &:focus {
+      box-shadow: 0 0 0 3px rgba($success, 0.15);
+    }
+  }
+}
+
+// Textarea Variant
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+// Character Counter
+.charCount {
+  font-size: $text-xs;
+  color: $text-muted;
+  text-align: right;
+  
+  &.warning {
+    color: $warning;
+  }
+  
+  &.error {
+    color: $error;
+  }
+}
