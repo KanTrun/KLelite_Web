@@ -5,7 +5,9 @@
 // ============================================
 
 .home {
-  overflow-x: hidden;
+  overflow: hidden;
+  max-width: 100%;
+  width: 100%;
   background: $light-cream;
 }
 
