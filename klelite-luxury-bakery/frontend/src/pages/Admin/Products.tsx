@@ -161,25 +161,37 @@ const AdminProducts: React.FC = () => {
         const formDataUpload = new FormData();
         formDataUpload.append('image', file);
         
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+          toast.error('Vui lòng đăng nhập lại');
+          return;
+        }
+        
         const response = await fetch('http://localhost:5000/api/upload', {
           method: 'POST',
           body: formDataUpload,
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Authorization': `Bearer ${token}`,
           },
         });
         
         if (response.ok) {
           const data = await response.json();
           const imgUrl = data.data?.url || data.url;
+          const filename = data.data?.filename || imgUrl.split('/').pop() || '';
           if (imgUrl) {
             setFormData((prev) => ({
               ...prev,
-              images: [...prev.images, { url: imgUrl, isMain: prev.images.length === 0 }],
+              images: [...prev.images, { 
+                url: imgUrl, 
+                publicId: filename,
+                isMain: prev.images.length === 0 
+              }],
             }));
           }
         } else {
-          toast.error('Upload ảnh thất bại');
+          const errorData = await response.json().catch(() => ({}));
+          toast.error(errorData.message || 'Upload ảnh thất bại');
         }
       }
       toast.success('Upload ảnh thành công!');

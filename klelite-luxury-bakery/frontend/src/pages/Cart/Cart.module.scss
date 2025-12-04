@@ -1,19 +1,33 @@
-// Cart Page Styles - Following claudekit-engineer guidelines
+// ============================================
+// Cart Page - Royal Luxury Style
+// KL'élite Luxury Bakery
+// ============================================
 
 .cartPage {
-  min-height: calc(100vh - 200px);
-  background: $bg-secondary;
-  padding: $spacing-2xl 0;
+  min-height: 100vh;
+  background: $dark-primary;
+  padding-top: $spacing-3xl;
+  padding-bottom: $spacing-4xl;
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 $spacing-lg;
+  padding: 0 $spacing-xl;
 
-  @media (max-width: 576px) {
+  @media (max-width: 768px) {
     padding: 0 $spacing-md;
   }
+}
+
+// ============================================
+// Loading Wrapper
+// ============================================
+.loadingWrapper {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 // ============================================
@@ -21,17 +35,85 @@
 // ============================================
 .pageHeader {
   margin-bottom: $spacing-2xl;
+  padding-bottom: $spacing-xl;
+  border-bottom: 1px solid rgba($gold-primary, 0.15);
 
   h1 {
-    font-size: 2rem;
-    font-weight: 700;
     font-family: $font-heading;
-    color: $dark-primary;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 400;
+    color: $light-text;
     margin-bottom: $spacing-xs;
   }
 
   p {
-    color: $text-secondary;
+    color: rgba($light-text, 0.6);
+    font-size: 0.95rem;
+  }
+}
+
+// ============================================
+// Empty Cart State
+// ============================================
+.emptyCart {
+  text-align: center;
+  padding: $spacing-4xl $spacing-xl;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
+  border-radius: $radius-xl;
+  backdrop-filter: blur(10px);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.emptyIcon {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto $spacing-xl;
+  background: linear-gradient(135deg, rgba($gold-primary, 0.1), rgba($gold-secondary, 0.15));
+  border: 2px solid rgba($gold-primary, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    font-size: 3.5rem;
+    color: $gold-primary;
+  }
+}
+
+.emptyCart h2 {
+  font-family: $font-heading;
+  font-size: 1.75rem;
+  color: $light-text;
+  margin-bottom: $spacing-sm;
+}
+
+.emptyCart p {
+  color: rgba($light-text, 0.6);
+  font-size: 1rem;
+  max-width: 400px;
+  margin: 0 auto $spacing-xl;
+}
+
+.shopNowBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-md $spacing-2xl;
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
+  color: $dark-primary;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: $radius-full;
+  text-decoration: none;
+  transition: all 0.4s ease;
+  box-shadow: $shadow-gold-lg;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba($gold-primary, 0.4);
   }
 }
 
@@ -42,31 +124,40 @@
   display: grid;
   grid-template-columns: 1fr 380px;
   gap: $spacing-2xl;
+  align-items: flex-start;
 
-  @media (max-width: 992px) {
+  @media (max-width: 1024px) {
     grid-template-columns: 1fr;
   }
 }
 
 // ============================================
-// Cart Items
+// Cart Items Section
 // ============================================
 .cartItems {
-  background: $bg-primary;
-  border-radius: $radius-lg;
-  padding: $spacing-lg;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
+  border-radius: $radius-xl;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
 }
 
 .cartHeader {
   display: grid;
-  grid-template-columns: 2fr 1fr 120px 1fr 40px;
+  grid-template-columns: 2fr 1fr 1fr 1fr 50px;
   gap: $spacing-md;
-  padding: $spacing-md 0;
-  border-bottom: 1px solid $border-light;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: $text-secondary;
-  text-transform: uppercase;
+  padding: $spacing-lg $spacing-xl;
+  background: rgba($gold-primary, 0.05);
+  border-bottom: 1px solid rgba($gold-primary, 0.1);
+
+  span {
+    font-family: $font-accent;
+    font-size: 0.85rem;
+    color: rgba($light-text, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
 
   @media (max-width: 768px) {
     display: none;
@@ -75,30 +166,33 @@
 
 .cartItem {
   display: grid;
-  grid-template-columns: 2fr 1fr 120px 1fr 40px;
+  grid-template-columns: 2fr 1fr 1fr 1fr 50px;
   gap: $spacing-md;
+  padding: $spacing-lg $spacing-xl;
   align-items: center;
-  padding: $spacing-lg 0;
-  border-bottom: 1px solid $border-light;
+  border-bottom: 1px solid rgba($gold-primary, 0.08);
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: rgba($gold-primary, 0.03);
+  }
+
+  &:last-of-type {
+    border-bottom: none;
+  }
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     gap: $spacing-sm;
-    padding: $spacing-md 0;
-  }
-
-  &:last-child {
-    border-bottom: none;
+    position: relative;
+    padding-right: 60px;
   }
 }
 
 .itemProduct {
   display: flex;
   gap: $spacing-md;
-
-  @media (max-width: 768px) {
-    margin-bottom: $spacing-sm;
-  }
+  align-items: center;
 }
 
 .itemImage {
@@ -107,27 +201,30 @@
   border-radius: $radius-md;
   overflow: hidden;
   flex-shrink: 0;
+  border: 1px solid rgba($gold-primary, 0.15);
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.1);
   }
 }
 
 .itemInfo {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
   h3 {
+    font-family: $font-heading;
     font-size: 1rem;
-    font-weight: 600;
     margin-bottom: $spacing-2xs;
 
     a {
-      color: $text-primary;
+      color: $light-text;
       text-decoration: none;
+      transition: color 0.3s ease;
 
       &:hover {
         color: $gold-primary;
@@ -138,17 +235,20 @@
 
 .itemSize,
 .itemCustom {
-  font-size: 0.8125rem;
-  color: $text-secondary;
+  display: block;
+  font-size: 0.8rem;
+  color: rgba($light-text, 0.5);
 }
 
 .itemPrice {
-  font-weight: 500;
+  font-family: $font-accent;
+  font-size: 1rem;
+  color: rgba($light-text, 0.8);
 
   @media (max-width: 768px) {
     &::before {
       content: 'Đơn giá: ';
-      color: $text-muted;
+      color: rgba($light-text, 0.5);
     }
   }
 }
@@ -156,113 +256,133 @@
 .itemQuantity {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
+  gap: $spacing-2xs;
 
   button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 32px;
     height: 32px;
-    background: $bg-secondary;
-    border: 1px solid $border-light;
     border-radius: $radius-sm;
+    background: rgba($light-text, 0.05);
+    border: 1px solid rgba($gold-primary, 0.2);
+    color: $gold-primary;
+    font-size: 0.9rem;
     cursor: pointer;
-    transition: $transition-fast;
+    transition: all 0.3s ease;
 
     &:hover:not(:disabled) {
+      background: rgba($gold-primary, 0.1);
       border-color: $gold-primary;
-      color: $gold-primary;
     }
 
     &:disabled {
-      opacity: 0.5;
+      opacity: 0.4;
       cursor: not-allowed;
     }
   }
 
   span {
-    min-width: 32px;
+    min-width: 40px;
     text-align: center;
-    font-weight: 500;
+    font-weight: 600;
+    color: $light-text;
   }
 }
 
 .itemTotal {
-  font-weight: 600;
+  font-family: $font-heading;
+  font-size: 1.1rem;
   color: $gold-primary;
+  font-weight: 600;
 
   @media (max-width: 768px) {
     &::before {
       content: 'Thành tiền: ';
-      color: $text-muted;
+      font-family: $font-body;
+      font-size: 0.85rem;
       font-weight: 400;
+      color: rgba($light-text, 0.5);
     }
   }
 }
 
 .removeBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 40px;
   height: 40px;
-  background: transparent;
-  border: none;
-  color: $text-muted;
-  cursor: pointer;
   border-radius: $radius-sm;
-  transition: $transition-fast;
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.2);
+  color: #dc3545;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
 
   &:hover:not(:disabled) {
-    background: rgba($error-color, 0.1);
-    color: $error-color;
+    background: rgba(220, 53, 69, 0.2);
+    border-color: #dc3545;
   }
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
+
+  @media (max-width: 768px) {
+    position: absolute;
+    top: $spacing-md;
+    right: $spacing-md;
+  }
 }
 
-// ============================================
-// Cart Actions
-// ============================================
 .cartActions {
   display: flex;
   justify-content: space-between;
-  padding-top: $spacing-lg;
-  margin-top: $spacing-lg;
-  border-top: 1px solid $border-light;
+  padding: $spacing-lg $spacing-xl;
+  background: rgba($gold-primary, 0.03);
+  border-top: 1px solid rgba($gold-primary, 0.08);
+
+  @media (max-width: 576px) {
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
 }
 
 .continueBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
   padding: $spacing-sm $spacing-lg;
   background: transparent;
-  border: 1px solid $border-light;
-  border-radius: $radius-md;
-  color: $text-primary;
-  text-decoration: none;
+  border: 1px solid rgba($gold-primary, 0.3);
+  color: $gold-primary;
   font-weight: 500;
-  transition: $transition-fast;
+  font-size: 0.9rem;
+  border-radius: $radius-md;
+  text-decoration: none;
+  transition: all 0.3s ease;
 
   &:hover {
+    background: rgba($gold-primary, 0.1);
     border-color: $gold-primary;
-    color: $gold-primary;
   }
 }
 
 .clearBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
   padding: $spacing-sm $spacing-lg;
-  background: transparent;
-  border: none;
-  color: $error-color;
-  cursor: pointer;
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  color: #dc3545;
   font-weight: 500;
-  transition: opacity $duration-fast;
+  font-size: 0.9rem;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: all 0.3s ease;
 
-  &:hover {
-    opacity: 0.8;
+  &:hover:not(:disabled) {
+    background: rgba(220, 53, 69, 0.2);
+    border-color: #dc3545;
   }
 
   &:disabled {
@@ -272,63 +392,75 @@
 }
 
 // ============================================
-// Cart Summary
+// Cart Summary Section
 // ============================================
 .cartSummary {
-  background: $bg-primary;
-  border-radius: $radius-lg;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
+  border-radius: $radius-xl;
   padding: $spacing-xl;
-  height: fit-content;
+  backdrop-filter: blur(10px);
   position: sticky;
   top: 100px;
 
   h3 {
+    font-family: $font-heading;
     font-size: 1.25rem;
-    font-weight: 600;
-    color: $dark-primary;
-    margin-bottom: $spacing-lg;
+    color: $light-text;
+    margin-bottom: $spacing-xl;
     padding-bottom: $spacing-md;
-    border-bottom: 1px solid $border-light;
+    border-bottom: 1px solid rgba($gold-primary, 0.1);
   }
 }
 
+// ============================================
+// Voucher Section
+// ============================================
 .voucherSection {
-  margin-bottom: $spacing-lg;
+  margin-bottom: $spacing-xl;
 
   label {
     display: block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: $text-primary;
+    font-size: 0.9rem;
+    color: rgba($light-text, 0.7);
     margin-bottom: $spacing-sm;
+    font-weight: 500;
   }
 }
 
 .voucherInput {
   display: flex;
   align-items: center;
-  border: 1px solid $border-light;
+  background: rgba($light-text, 0.03);
+  border: 1px solid rgba($gold-primary, 0.15);
   border-radius: $radius-md;
   overflow: hidden;
+  transition: border-color 0.3s ease;
+
+  &:focus-within {
+    border-color: $gold-primary;
+  }
 
   svg {
     margin-left: $spacing-md;
-    color: $text-muted;
+    color: $gold-primary;
+    font-size: 1rem;
   }
 
   input {
     flex: 1;
     padding: $spacing-sm $spacing-md;
+    background: transparent;
     border: none;
-    outline: none;
-    font-size: 0.9375rem;
+    color: $light-text;
+    font-size: 0.95rem;
 
     &::placeholder {
-      color: $text-muted;
+      color: rgba($light-text, 0.4);
     }
-    
-    &:disabled {
-      background: $bg-secondary;
+
+    &:focus {
+      outline: none;
     }
   }
 
@@ -337,24 +469,25 @@
     background: $gold-primary;
     border: none;
     color: $dark-primary;
-    font-weight: 500;
+    font-weight: 700;
+    font-size: 0.85rem;
     cursor: pointer;
-    transition: background $duration-fast;
+    transition: all 0.3s ease;
 
     &:hover:not(:disabled) {
       background: $gold-secondary;
     }
-    
+
     &:disabled {
-      opacity: 0.6;
+      opacity: 0.5;
       cursor: not-allowed;
     }
   }
 }
 
 .voucherError {
-  color: $error-color;
-  font-size: 0.8125rem;
+  color: #dc3545;
+  font-size: 0.85rem;
   margin-top: $spacing-xs;
 }
 
@@ -363,8 +496,8 @@
   align-items: center;
   justify-content: space-between;
   padding: $spacing-sm $spacing-md;
-  background: rgba($success-color, 0.1);
-  border: 1px solid rgba($success-color, 0.3);
+  background: rgba(40, 167, 69, 0.1);
+  border: 1px solid rgba(40, 167, 69, 0.3);
   border-radius: $radius-md;
 }
 
@@ -372,40 +505,37 @@
   display: flex;
   align-items: center;
   gap: $spacing-sm;
-  
+
   .checkIcon {
-    color: $success-color;
+    color: #28a745;
     font-size: 1.25rem;
   }
-  
+
   strong {
     display: block;
-    color: $success-color;
-    font-weight: 600;
+    color: $light-text;
+    font-size: 0.95rem;
   }
-  
+
   span {
-    font-size: 0.8125rem;
-    color: $text-secondary;
+    font-size: 0.8rem;
+    color: #28a745;
   }
 }
 
 .removeVoucherBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 28px;
   height: 28px;
-  background: transparent;
+  border-radius: 50%;
+  background: rgba($light-text, 0.1);
   border: none;
-  color: $text-muted;
+  color: rgba($light-text, 0.6);
   cursor: pointer;
-  border-radius: $radius-sm;
-  transition: $transition-fast;
-  
+  transition: all 0.3s ease;
+
   &:hover {
-    background: rgba($error-color, 0.1);
-    color: $error-color;
+    background: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
   }
 }
 
@@ -420,16 +550,16 @@
   width: 100%;
   padding: $spacing-sm;
   background: transparent;
-  border: 1px dashed $gold-primary;
-  border-radius: $radius-sm;
+  border: 1px dashed rgba($gold-primary, 0.3);
   color: $gold-primary;
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 0.85rem;
+  border-radius: $radius-sm;
   cursor: pointer;
-  transition: $transition-fast;
-  
+  transition: all 0.3s ease;
+
   &:hover {
     background: rgba($gold-primary, 0.05);
+    border-color: $gold-primary;
   }
 }
 
@@ -437,72 +567,75 @@
   margin-top: $spacing-sm;
   max-height: 200px;
   overflow-y: auto;
-  border: 1px solid $border-light;
-  border-radius: $radius-sm;
+  border: 1px solid rgba($gold-primary, 0.1);
+  border-radius: $radius-md;
 }
 
 .voucherItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: $spacing-sm $spacing-md;
-  border-bottom: 1px solid $border-light;
+  border-bottom: 1px solid rgba($gold-primary, 0.08);
   cursor: pointer;
-  transition: $transition-fast;
-  
+  transition: background 0.3s ease;
+
   &:last-child {
     border-bottom: none;
   }
-  
+
   &:hover {
-    background: $bg-secondary;
+    background: rgba($gold-primary, 0.05);
   }
 }
 
 .voucherItemInfo {
-  display: flex;
-  flex-direction: column;
-  
   strong {
+    display: block;
     color: $gold-primary;
-    font-weight: 600;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
   }
-  
+
   span {
-    font-size: 0.75rem;
-    color: $text-secondary;
+    display: block;
+    font-size: 0.8rem;
+    color: rgba($light-text, 0.6);
   }
 }
 
 .maxDiscount {
-  color: $warning-color !important;
-  font-style: italic;
+  color: #28a745 !important;
 }
 
 .voucherExpiry {
-  font-size: 0.6875rem;
-  color: $text-muted;
-  white-space: nowrap;
+  font-size: 0.75rem;
+  color: rgba($light-text, 0.4);
 }
 
+// ============================================
+// Summary Details
+// ============================================
 .summaryDetails {
   padding: $spacing-md 0;
-  border-bottom: 1px solid $border-light;
+  border-bottom: 1px solid rgba($gold-primary, 0.1);
 }
 
 .summaryRow {
   display: flex;
   justify-content: space-between;
-  margin-bottom: $spacing-sm;
-  font-size: 0.9375rem;
+  padding: $spacing-xs 0;
+  font-size: 0.95rem;
 
   span:first-child {
-    color: $text-secondary;
+    color: rgba($light-text, 0.7);
+  }
+
+  span:last-child {
+    color: $light-text;
+    font-weight: 500;
   }
 
   &.discount {
-    color: $success-color;
+    span:last-child {
+      color: #28a745;
+    }
   }
 }
 
@@ -510,67 +643,75 @@
   display: flex;
   justify-content: space-between;
   padding: $spacing-lg 0;
-  font-size: 1.25rem;
-  font-weight: 700;
+  margin-bottom: $spacing-md;
+
+  span:first-child {
+    font-family: $font-accent;
+    font-size: 1rem;
+    color: rgba($light-text, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 
   span:last-child {
+    font-family: $font-heading;
+    font-size: 1.5rem;
     color: $gold-primary;
+    font-weight: 600;
   }
 }
 
 .freeShipNote {
-  font-size: 0.875rem;
-  color: $info-color;
-  margin-bottom: $spacing-lg;
-  padding: $spacing-sm;
-  background: rgba($info-color, 0.1);
-  border-radius: $radius-sm;
+  padding: $spacing-sm $spacing-md;
+  background: rgba($gold-primary, 0.05);
+  border: 1px dashed rgba($gold-primary, 0.3);
+  border-radius: $radius-md;
+  font-size: 0.85rem;
+  color: rgba($light-text, 0.7);
   text-align: center;
+  margin-bottom: $spacing-lg;
+
+  strong {
+    color: $gold-primary;
+  }
 }
 
 .checkoutBtn {
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: $spacing-sm;
+  width: 100%;
   padding: $spacing-md $spacing-xl;
-  background: linear-gradient(135deg, $gold-primary 0%, $gold-secondary 100%);
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
   border: none;
-  border-radius: $radius-md;
   color: $dark-primary;
+  font-weight: 700;
   font-size: 1rem;
-  font-weight: 600;
+  border-radius: $radius-full;
   cursor: pointer;
-  transition: $transition-normal;
+  transition: all 0.4s ease;
+  box-shadow: $shadow-gold-lg;
 
   &:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba($gold-primary, 0.35);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba($gold-primary, 0.4);
   }
 
   &:disabled {
-    opacity: 0.7;
+    opacity: 0.6;
     cursor: not-allowed;
-  }
-
-  svg {
-    transition: transform $duration-fast;
-  }
-
-  &:hover:not(:disabled) svg {
-    transform: translateX(4px);
   }
 }
 
 .paymentMethods {
-  margin-top: $spacing-lg;
+  margin-top: $spacing-xl;
   text-align: center;
 
   span {
-    font-size: 0.8125rem;
-    color: $text-muted;
     display: block;
+    font-size: 0.8rem;
+    color: rgba($light-text, 0.5);
     margin-bottom: $spacing-sm;
   }
 }
@@ -578,77 +719,18 @@
 .methodIcons {
   display: flex;
   justify-content: center;
-  gap: $spacing-sm;
+  gap: $spacing-md;
 
   img {
     width: 32px;
-    height: 32px;
-    object-fit: contain;
+    height: auto;
+    opacity: 0.6;
+    filter: grayscale(30%);
+    transition: all 0.3s ease;
+
+    &:hover {
+      opacity: 1;
+      filter: grayscale(0%);
+    }
   }
-}
-
-// ============================================
-// Empty Cart
-// ============================================
-.emptyCart {
-  text-align: center;
-  padding: $spacing-4xl $spacing-lg;
-  background: $bg-primary;
-  border-radius: $radius-lg;
-}
-
-.emptyIcon {
-  width: 100px;
-  height: 100px;
-  margin: 0 auto $spacing-lg;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: $bg-secondary;
-  border-radius: $radius-full;
-
-  svg {
-    font-size: 3rem;
-    color: $text-muted;
-  }
-}
-
-.emptyCart h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: $dark-primary;
-  margin-bottom: $spacing-sm;
-}
-
-.emptyCart p {
-  color: $text-secondary;
-  margin-bottom: $spacing-xl;
-}
-
-.shopNowBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: $spacing-sm;
-  padding: $spacing-md $spacing-xl;
-  background: $gold-primary;
-  border-radius: $radius-md;
-  color: $dark-primary;
-  text-decoration: none;
-  font-weight: 600;
-  transition: $transition-normal;
-
-  &:hover {
-    background: $gold-secondary;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba($gold-primary, 0.35);
-  }
-}
-
-// ============================================
-// Loading
-// ============================================
-.loadingWrapper {
-  display: flex;
-  justify-content: center;
-  padding: $spacing-4xl 0;
 }

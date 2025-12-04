@@ -8,7 +8,7 @@ app.use(cors());
 
 app.get('/', (req, res) => {
     res.json({
-        message: 'Server is running',
+        message: 'Server đang chạy!',
         timestamp: new Date().toISOString()
     })
 })

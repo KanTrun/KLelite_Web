@@ -1,105 +1,138 @@
-// About Page Styles
-// ==========================================================================
+// ============================================
+// About Page - Royal Luxury Style
+// KL'élite Luxury Bakery
+// ============================================
 
 .aboutPage {
   min-height: 100vh;
+  background: $dark-primary;
+  overflow-x: hidden;
 }
 
+// ============================================
 // Hero Section
+// ============================================
 .hero {
   position: relative;
   height: 60vh;
-  min-height: 400px;
-  background-image: url('https://images.unsplash.com/photo-1517433670267-30f41c09a2a2?w=1600');
+  min-height: 450px;
+  background-image: url('https://images.unsplash.com/photo-1517433670267-30f41c09c0a0?w=1920&q=80');
   background-size: cover;
   background-position: center;
+  background-attachment: fixed;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: #ffffff;
+  color: $light-text;
 }
 
 .heroOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7));
+  background: linear-gradient(
+    135deg,
+    rgba($dark-primary, 0.95) 0%,
+    rgba($dark-primary, 0.7) 40%,
+    rgba($gold-primary, 0.15) 70%,
+    rgba($dark-primary, 0.9) 100%
+  );
 }
 
 .heroContent {
   position: relative;
-  z-index: 1;
-  padding: 1.5rem;
+  z-index: 10;
+  padding: $spacing-xl;
+  max-width: 900px;
 
   h1 {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 3.75rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-
-    @media (max-width: 768px) {
-      font-size: 2.25rem;
-    }
+    font-family: $font-heading;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 400;
+    margin-bottom: $spacing-md;
+    background: linear-gradient(135deg, $light-text 0%, $gold-secondary 50%, $light-text 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmerText 4s ease-in-out infinite;
   }
 
   p {
+    font-family: $font-accent;
     font-size: 1.25rem;
+    color: rgba($light-text, 0.8);
+    letter-spacing: 1px;
     max-width: 600px;
-    opacity: 0.9;
-
-    @media (max-width: 768px) {
-      font-size: 1rem;
-    }
+    margin: 0 auto;
   }
 }
 
-// Container
-.container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
+@keyframes shimmerText {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 200% center; }
 }
 
+// ============================================
+// Container
+// ============================================
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 $spacing-xl;
+
+  @media (max-width: 768px) {
+    padding: 0 $spacing-md;
+  }
+}
+
+// ============================================
 // Section Header
+// ============================================
 .sectionHeader {
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: $spacing-3xl;
 }
 
 .subtitle {
-  display: inline-block;
-  color: #D4AF37;
-  font-size: 0.875rem;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-lg;
+  background: rgba($gold-primary, 0.1);
+  border: 1px solid rgba($gold-primary, 0.3);
+  border-radius: $radius-full;
+  font-family: $font-accent;
+  font-size: 0.8rem;
+  color: $gold-primary;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.5rem;
+  letter-spacing: 2px;
+  margin-bottom: $spacing-md;
 }
 
 .sectionHeader h2 {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 2.25rem;
-  color: #212121;
-
-  @media (max-width: 768px) {
-    font-size: 1.875rem;
-  }
+  font-family: $font-heading;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  color: $light-text;
 }
 
+// ============================================
 // Story Section
+// ============================================
 .story {
-  padding: 5rem 0;
-  background: #FDF8F3;
+  padding: $spacing-4xl 0;
 }
 
 .storyGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  gap: $spacing-4xl;
   align-items: center;
 
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
+    gap: $spacing-2xl;
   }
 }
 
@@ -108,10 +141,9 @@
 
   img {
     width: 100%;
-    height: 500px;
-    object-fit: cover;
-    border-radius: 0.75rem;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    border-radius: $radius-xl;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba($gold-primary, 0.2);
   }
 }
 
@@ -121,90 +153,98 @@
   right: -30px;
   width: 140px;
   height: 140px;
-  background: #D4AF37;
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
   border-radius: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
-  box-shadow: 0 10px 30px 0 rgba(212, 175, 55, 0.4);
+  box-shadow: $shadow-gold-lg;
 
-  @media (max-width: 1024px) {
-    right: 20px;
-    bottom: -20px;
+  @media (max-width: 768px) {
     width: 100px;
     height: 100px;
+    bottom: -20px;
+    right: -10px;
   }
 
   .years {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 2.25rem;
-    font-weight: 700;
+    font-family: $font-heading;
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: $dark-primary;
     line-height: 1;
 
-    @media (max-width: 1024px) {
-      font-size: 1.875rem;
+    @media (max-width: 768px) {
+      font-size: 1.75rem;
     }
   }
 
   .text {
     font-size: 0.75rem;
+    color: $dark-primary;
     text-transform: uppercase;
-    letter-spacing: 0.025em;
+    letter-spacing: 1px;
+    font-weight: 600;
   }
 }
 
 .storyContent {
   .subtitle {
-    display: block;
-    margin-bottom: 0.5rem;
+    display: inline-block;
+    margin-bottom: $spacing-md;
   }
 
   h2 {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 2.25rem;
-    color: #212121;
-    margin-bottom: 1.5rem;
-
-    @media (max-width: 768px) {
-      font-size: 1.875rem;
-    }
+    font-family: $font-heading;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 400;
+    color: $light-text;
+    margin-bottom: $spacing-xl;
   }
 
   p {
-    color: #757575;
-    line-height: 1.625;
-    margin-bottom: 1rem;
+    color: rgba($light-text, 0.7);
+    font-size: 1.05rem;
+    line-height: 1.9;
+    margin-bottom: $spacing-md;
+    font-family: $font-accent;
   }
 }
 
 .signature {
-  margin-top: 2rem;
-  
+  margin-top: $spacing-xl;
+  padding-top: $spacing-xl;
+  border-top: 1px solid rgba($gold-primary, 0.2);
+
   img {
     height: 50px;
+    filter: brightness(0) invert(1);
     opacity: 0.8;
+    margin-bottom: $spacing-sm;
   }
 
   span {
     display: block;
-    color: #9E9E9E;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
+    color: $gold-primary;
+    font-family: $font-accent;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
   }
 }
 
+// ============================================
 // Values Section
+// ============================================
 .values {
-  padding: 5rem 0;
-  background: #ffffff;
+  padding: $spacing-4xl 0;
+  background: rgba($light-text, 0.01);
 }
 
 .valuesGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
+  gap: $spacing-xl;
 
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
@@ -216,58 +256,58 @@
 }
 
 .valueCard {
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
+  padding: $spacing-2xl;
+  border-radius: $radius-xl;
   text-align: center;
-  padding: 2rem;
-  background: #FAFAFA;
-  border-radius: 0.75rem;
-  transition: all 200ms ease-out;
+  backdrop-filter: blur(10px);
+  transition: all 0.4s ease;
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-10px);
+    border-color: rgba($gold-primary, 0.4);
+    box-shadow: $shadow-gold-lg;
   }
 }
 
 .valueIcon {
-  width: 70px;
-  height: 70px;
-  margin: 0 auto 1rem;
-  background: #D4AF37;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto $spacing-lg;
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: $dark-primary;
   font-size: 2rem;
+  box-shadow: 0 15px 35px rgba($gold-primary, 0.3);
 }
 
 .valueCard h3 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: $font-heading;
   font-size: 1.25rem;
-  color: #212121;
-  margin-bottom: 0.5rem;
+  color: $light-text;
+  margin-bottom: $spacing-sm;
 }
 
 .valueCard p {
-  color: #757575;
-  font-size: 0.875rem;
-  line-height: 1.625;
+  color: rgba($light-text, 0.6);
+  font-size: 0.95rem;
+  line-height: 1.7;
 }
 
+// ============================================
 // Milestones Section
+// ============================================
 .milestones {
-  padding: 5rem 0;
-  background: #1A1A2E;
-  color: #ffffff;
-
-  .sectionHeader h2 {
-    color: #ffffff;
-  }
+  padding: $spacing-4xl 0;
 }
 
 .timeline {
   position: relative;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
 
   &::before {
@@ -277,7 +317,7 @@
     transform: translateX(-50%);
     width: 2px;
     height: 100%;
-    background: #D4AF37;
+    background: linear-gradient(180deg, transparent, $gold-primary, transparent);
 
     @media (max-width: 768px) {
       left: 20px;
@@ -288,20 +328,21 @@
 .timelineItem {
   display: flex;
   align-items: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
-
-  @media (max-width: 768px) {
-    flex-direction: row;
-    padding-left: 50px;
-  }
-
-  &:nth-child(even) {
+  gap: $spacing-xl;
+  margin-bottom: $spacing-2xl;
+  
+  &:nth-child(odd) {
     flex-direction: row-reverse;
+    text-align: right;
 
     @media (max-width: 768px) {
       flex-direction: row;
+      text-align: left;
     }
+  }
+
+  @media (max-width: 768px) {
+    padding-left: 60px;
   }
 }
 
@@ -309,55 +350,62 @@
   flex-shrink: 0;
   width: 80px;
   height: 80px;
-  background: #D4AF37;
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: $font-heading;
   font-size: 1.25rem;
-  font-weight: 700;
-  z-index: 1;
+  font-weight: 600;
+  color: $dark-primary;
+  box-shadow: $shadow-gold-lg;
+  position: relative;
+  z-index: 10;
 
   @media (max-width: 768px) {
     position: absolute;
     left: 0;
     width: 40px;
     height: 40px;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
   }
 }
 
 .timelineContent {
   flex: 1;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 1.5rem;
-  border-radius: 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.15);
+  padding: $spacing-xl;
+  border-radius: $radius-lg;
+  backdrop-filter: blur(10px);
 
   h3 {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: $font-heading;
     font-size: 1.25rem;
-    margin-bottom: 0.25rem;
-    color: #D4AF37;
+    color: $gold-primary;
+    margin-bottom: $spacing-sm;
   }
 
   p {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.875rem;
+    color: rgba($light-text, 0.7);
+    font-size: 0.95rem;
+    line-height: 1.6;
   }
 }
 
+// ============================================
 // Team Section
+// ============================================
 .team {
-  padding: 5rem 0;
-  background: #FDF8F3;
+  padding: $spacing-4xl 0;
+  background: rgba($light-text, 0.01);
 }
 
 .teamGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  gap: $spacing-xl;
 
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
@@ -369,169 +417,182 @@
 }
 
 .teamCard {
-  background: #ffffff;
-  border-radius: 0.75rem;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
+  border-radius: $radius-xl;
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  transition: all 200ms ease-out;
+  backdrop-filter: blur(10px);
+  transition: all 0.4s ease;
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-10px);
+    border-color: rgba($gold-primary, 0.4);
+    box-shadow: $shadow-gold-lg;
 
     .teamImage img {
-      transform: scale(1.05);
+      transform: scale(1.1);
     }
   }
 }
 
 .teamImage {
-  height: 280px;
+  height: 300px;
   overflow: hidden;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: all 300ms ease-out;
+    transition: transform 0.5s ease;
   }
 }
 
 .teamInfo {
-  padding: 1.5rem;
+  padding: $spacing-xl;
   text-align: center;
 
   h3 {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: $font-heading;
     font-size: 1.25rem;
-    color: #212121;
-    margin-bottom: 0.125rem;
+    color: $light-text;
+    margin-bottom: $spacing-2xs;
   }
 
   p {
-    color: #757575;
-    font-size: 0.875rem;
-    line-height: 1.625;
+    color: rgba($light-text, 0.6);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-top: $spacing-sm;
   }
 }
 
 .teamRole {
-  display: block;
-  color: #D4AF37;
-  font-size: 0.875rem;
+  display: inline-block;
+  padding: $spacing-2xs $spacing-sm;
+  background: rgba($gold-primary, 0.1);
+  border-radius: $radius-full;
+  font-size: 0.8rem;
+  color: $gold-primary;
   font-weight: 500;
-  margin-bottom: 0.5rem;
 }
 
+// ============================================
 // Stats Section
+// ============================================
 .stats {
-  padding: 4rem 0;
-  background: #D4AF37;
-  color: #ffffff;
+  padding: $spacing-4xl 0;
+  background: linear-gradient(135deg, rgba($gold-primary, 0.1) 0%, rgba($dark-primary, 1) 50%, rgba($gold-primary, 0.05) 100%);
 }
 
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
-  text-align: center;
+  gap: $spacing-xl;
 
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
-    gap: 2rem 1.5rem;
+  }
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
   }
 }
 
 .statItem {
-  padding: 1.5rem;
+  text-align: center;
+  padding: $spacing-xl;
 }
 
 .statNumber {
   display: block;
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 3rem;
-  font-weight: 700;
+  font-family: $font-heading;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 600;
+  color: $gold-primary;
   line-height: 1;
-  margin-bottom: 0.25rem;
-
-  @media (max-width: 768px) {
-    font-size: 2.25rem;
-  }
+  margin-bottom: $spacing-sm;
+  text-shadow: 0 0 40px rgba($gold-primary, 0.4);
 }
 
 .statLabel {
-  font-size: 0.875rem;
-  opacity: 0.9;
+  font-family: $font-accent;
+  font-size: 1rem;
+  color: rgba($light-text, 0.7);
   text-transform: uppercase;
-  letter-spacing: 0.025em;
+  letter-spacing: 2px;
 }
 
+// ============================================
 // CTA Section
+// ============================================
 .cta {
-  padding: 5rem 0;
-  background: #ffffff;
+  padding: $spacing-4xl 0;
 }
 
 .ctaContent {
   text-align: center;
-  max-width: 600px;
+  max-width: 700px;
   margin: 0 auto;
 
   h2 {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 2.25rem;
-    color: #212121;
-    margin-bottom: 1rem;
+    font-family: $font-heading;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 400;
+    color: $light-text;
+    margin-bottom: $spacing-md;
   }
 
   p {
-    color: #757575;
-    font-size: 1.25rem;
-    margin-bottom: 2rem;
+    font-family: $font-accent;
+    font-size: 1.125rem;
+    color: rgba($light-text, 0.7);
+    margin-bottom: $spacing-xl;
   }
 }
 
 .ctaButtons {
   display: flex;
-  gap: 1rem;
   justify-content: center;
+  gap: $spacing-md;
   flex-wrap: wrap;
 }
 
 .primaryBtn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1rem 2rem;
-  background: #D4AF37;
-  color: #ffffff;
-  font-weight: 600;
-  border-radius: 0.5rem;
+  gap: $spacing-sm;
+  padding: $spacing-md $spacing-2xl;
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
+  color: $dark-primary;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: $radius-full;
   text-decoration: none;
-  transition: all 150ms ease-out;
+  transition: all 0.4s ease;
+  box-shadow: $shadow-gold-lg;
 
   &:hover {
-    background: #B8962F;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 14px 0 rgba(212, 175, 55, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba($gold-primary, 0.4);
   }
 }
 
 .secondaryBtn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1rem 2rem;
+  gap: $spacing-sm;
+  padding: $spacing-md $spacing-2xl;
   background: transparent;
-  color: #D4AF37;
+  border: 1px solid rgba($gold-primary, 0.5);
+  color: $gold-primary;
   font-weight: 600;
-  border: 2px solid #D4AF37;
-  border-radius: 0.5rem;
+  font-size: 1rem;
+  border-radius: $radius-full;
   text-decoration: none;
-  transition: all 150ms ease-out;
+  transition: all 0.3s ease;
 
   &:hover {
-    background: #D4AF37;
-    color: #ffffff;
+    background: rgba($gold-primary, 0.1);
+    border-color: $gold-primary;
   }
 }

@@ -9,6 +9,7 @@ import {
   updateOrderStatus,
   updatePaymentStatus,
   getOrderStats,
+  getRecentOrders,
 } from '../controllers/orderController';
 import { protect, authorize } from '../middleware/auth';
 import { validate, body } from '../middleware/validate';
@@ -62,6 +63,7 @@ router.put('/:id/cancel', cancelOrder);
 // Admin routes
 router.get('/admin/all', authorize('admin', 'staff'), getAllOrders);
 router.get('/admin/stats', authorize('admin'), getOrderStats);
+router.get('/admin/recent', authorize('admin', 'staff'), getRecentOrders);
 router.put('/:id/status', authorize('admin', 'staff'), validate(updateStatusValidation), updateOrderStatus);
 router.put('/:id/payment', authorize('admin'), validate(updatePaymentValidation), updatePaymentStatus);
 

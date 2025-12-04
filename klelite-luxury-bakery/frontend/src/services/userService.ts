@@ -69,9 +69,8 @@ export const userService = {
   },
 
   // Add to wishlist
-  addToWishlist: async (productId: string): Promise<WishlistItem> => {
-    const response = await api.post<ApiResponse<WishlistItem>>('/users/wishlist', { productId });
-    return response.data.data;
+  addToWishlist: async (productId: string): Promise<void> => {
+    await api.post(`/users/wishlist/${productId}`);
   },
 
   // Remove from wishlist
@@ -79,10 +78,17 @@ export const userService = {
     await api.delete(`/users/wishlist/${productId}`);
   },
 
-  // Check if product in wishlist
+  // Check if product in wishlist (by fetching full wishlist)
   isInWishlist: async (productId: string): Promise<boolean> => {
-    const response = await api.get<ApiResponse<{ inWishlist: boolean }>>(`/users/wishlist/check/${productId}`);
-    return response.data.data.inWishlist;
+    try {
+      const response = await api.get<ApiResponse<WishlistItem[]>>('/users/wishlist');
+      const wishlist = response.data.data || [];
+      return wishlist.some((item: any) => 
+        item._id === productId || item.id === productId
+      );
+    } catch {
+      return false;
+    }
   },
 };
 

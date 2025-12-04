@@ -84,10 +84,18 @@ const AdminOrders: React.FC = () => {
   };
 
   return (
-    <AdminLayout title="Quản lý đơn hàng" subtitle="Xem và cập nhật trạng thái đơn hàng"
-      actions={<button className={styles.refreshBtn} onClick={fetchOrders} disabled={isLoading}>
-        <FiRefreshCw className={isLoading ? styles.spinning : ''} /> Làm mới
-      </button>}>
+    <AdminLayout>
+      <div className={styles.pageContent}>
+        {/* Header */}
+        <div className={styles.pageHeader}>
+          <div>
+            <h1>Quản lý đơn hàng</h1>
+            <p>Xem và cập nhật trạng thái đơn hàng</p>
+          </div>
+          <button className={styles.refreshBtn} onClick={fetchOrders} disabled={isLoading}>
+            <FiRefreshCw className={isLoading ? styles.spinning : ''} /> Làm mới
+          </button>
+        </div>
       
       <div className={styles.filtersBar}>
         <div className={styles.searchBox}>
@@ -207,6 +215,7 @@ const AdminOrders: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </AdminLayout>
   );
 };

@@ -1,6 +1,7 @@
 // ============================================
-// Product Detail Page - Royal Luxury Style
+// Product Detail Page - World-Class Royal Luxury
 // KL'élite Luxury Bakery
+// International Premium E-commerce Standard
 // ============================================
 
 // ============================================
@@ -11,9 +12,21 @@
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
-  padding-bottom: 6rem;
+  padding-bottom: 8rem;
+  
+  // Subtle texture
+  &::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A962' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
 }
 
+// Background Decorations
 .bgDecoration {
   position: fixed;
   inset: 0;
@@ -23,71 +36,77 @@
 
   .bgCircle1 {
     position: absolute;
-    top: -200px;
-    right: -200px;
-    width: 800px;
-    height: 800px;
-    background: radial-gradient(circle, rgba($gold-primary, 0.06) 0%, transparent 60%);
+    top: -250px;
+    right: -250px;
+    width: 900px;
+    height: 900px;
+    background: radial-gradient(circle, rgba($gold-primary, 0.05) 0%, transparent 55%);
     border-radius: 50%;
-    animation: floatBg 20s ease-in-out infinite;
+    animation: floatBg 25s ease-in-out infinite;
   }
 
   .bgCircle2 {
     position: absolute;
-    bottom: -150px;
-    left: -200px;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba($gold-primary, 0.04) 0%, transparent 60%);
+    bottom: -200px;
+    left: -250px;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba($gold-primary, 0.03) 0%, transparent 55%);
     border-radius: 50%;
-    animation: floatBg 25s ease-in-out infinite reverse;
+    animation: floatBg 30s ease-in-out infinite reverse;
   }
 }
 
 @keyframes floatBg {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(30px, -30px) scale(1.05); }
+  50% { transform: translate(40px, -40px) scale(1.08); }
 }
 
+// Container
 .container {
-  max-width: 1440px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 0 $spacing-xl;
+  padding: 0 $spacing-2xl;
   position: relative;
   z-index: 1;
 
+  @media (max-width: 1200px) {
+    padding: 0 $spacing-xl;
+  }
+  
   @media (max-width: 768px) {
     padding: 0 $spacing-md;
   }
 }
 
 // ============================================
-// Loading State
+// Loading State - Luxury Animation
 // ============================================
 .loadingWrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 80vh;
+  min-height: 85vh;
 
   .loadingContent {
     text-align: center;
 
     .spinner {
-      width: 60px;
-      height: 60px;
-      border: 2px solid rgba($gold-primary, 0.2);
+      width: 70px;
+      height: 70px;
+      border: 2px solid rgba($gold-primary, 0.15);
       border-top-color: $gold-primary;
       border-radius: 50%;
       animation: spin 1s linear infinite;
-      margin: 0 auto 1.5rem;
+      margin: 0 auto 2rem;
+      box-shadow: 0 0 35px rgba($gold-primary, 0.2);
     }
 
     p {
-      color: rgba($light-text, 0.6);
+      color: rgba($light-text, 0.5);
       font-family: $font-accent;
-      font-size: 1rem;
-      letter-spacing: 2px;
+      font-size: 0.9rem;
+      letter-spacing: 3px;
       text-transform: uppercase;
     }
   }
@@ -102,37 +121,41 @@
 // ============================================
 .errorState {
   text-align: center;
-  padding: 6rem 2rem;
+  padding: 8rem 2rem;
 
   .errorIcon {
-    font-size: 5rem;
-    margin-bottom: 1.5rem;
+    font-size: 6rem;
+    margin-bottom: 2rem;
+    opacity: 0.8;
   }
 
   h2 {
     font-family: $font-heading;
-    font-size: 2rem;
+    font-size: 2.5rem;
     color: $light-text;
     margin-bottom: 1rem;
+    font-weight: 400;
   }
 
   p {
-    color: rgba($light-text, 0.6);
-    margin-bottom: 2rem;
+    color: rgba($light-text, 0.55);
+    margin-bottom: 2.5rem;
+    font-size: 1.05rem;
   }
 
   .backBtn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 1rem 2rem;
+    gap: 0.75rem;
+    padding: 1.1rem 2.5rem;
     background: transparent;
-    border: 1px solid $gold-primary;
+    border: 1.5px solid $gold-primary;
     color: $gold-primary;
     border-radius: $radius-full;
     text-decoration: none;
     font-weight: 600;
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
+    letter-spacing: 0.5px;
 
     .rotateIcon {
       transform: rotate(180deg);
@@ -141,27 +164,29 @@
     &:hover {
       background: $gold-primary;
       color: $dark-primary;
+      box-shadow: 0 4px 25px rgba($gold-primary, 0.35);
     }
   }
 }
 
 // ============================================
-// Breadcrumb Navigation
+// Breadcrumb - Elegant Navigation
 // ============================================
 .breadcrumb {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  padding: $spacing-xl 0;
-  font-size: 0.9rem;
+  gap: 0.85rem;
+  padding: $spacing-2xl 0;
+  font-size: 0.875rem;
 
   a {
-    color: rgba($light-text, 0.5);
+    color: rgba($light-text, 0.45);
     text-decoration: none;
     transition: color 0.3s ease;
     font-family: $font-accent;
     letter-spacing: 0.5px;
+    font-weight: 400;
 
     &:hover {
       color: $gold-primary;
@@ -169,14 +194,15 @@
   }
 
   .separator {
-    color: rgba($gold-primary, 0.3);
+    color: rgba($gold-primary, 0.25);
     font-weight: 300;
+    font-size: 0.8rem;
   }
 
   .current {
     color: $gold-primary;
     font-weight: 500;
-    max-width: 300px;
+    max-width: 350px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -184,34 +210,39 @@
 }
 
 // ============================================
-// Product Grid Layout
+// Product Grid Layout - World-Class
 // ============================================
 .productDetailGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.2fr;
   gap: 4rem;
   align-items: start;
+  max-width: 1400px;
+  margin: 0 auto;
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1200px) {
     gap: 3rem;
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 1000px) {
     grid-template-columns: 1fr;
     gap: 2.5rem;
   }
 }
 
 // ============================================
-// Gallery Section (Left)
+// Gallery Section - Premium Design
 // ============================================
 .gallerySection {
   position: sticky;
   top: 2rem;
+  max-width: 550px;
 
-  @media (max-width: 900px) {
+  @media (max-width: 1000px) {
     position: relative;
     top: 0;
+    max-width: 500px;
+    margin: 0 auto;
   }
 }
 
@@ -223,7 +254,7 @@
     cursor: zoom-out;
 
     .mainImage {
-      transform: scale(1.5);
+      transform: scale(1.6);
     }
   }
 }
@@ -231,29 +262,35 @@
 .imageFrame {
   position: relative;
   background: rgba($light-text, 0.02);
-  border-radius: $radius-xl;
+  border-radius: $radius-2xl;
   overflow: hidden;
-  border: 1px solid rgba($gold-primary, 0.15);
+  border: 1px solid rgba($gold-primary, 0.1);
   box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.4),
-    0 0 40px rgba($gold-primary, 0.1);
+    0 30px 80px rgba(0, 0, 0, 0.4),
+    0 0 60px rgba($gold-primary, 0.08);
 
   &::before {
     content: '';
     position: absolute;
     inset: 0;
-    border: 1px solid rgba($gold-primary, 0.2);
-    border-radius: $radius-xl;
+    border: 1px solid rgba($gold-primary, 0.15);
+    border-radius: $radius-2xl;
     pointer-events: none;
-    z-index: 2;
+    z-index: 3;
   }
   
   &::after {
     content: '';
     position: absolute;
-    inset: -2px;
-    background: linear-gradient(135deg, rgba($gold-primary, 0.2), transparent 50%, rgba($gold-primary, 0.1));
-    border-radius: $radius-xl;
+    inset: -3px;
+    background: linear-gradient(
+      135deg, 
+      rgba($gold-primary, 0.2) 0%, 
+      transparent 30%, 
+      transparent 70%,
+      rgba($gold-primary, 0.15) 100%
+    );
+    border-radius: $radius-2xl;
     z-index: -1;
     opacity: 0;
     transition: opacity 0.5s ease;
@@ -266,86 +303,89 @@
 
 .mainImage {
   width: 100%;
-  aspect-ratio: 1;
+  aspect-ratio: 4 / 5;
   object-fit: cover;
   display: block;
-  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .badgesContainer {
   position: absolute;
-  top: 1.5rem;
-  left: 1.5rem;
-  right: 1.5rem;
+  top: 1.75rem;
+  left: 1.75rem;
+  right: 1.75rem;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  z-index: 3;
+  z-index: 4;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .discountBadge,
 .newBadge,
 .featuredBadge {
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.25rem;
   border-radius: $radius-md;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  backdrop-filter: blur(10px);
+  letter-spacing: 1px;
+  backdrop-filter: blur(15px);
 }
 
 .discountBadge {
   background: linear-gradient(135deg, #dc3545, #c82333);
   color: $light-text;
-  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.45);
 }
 
 .newBadge {
   background: linear-gradient(135deg, #28a745, #20923d);
   color: $light-text;
-  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.45);
 }
 
 .featuredBadge {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   background: linear-gradient(135deg, $gold-primary, $gold-secondary);
   color: $dark-primary;
   box-shadow: $shadow-gold-lg;
 
   svg {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 }
 
 .zoomHint {
   position: absolute;
-  bottom: 1.5rem;
+  bottom: 1.75rem;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba($dark-primary, 0.85);
-  backdrop-filter: blur(10px);
+  background: rgba($dark-primary, 0.88);
+  backdrop-filter: blur(15px);
   border: 1px solid rgba($gold-primary, 0.2);
-  color: rgba($light-text, 0.8);
-  padding: 0.5rem 1rem;
+  color: rgba($light-text, 0.75);
+  padding: 0.6rem 1.25rem;
   border-radius: $radius-md;
   font-size: 0.75rem;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
   opacity: 0;
   transition: all 0.3s ease;
-  z-index: 3;
+  z-index: 4;
 }
 
 .imageFrame:hover .zoomHint {
   opacity: 1;
 }
 
-// Thumbnails
+// Thumbnails - Premium Gallery
 .thumbnailsWrapper {
-  margin-top: $spacing-lg;
-  padding: 0 0.5rem;
+  margin-top: $spacing-xl;
+  padding: 0 0.75rem;
 }
 
 .thumbnails {
@@ -357,34 +397,35 @@
 
 .thumbnail {
   position: relative;
-  width: 80px;
-  height: 80px;
-  border-radius: $radius-md;
+  width: 90px;
+  height: 90px;
+  border-radius: $radius-lg;
   overflow: hidden;
   border: 2px solid transparent;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
   background: rgba($light-text, 0.02);
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s ease;
   }
 
   &:hover {
-    border-color: rgba($gold-primary, 0.5);
-    transform: translateY(-3px);
+    border-color: rgba($gold-primary, 0.45);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
 
     img {
-      transform: scale(1.05);
+      transform: scale(1.08);
     }
   }
 
   &.active {
     border-color: $gold-primary;
-    box-shadow: 0 4px 15px rgba($gold-primary, 0.3);
+    box-shadow: 0 6px 25px rgba($gold-primary, 0.35);
   }
 
   .activeIndicator {
@@ -392,61 +433,79 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 3px;
+    height: 4px;
     background: linear-gradient(90deg, $gold-primary, $gold-secondary);
   }
 }
 
 // ============================================
-// Info Section (Right)
+// Info Section - World-Class Design
 // ============================================
 .infoSection {
-  background: rgba($light-text, 0.02);
-  border: 1px solid rgba($gold-primary, 0.1);
-  border-radius: $radius-xl;
-  padding: $spacing-2xl;
+  background: rgba($light-text, 0.015);
+  border: 1px solid rgba($gold-primary, 0.08);
+  border-radius: $radius-2xl;
+  padding: $spacing-3xl;
   backdrop-filter: blur(20px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
 
-  @media (max-width: 576px) {
-    padding: $spacing-lg;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba($gold-primary, 0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    padding: $spacing-xl;
   }
 }
 
 // Category Tag
 .categoryTag {
   display: inline-block;
-  background: rgba($gold-primary, 0.1);
-  border: 1px solid rgba($gold-primary, 0.3);
+  background: rgba($gold-primary, 0.08);
+  border: 1px solid rgba($gold-primary, 0.25);
   color: $gold-primary;
-  padding: 0.5rem 1rem;
+  padding: 0.55rem 1.25rem;
   border-radius: $radius-full;
   font-family: $font-accent;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: $spacing-md;
+  letter-spacing: 2.5px;
+  margin-bottom: $spacing-lg;
+  position: relative;
 }
 
-// Product Title
+// Product Title - Premium Typography
 .productTitle {
   font-family: $font-heading;
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 400;
   color: $light-text;
-  line-height: 1.2;
-  margin-bottom: $spacing-md;
+  line-height: 1.15;
+  margin-bottom: $spacing-lg;
+  letter-spacing: -0.02em;
+  position: relative;
   
-  background: linear-gradient(135deg, $light-text 0%, $gold-secondary 50%, $light-text 100%);
-  background-size: 200% auto;
+  background: linear-gradient(
+    135deg, 
+    $light-text 0%, 
+    $gold-secondary 40%,
+    $light-text 60%,
+    $gold-primary 100%
+  );
+  background-size: 250% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-
-  @media (max-width: 576px) {
-    font-size: 1.875rem;
-  }
 }
 
 // Rating Section
@@ -454,24 +513,26 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-bottom: $spacing-lg;
-  padding-bottom: $spacing-lg;
-  border-bottom: 1px solid rgba($gold-primary, 0.15);
+  gap: 1rem;
+  margin-bottom: $spacing-xl;
+  padding-bottom: $spacing-xl;
+  border-bottom: 1px solid rgba($gold-primary, 0.1);
+  position: relative;
 
   .starsWrapper {
     display: flex;
-    gap: 3px;
+    gap: 4px;
 
     svg {
-      width: 18px;
-      height: 18px;
-      color: rgba($light-text, 0.2);
+      width: 20px;
+      height: 20px;
+      color: rgba($light-text, 0.15);
       stroke-width: 1.5;
 
       &.filled {
         color: $gold-primary;
         fill: $gold-primary;
+        filter: drop-shadow(0 0 4px rgba($gold-primary, 0.5));
       }
     }
   }
@@ -479,96 +540,99 @@
   .ratingValue {
     font-weight: 700;
     color: $light-text;
-    font-size: 1rem;
+    font-size: 1.05rem;
   }
 
   .reviewCount {
-    color: rgba($light-text, 0.5);
+    color: rgba($light-text, 0.45);
     font-size: 0.9rem;
   }
 
   .divider {
-    color: rgba($gold-primary, 0.3);
+    color: rgba($gold-primary, 0.25);
+    font-weight: 200;
   }
 
   .soldCount {
-    color: rgba($light-text, 0.4);
+    color: rgba($light-text, 0.35);
     font-size: 0.9rem;
   }
 }
 
-// Price Section
+// Price Section - Premium Pricing
 .priceSection {
-  margin-bottom: $spacing-lg;
+  margin-bottom: $spacing-xl;
+  position: relative;
 
   .priceWrapper {
     display: flex;
     align-items: baseline;
-    gap: 1rem;
-    margin-bottom: 0.5rem;
+    gap: 1.25rem;
+    margin-bottom: 0.75rem;
   }
 
   .currentPrice {
     font-family: $font-heading;
-    font-size: 2.75rem;
-    font-weight: 600;
+    font-size: clamp(2.25rem, 5vw, 3.25rem);
+    font-weight: 500;
     color: $gold-primary;
-    text-shadow: 0 0 30px rgba($gold-primary, 0.3);
-
-    @media (max-width: 576px) {
-      font-size: 2.25rem;
-    }
+    text-shadow: 0 0 40px rgba($gold-primary, 0.35);
   }
 
   .originalPrice {
-    font-size: 1.25rem;
-    color: rgba($light-text, 0.4);
+    font-size: 1.35rem;
+    color: rgba($light-text, 0.35);
     text-decoration: line-through;
+    text-decoration-color: rgba($light-text, 0.5);
   }
 
   .savingText {
-    display: inline-block;
-    background: rgba(40, 167, 69, 0.15);
-    border: 1px solid rgba(40, 167, 69, 0.3);
+    display: inline-flex;
+    align-items: center;
+    background: rgba(40, 167, 69, 0.12);
+    border: 1px solid rgba(40, 167, 69, 0.25);
     color: #28a745;
-    padding: 0.35rem 0.75rem;
+    padding: 0.45rem 1rem;
     border-radius: $radius-sm;
     font-size: 0.85rem;
     font-weight: 600;
+    letter-spacing: 0.3px;
   }
 }
 
 // Short Description
 .shortDescription {
   font-family: $font-accent;
-  font-size: 1rem;
-  color: rgba($light-text, 0.7);
-  line-height: 1.9;
-  margin-bottom: $spacing-lg;
+  font-size: 1.05rem;
+  color: rgba($light-text, 0.65);
+  line-height: 2;
+  margin-bottom: $spacing-xl;
+  position: relative;
 }
 
 // Elegant Divider
 .elegantDivider {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin: $spacing-xl 0;
+  gap: 1.25rem;
+  margin: $spacing-2xl 0;
 
   span {
     flex: 1;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba($gold-primary, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba($gold-primary, 0.25), transparent);
   }
 
   svg {
     color: $gold-primary;
-    font-size: 1.25rem;
+    font-size: 1.35rem;
+    filter: drop-shadow(0 0 10px rgba($gold-primary, 0.4));
   }
 }
 
 // Option Groups
 .optionGroup {
-  margin-bottom: $spacing-lg;
+  margin-bottom: $spacing-xl;
 }
 
 .optionLabel {
@@ -581,9 +645,9 @@
     font-family: $font-accent;
     font-weight: 600;
     color: $light-text;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
   }
 
   .selectedOption {
@@ -595,62 +659,71 @@
   .stockStatus {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
     font-size: 0.85rem;
     color: rgba($light-text, 0.5);
 
     .inStock {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       background: #28a745;
       border-radius: 50%;
-      box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+      box-shadow: 0 0 12px rgba(40, 167, 69, 0.6);
+      animation: pulse 2s ease-in-out infinite;
     }
 
     .outOfStock {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       background: #dc3545;
       border-radius: 50%;
     }
   }
 }
 
-// Size Options
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.8; }
+}
+
+// Size Options - Premium Selection
 .sizeOptions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .sizeBtn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1rem 1.5rem;
-  background: rgba($light-text, 0.03);
-  border: 1px solid rgba($gold-primary, 0.15);
-  border-radius: $radius-md;
+  padding: 1.25rem 1.75rem;
+  background: rgba($light-text, 0.02);
+  border: 1.5px solid rgba($gold-primary, 0.12);
+  border-radius: $radius-lg;
   cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 110px;
+  transition: all 0.4s ease;
+  min-width: 130px;
 
   &:hover {
-    border-color: rgba($gold-primary, 0.5);
-    background: rgba($gold-primary, 0.05);
+    border-color: rgba($gold-primary, 0.4);
+    background: rgba($gold-primary, 0.04);
+    transform: translateY(-2px);
   }
 
   &.active {
     border-color: $gold-primary;
     background: rgba($gold-primary, 0.1);
-    box-shadow: 0 0 20px rgba($gold-primary, 0.2);
+    box-shadow: 
+      0 0 25px rgba($gold-primary, 0.2),
+      inset 0 0 20px rgba($gold-primary, 0.05);
   }
 
   .sizeName {
     font-weight: 600;
     color: $light-text;
-    font-size: 0.95rem;
-    margin-bottom: 0.25rem;
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
   }
 
   .sizePrice {
@@ -660,58 +733,59 @@
   }
 }
 
-// Quantity Selector
+// Quantity Selector - Premium Design
 .quantitySelector {
   display: inline-flex;
   align-items: center;
-  background: rgba($light-text, 0.03);
-  border: 1px solid rgba($gold-primary, 0.15);
-  border-radius: $radius-md;
-  padding: 0.25rem;
+  background: rgba($light-text, 0.02);
+  border: 1.5px solid rgba($gold-primary, 0.12);
+  border-radius: $radius-lg;
+  padding: 0.35rem;
 
   .qtyBtn {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: transparent;
     border: none;
-    border-radius: $radius-sm;
+    border-radius: $radius-md;
     cursor: pointer;
-    color: rgba($light-text, 0.6);
+    color: rgba($light-text, 0.55);
     transition: all 0.3s ease;
 
     &:hover:not(:disabled) {
-      background: rgba($gold-primary, 0.2);
+      background: rgba($gold-primary, 0.15);
       color: $gold-primary;
     }
 
     &:disabled {
-      opacity: 0.3;
+      opacity: 0.25;
       cursor: not-allowed;
     }
 
     svg {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
     }
   }
 
   .qtyValue {
-    width: 60px;
+    width: 70px;
     text-align: center;
-    font-size: 1.2rem;
+    font-size: 1.35rem;
     font-weight: 600;
     color: $light-text;
+    font-family: $font-heading;
   }
 }
 
-// Action Buttons
+// Action Buttons - World-Class CTA
 .actionButtons {
   display: flex;
-  gap: 1rem;
-  margin-bottom: $spacing-xl;
+  gap: 1.25rem;
+  margin-bottom: $spacing-2xl;
 }
 
 .addToCartBtn {
@@ -719,11 +793,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  padding: 1.125rem 2rem;
+  gap: 0.85rem;
+  padding: 1.25rem 2.5rem;
   background: linear-gradient(135deg, $gold-primary, $gold-secondary);
   border: none;
-  border-radius: $radius-md;
+  border-radius: $radius-lg;
   color: $dark-primary;
   font-size: 1rem;
   font-weight: 700;
@@ -732,6 +806,7 @@
   box-shadow: $shadow-gold-lg;
   position: relative;
   overflow: hidden;
+  letter-spacing: 0.5px;
   
   &::before {
     content: '';
@@ -740,17 +815,22 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba($light-text, 0.3), transparent);
-    transition: left 0.5s ease;
+    background: linear-gradient(
+      90deg, 
+      transparent, 
+      rgba($light-text, 0.35), 
+      transparent
+    );
+    transition: left 0.6s ease;
   }
 
   .btnIcon {
-    font-size: 1.25rem;
+    font-size: 1.35rem;
   }
 
   &:hover:not(:disabled) {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba($gold-primary, 0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba($gold-primary, 0.45);
     
     &::before {
       left: 100%;
@@ -758,7 +838,7 @@
   }
 
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.55;
     cursor: not-allowed;
     transform: none;
   }
@@ -766,33 +846,34 @@
   &.added {
     background: linear-gradient(135deg, #28a745, #20923d);
     color: white;
-    box-shadow: 0 4px 20px rgba(40, 167, 69, 0.4);
+    box-shadow: 0 8px 30px rgba(40, 167, 69, 0.4);
   }
 }
 
 .wishlistBtn,
 .shareBtn {
-  width: 56px;
-  height: 56px;
+  width: 62px;
+  height: 62px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba($light-text, 0.03);
-  border: 1px solid rgba($gold-primary, 0.2);
-  border-radius: $radius-md;
+  background: rgba($light-text, 0.02);
+  border: 1.5px solid rgba($gold-primary, 0.15);
+  border-radius: $radius-lg;
   cursor: pointer;
   transition: all 0.3s ease;
 
   svg {
-    width: 22px;
-    height: 22px;
-    color: rgba($light-text, 0.6);
+    width: 24px;
+    height: 24px;
+    color: rgba($light-text, 0.55);
     transition: all 0.3s ease;
   }
 
   &:hover {
     border-color: $gold-primary;
     background: rgba($gold-primary, 0.1);
+    transform: translateY(-3px);
 
     svg {
       color: $gold-primary;
@@ -802,7 +883,7 @@
 
 .wishlistBtn {
   &.active {
-    background: rgba(#dc3545, 0.15);
+    background: rgba(#dc3545, 0.12);
     border-color: #dc3545;
 
     svg {
@@ -810,18 +891,36 @@
       fill: #dc3545;
     }
   }
+  
+  &.loading {
+    opacity: 0.6;
+    cursor: wait;
+    
+    svg {
+      animation: pulse 1s ease-in-out infinite;
+    }
+  }
+  
+  &:disabled {
+    cursor: wait;
+  }
 }
 
-// Features Grid
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+// Features Grid - Premium Benefits
 .featuresGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
-  padding: $spacing-lg;
-  background: rgba($light-text, 0.02);
-  border: 1px solid rgba($gold-primary, 0.1);
-  border-radius: $radius-lg;
-  margin-bottom: $spacing-lg;
+  padding: $spacing-xl;
+  background: rgba($light-text, 0.015);
+  border: 1px solid rgba($gold-primary, 0.08);
+  border-radius: $radius-xl;
+  margin-bottom: $spacing-xl;
 
   @media (max-width: 576px) {
     grid-template-columns: 1fr;
@@ -831,23 +930,29 @@
 .featureCard {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.75rem;
+  gap: 1.1rem;
+  padding: 1rem;
+  border-radius: $radius-md;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba($gold-primary, 0.03);
+  }
 
   .featureIcon {
-    width: 48px;
-    height: 48px;
+    width: 54px;
+    height: 54px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba($gold-primary, 0.1);
-    border: 1px solid rgba($gold-primary, 0.2);
+    background: rgba($gold-primary, 0.08);
+    border: 1px solid rgba($gold-primary, 0.15);
     border-radius: $radius-md;
     flex-shrink: 0;
 
     svg {
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       color: $gold-primary;
     }
   }
@@ -857,15 +962,15 @@
     flex-direction: column;
 
     strong {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       font-weight: 600;
       color: $light-text;
-      margin-bottom: 0.15rem;
+      margin-bottom: 0.2rem;
     }
 
     span {
       font-size: 0.75rem;
-      color: rgba($light-text, 0.5);
+      color: rgba($light-text, 0.45);
     }
   }
 }
@@ -874,46 +979,49 @@
 .metaInfo {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
-  padding-top: $spacing-lg;
-  border-top: 1px solid rgba($gold-primary, 0.1);
+  gap: 2rem;
+  padding-top: $spacing-xl;
+  border-top: 1px solid rgba($gold-primary, 0.08);
   font-size: 0.85rem;
-  color: rgba($light-text, 0.5);
+  color: rgba($light-text, 0.45);
 
   span {
     strong {
       color: $light-text;
+      font-weight: 500;
     }
 
     a {
       color: $gold-primary;
       text-decoration: none;
       font-weight: 500;
+      transition: all 0.3s ease;
 
       &:hover {
         text-decoration: underline;
+        text-shadow: 0 0 10px rgba($gold-primary, 0.4);
       }
     }
   }
 }
 
 // ============================================
-// Tabs Section
+// Tabs Section - Premium Design
 // ============================================
 .tabsSection {
-  margin-top: $spacing-3xl;
-  background: rgba($light-text, 0.02);
-  border: 1px solid rgba($gold-primary, 0.1);
-  border-radius: $radius-xl;
+  margin-top: $spacing-4xl;
+  background: rgba($light-text, 0.015);
+  border: 1px solid rgba($gold-primary, 0.08);
+  border-radius: $radius-2xl;
   overflow: hidden;
   backdrop-filter: blur(20px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
 }
 
 .tabHeaders {
   display: flex;
-  background: rgba($light-text, 0.02);
-  border-bottom: 1px solid rgba($gold-primary, 0.1);
+  background: rgba($light-text, 0.015);
+  border-bottom: 1px solid rgba($gold-primary, 0.08);
 
   @media (max-width: 576px) {
     flex-wrap: wrap;
@@ -922,20 +1030,20 @@
 
 .tabBtn {
   flex: 1;
-  padding: 1.5rem 2rem;
+  padding: 1.75rem 2.5rem;
   background: transparent;
   border: none;
   font-family: $font-accent;
   font-size: 0.9rem;
   font-weight: 500;
-  color: rgba($light-text, 0.5);
+  color: rgba($light-text, 0.45);
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
   letter-spacing: 0.5px;
 
   @media (max-width: 576px) {
-    padding: 1rem;
+    padding: 1.25rem 1rem;
     font-size: 0.8rem;
   }
 
@@ -946,60 +1054,74 @@
     left: 50%;
     transform: translateX(-50%);
     width: 0;
-    height: 2px;
+    height: 3px;
     background: linear-gradient(90deg, $gold-primary, $gold-secondary);
-    transition: width 0.3s ease;
-    border-radius: 2px 2px 0 0;
+    transition: width 0.4s ease;
+    border-radius: 3px 3px 0 0;
   }
 
   &:hover {
     color: $light-text;
-    background: rgba($gold-primary, 0.03);
+    background: rgba($gold-primary, 0.02);
   }
 
   &.active {
     color: $gold-primary;
-    background: rgba($gold-primary, 0.05);
+    background: rgba($gold-primary, 0.04);
     font-weight: 600;
 
     &::after {
-      width: 60%;
+      width: 70%;
     }
   }
 }
 
 .tabContent {
-  padding: $spacing-2xl;
+  padding: $spacing-3xl;
 
   @media (max-width: 576px) {
-    padding: $spacing-lg;
+    padding: $spacing-xl;
   }
 }
 
 // Description Tab
 .descriptionTab {
   .descriptionContent {
-    font-size: 1rem;
+    font-size: 1.05rem;
     color: rgba($light-text, 0.7);
-    line-height: 1.9;
+    line-height: 2;
 
     h2, h3, h4 {
       font-family: $font-heading;
       color: $light-text;
-      margin: 1.5rem 0 1rem;
+      margin: 2rem 0 1.25rem;
+      font-weight: 400;
     }
 
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.5rem; }
+    h4 { font-size: 1.25rem; }
+
     p {
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
     }
 
     ul, ol {
-      margin: 1rem 0;
-      padding-left: 1.5rem;
+      margin: 1.25rem 0;
+      padding-left: 1.75rem;
 
       li {
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.65rem;
+        
+        &::marker {
+          color: $gold-primary;
+        }
       }
+    }
+    
+    strong {
+      color: $light-text;
+      font-weight: 600;
     }
   }
 }
@@ -1009,7 +1131,7 @@
   .ingredientSection,
   .allergenSection,
   .nutritionSection {
-    margin-bottom: $spacing-xl;
+    margin-bottom: $spacing-2xl;
 
     &:last-child {
       margin-bottom: 0;
@@ -1017,9 +1139,10 @@
 
     h4 {
       font-family: $font-heading;
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       color: $light-text;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
+      font-weight: 400;
     }
   }
 
@@ -1027,93 +1150,350 @@
     list-style: none;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
 
     li {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem 1rem;
-      background: rgba($light-text, 0.03);
-      border: 1px solid rgba($gold-primary, 0.1);
-      border-radius: $radius-md;
+      gap: 0.85rem;
+      padding: 1rem 1.25rem;
+      background: rgba($light-text, 0.02);
+      border: 1px solid rgba($gold-primary, 0.08);
+      border-radius: $radius-lg;
       font-size: 0.95rem;
-      color: rgba($light-text, 0.7);
+      color: rgba($light-text, 0.65);
+      transition: all 0.3s ease;
+
+      &:hover {
+        border-color: rgba($gold-primary, 0.2);
+        background: rgba($gold-primary, 0.03);
+      }
 
       .checkIcon {
         color: #28a745;
         flex-shrink: 0;
+        font-size: 1rem;
       }
     }
   }
 
   .allergenText {
-    padding: 1rem 1.5rem;
-    background: rgba(#dc3545, 0.1);
-    border: 1px solid rgba(#dc3545, 0.2);
-    border-radius: $radius-md;
+    padding: 1.25rem 1.75rem;
+    background: rgba(#dc3545, 0.08);
+    border: 1px solid rgba(#dc3545, 0.15);
+    border-radius: $radius-lg;
     color: rgba($light-text, 0.7);
     font-size: 0.95rem;
+    line-height: 1.7;
 
     strong {
       color: #dc3545;
+      font-weight: 600;
     }
   }
 
   .nutritionGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1.25rem;
   }
 
   .nutritionItem {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 1.5rem;
-    background: rgba($gold-primary, 0.05);
-    border: 1px solid rgba($gold-primary, 0.15);
-    border-radius: $radius-md;
+    padding: 1.75rem;
+    background: rgba($gold-primary, 0.04);
+    border: 1px solid rgba($gold-primary, 0.12);
+    border-radius: $radius-lg;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: rgba($gold-primary, 0.25);
+      transform: translateY(-3px);
+    }
 
     .nutritionValue {
       font-family: $font-heading;
-      font-size: 1.75rem;
-      font-weight: 600;
+      font-size: 2rem;
+      font-weight: 500;
       color: $gold-primary;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.35rem;
     }
 
     .nutritionLabel {
       font-size: 0.75rem;
-      color: rgba($light-text, 0.5);
+      color: rgba($light-text, 0.45);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
     }
   }
 }
 
 .emptyContent {
   text-align: center;
-  padding: 3rem;
-  color: rgba($light-text, 0.4);
+  padding: 4rem;
+  color: rgba($light-text, 0.35);
+  font-style: italic;
 }
 
-// Reviews Tab
+// Reviews Tab - Premium Design
 .reviewsTab {
+  // Write Review Button at top
+  .writeReviewBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.9rem 2rem;
+    background: linear-gradient(135deg, $gold-primary 0%, #A08040 100%);
+    border: none;
+    border-radius: $radius-full;
+    color: $dark-primary;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba($gold-primary, 0.4);
+    }
+  }
+
+  // Review Form
+  .reviewForm {
+    background: rgba($light-text, 0.02);
+    border: 1px solid rgba($gold-primary, 0.15);
+    border-radius: $radius-xl;
+    padding: $spacing-2xl;
+    margin-bottom: 2.5rem;
+    overflow: hidden;
+
+    h4 {
+      font-family: $font-heading;
+      font-size: 1.5rem;
+      color: $gold-primary;
+      margin-bottom: 1.5rem;
+      font-weight: 400;
+    }
+
+    .ratingSelection {
+      margin-bottom: 1.5rem;
+
+      label {
+        display: block;
+        color: rgba($light-text, 0.7);
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .starPicker {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        .starBtn {
+          background: none;
+          border: none;
+          padding: 0.25rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          svg {
+            width: 32px;
+            height: 32px;
+            color: rgba($light-text, 0.2);
+            transition: all 0.2s ease;
+          }
+
+          &:hover svg,
+          &.active svg {
+            color: $gold-primary;
+            fill: $gold-primary;
+            transform: scale(1.1);
+          }
+        }
+
+        .ratingText {
+          margin-left: 1rem;
+          color: $gold-primary;
+          font-weight: 500;
+          font-size: 0.95rem;
+        }
+      }
+    }
+
+    .commentInput {
+      margin-bottom: 1.5rem;
+
+      label {
+        display: block;
+        color: rgba($light-text, 0.7);
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+      }
+
+      textarea {
+        width: 100%;
+        background: rgba($dark-primary, 0.5);
+        border: 1px solid rgba($gold-primary, 0.15);
+        border-radius: $radius-lg;
+        padding: 1rem 1.25rem;
+        color: $light-text;
+        font-size: 1rem;
+        font-family: inherit;
+        resize: vertical;
+        min-height: 120px;
+        transition: all 0.3s ease;
+
+        &::placeholder {
+          color: rgba($light-text, 0.35);
+        }
+
+        &:focus {
+          outline: none;
+          border-color: $gold-primary;
+          box-shadow: 0 0 0 3px rgba($gold-primary, 0.1);
+        }
+      }
+
+      .charCount {
+        display: block;
+        text-align: right;
+        font-size: 0.8rem;
+        color: rgba($light-text, 0.4);
+        margin-top: 0.5rem;
+      }
+    }
+
+    .reviewError {
+      background: rgba(#EF4444, 0.1);
+      border: 1px solid rgba(#EF4444, 0.3);
+      border-radius: $radius-md;
+      padding: 0.75rem 1rem;
+      color: #EF4444;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .formActions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+
+      .cancelBtn {
+        padding: 0.75rem 1.5rem;
+        background: transparent;
+        border: 1px solid rgba($light-text, 0.2);
+        border-radius: $radius-full;
+        color: rgba($light-text, 0.7);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+          border-color: rgba($light-text, 0.4);
+          color: $light-text;
+        }
+      }
+
+      .submitBtn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.75rem;
+        background: linear-gradient(135deg, $gold-primary 0%, #A08040 100%);
+        border: none;
+        border-radius: $radius-full;
+        color: $dark-primary;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba($gold-primary, 0.35);
+        }
+
+        &:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+        }
+
+        .btnSpinner {
+          width: 18px;
+          height: 18px;
+          border: 2px solid transparent;
+          border-top-color: $dark-primary;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+        }
+      }
+    }
+  }
+
+  // Login Prompt
+  .loginPrompt {
+    background: rgba($gold-primary, 0.05);
+    border: 1px dashed rgba($gold-primary, 0.3);
+    border-radius: $radius-lg;
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+
+    p {
+      color: rgba($light-text, 0.7);
+      font-size: 0.95rem;
+      margin: 0;
+
+      a {
+        color: $gold-primary;
+        font-weight: 600;
+        text-decoration: none;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  // Reviews Loading
+  .reviewsLoading {
+    text-align: center;
+    padding: 3rem;
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 2px solid rgba($gold-primary, 0.2);
+      border-top-color: $gold-primary;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    p {
+      color: rgba($light-text, 0.5);
+    }
+  }
+
   .reviewSummary {
     display: flex;
     align-items: center;
-    gap: 3rem;
-    padding: $spacing-xl;
-    background: rgba($light-text, 0.02);
-    border: 1px solid rgba($gold-primary, 0.1);
-    border-radius: $radius-lg;
-    margin-bottom: $spacing-xl;
+    gap: 4rem;
+    padding: $spacing-2xl;
+    background: rgba($light-text, 0.015);
+    border: 1px solid rgba($gold-primary, 0.08);
+    border-radius: $radius-xl;
+    margin-bottom: $spacing-2xl;
 
     @media (max-width: 576px) {
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 2rem;
+      padding: $spacing-xl;
     }
   }
 
@@ -1122,23 +1502,24 @@
 
     .bigRating {
       font-family: $font-heading;
-      font-size: 4rem;
-      font-weight: 600;
+      font-size: 5rem;
+      font-weight: 500;
       color: $light-text;
       line-height: 1;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+      text-shadow: 0 0 30px rgba($gold-primary, 0.2);
     }
 
     .starsWrapper {
       display: flex;
       justify-content: center;
-      gap: 4px;
-      margin-bottom: 0.5rem;
+      gap: 5px;
+      margin-bottom: 0.75rem;
 
       svg {
-        width: 20px;
-        height: 20px;
-        color: rgba($light-text, 0.2);
+        width: 22px;
+        height: 22px;
+        color: rgba($light-text, 0.15);
 
         &.filled {
           color: $gold-primary;
@@ -1148,7 +1529,7 @@
     }
 
     .totalReviews {
-      color: rgba($light-text, 0.5);
+      color: rgba($light-text, 0.45);
       font-size: 0.9rem;
     }
   }
@@ -1156,40 +1537,48 @@
   .reviewsList {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.75rem;
   }
 
   .reviewCard {
-    padding: $spacing-lg;
-    background: rgba($light-text, 0.02);
-    border: 1px solid rgba($gold-primary, 0.1);
-    border-radius: $radius-lg;
+    padding: $spacing-xl;
+    background: rgba($light-text, 0.015);
+    border: 1px solid rgba($gold-primary, 0.08);
+    border-radius: $radius-xl;
     transition: all 0.3s ease;
     
     &:hover {
-      border-color: rgba($gold-primary, 0.2);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      border-color: rgba($gold-primary, 0.15);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
     }
   }
 
   .reviewHeader {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
 
     .reviewerAvatar {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, $gold-primary, $gold-secondary);
+      width: 54px;
+      height: 54px;
+      background: linear-gradient(135deg, $gold-primary, #A08040);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       color: $dark-primary;
       flex-shrink: 0;
+      box-shadow: 0 4px 15px rgba($gold-primary, 0.3);
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
     }
 
     .reviewerInfo {
@@ -1197,25 +1586,25 @@
 
       strong {
         display: block;
-        font-size: 1rem;
+        font-size: 1.05rem;
         color: $light-text;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.35rem;
       }
 
       .reviewDate {
         font-size: 0.85rem;
-        color: rgba($light-text, 0.4);
+        color: rgba($light-text, 0.35);
       }
     }
 
     .reviewRating {
       display: flex;
-      gap: 2px;
+      gap: 3px;
 
       svg {
-        width: 16px;
-        height: 16px;
-        color: rgba($light-text, 0.2);
+        width: 17px;
+        height: 17px;
+        color: rgba($light-text, 0.15);
 
         &.filled {
           color: $gold-primary;
@@ -1226,9 +1615,9 @@
   }
 
   .reviewComment {
-    font-size: 0.95rem;
-    color: rgba($light-text, 0.7);
-    line-height: 1.7;
+    font-size: 1rem;
+    color: rgba($light-text, 0.65);
+    line-height: 1.85;
   }
 
   .noReviews {
@@ -1236,39 +1625,50 @@
     padding: $spacing-4xl $spacing-xl;
 
     .noReviewsIcon {
-      font-size: 4rem;
-      margin-bottom: 1rem;
+      font-size: 5rem;
+      margin-bottom: 1.5rem;
+      filter: grayscale(0.3);
     }
 
     h4 {
       font-family: $font-heading;
-      font-size: 1.5rem;
+      font-size: 1.75rem;
       color: $light-text;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+      font-weight: 400;
     }
 
     p {
-      color: rgba($light-text, 0.5);
-      margin-bottom: $spacing-lg;
+      color: rgba($light-text, 0.45);
+      margin-bottom: $spacing-xl;
+      font-size: 1rem;
     }
 
-    .writeReviewBtn {
+    .writeReviewBtnEmpty {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 1rem 2rem;
+      gap: 0.6rem;
+      padding: 1.1rem 2.5rem;
       background: transparent;
-      border: 1px solid $gold-primary;
+      border: 1.5px solid $gold-primary;
       border-radius: $radius-full;
       color: $gold-primary;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.4s ease;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
 
       &:hover {
         background: $gold-primary;
         color: $dark-primary;
+        box-shadow: 0 4px 25px rgba($gold-primary, 0.35);
       }
     }
   }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

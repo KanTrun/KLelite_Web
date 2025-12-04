@@ -19,8 +19,11 @@ const app: Application = express();
 // Connect to database
 connectDB();
 
-// Security middleware
-app.use(helmet()); // Set security HTTP headers
+// Security middleware - configure helmet to allow cross-origin images
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  crossOriginEmbedderPolicy: false,
+}));
 app.use(mongoSanitize()); // Sanitize data against NoSQL injection
 app.use(hpp()); // Prevent HTTP parameter pollution
 
@@ -62,8 +65,12 @@ if (config.nodeEnv === 'development') {
   app.use(morgan('combined'));
 }
 
-// Static files
-app.use('/uploads', express.static('uploads'));
+// Static files - with CORS headers for images
+app.use('/uploads', (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+}, express.static('uploads'));
 
 // API routes
 app.use('/api', routes);

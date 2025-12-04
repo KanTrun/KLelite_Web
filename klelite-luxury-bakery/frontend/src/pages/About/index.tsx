@@ -50,7 +50,7 @@ const About: React.FC = () => {
     {
       name: 'Chef Marie Nguyen',
       role: 'Head Pastry Chef',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400',
+      image: 'https://cdn.5280.com/2015/05/marynguyen.jpg',
       description: 'Tốt nghiệp Le Cordon Bleu Paris, 15 năm kinh nghiệm',
     },
     {
@@ -101,7 +101,7 @@ const About: React.FC = () => {
               viewport={{ once: true }}
             >
               <img
-                src="https://images.unsplash.com/photo-1556217477-d325251ece38?w=800"
+                src="https://signature.freefire-name.com/img.php?f=4&t=Kaan"
                 alt="Tiệm bánh KL'élite"
               />
               <div className={styles.experienceBadge}>

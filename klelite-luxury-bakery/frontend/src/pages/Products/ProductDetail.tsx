@@ -17,11 +17,15 @@ import {
   FiPackage,
   FiAward,
   FiGift,
+  FiEdit3,
+  FiSend,
 } from 'react-icons/fi';
 import { AppDispatch, RootState } from '@/store';
 import { fetchProductBySlug } from '@/store/slices/productSlice';
 import { addToCart } from '@/store/slices/cartSlice';
 import { formatCurrency } from '@/utils/formatters';
+import { userService } from '@/services/userService';
+import { reviewService, Review } from '@/services/reviewService';
 import Loading from '@/components/common/Loading';
 import styles from './ProductDetail.module.scss';
 
@@ -39,9 +43,53 @@ const ProductDetail: React.FC = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
   const [activeTab, setActiveTab] = useState<'description' | 'ingredients' | 'reviews'>('description');
   const [isZoomed, setIsZoomed] = useState(false);
+  
+  // Review form states
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  const [reviewError, setReviewError] = useState<string | null>(null);
+  const [hoverRating, setHoverRating] = useState(0);
+
+  // Check wishlist status when product loads
+  useEffect(() => {
+    const checkWishlistStatus = async () => {
+      if (isAuthenticated && product?._id) {
+        try {
+          const inWishlist = await userService.isInWishlist(product._id);
+          setIsWishlisted(inWishlist);
+        } catch (error) {
+          console.error('Error checking wishlist status:', error);
+        }
+      }
+    };
+    checkWishlistStatus();
+  }, [isAuthenticated, product?._id]);
+
+  // Load reviews when product changes or tab changes to reviews
+  useEffect(() => {
+    const loadReviews = async () => {
+      if (product?._id && activeTab === 'reviews') {
+        try {
+          setReviewsLoading(true);
+          const response = await reviewService.getProductReviews(product._id);
+          setReviews(response.reviews);
+        } catch (error) {
+          console.error('Error loading reviews:', error);
+        } finally {
+          setReviewsLoading(false);
+        }
+      }
+    };
+    loadReviews();
+  }, [product?._id, activeTab]);
 
   useEffect(() => {
     if (slug) {
@@ -72,6 +120,36 @@ const ProductDetail: React.FC = () => {
     return product?.price || 0;
   };
 
+  // Handle submit review
+  const handleSubmitReview = async () => {
+    if (!product || !isAuthenticated) return;
+    
+    if (!reviewComment.trim()) {
+      setReviewError('Vui lòng nhập nội dung đánh giá');
+      return;
+    }
+
+    try {
+      setReviewSubmitting(true);
+      setReviewError(null);
+      const newReview = await reviewService.addReview(product._id, {
+        rating: reviewRating,
+        comment: reviewComment.trim()
+      });
+      setReviews([newReview, ...reviews]);
+      setShowReviewForm(false);
+      setReviewComment('');
+      setReviewRating(5);
+      // Refresh product to update rating
+      dispatch(fetchProductBySlug(slug!));
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Không thể gửi đánh giá';
+      setReviewError(errorMessage);
+    } finally {
+      setReviewSubmitting(false);
+    }
+  };
+
   const handleAddToCart = async () => {
     if (!product) return;
     
@@ -96,12 +174,28 @@ const ProductDetail: React.FC = () => {
     }
   };
 
-  const handleWishlist = () => {
+  const handleWishlist = async () => {
     if (!isAuthenticated) {
       navigate('/login', { state: { from: `/products/${slug}` } });
       return;
     }
-    setIsWishlisted(!isWishlisted);
+    
+    if (!product || wishlistLoading) return;
+    
+    try {
+      setWishlistLoading(true);
+      if (isWishlisted) {
+        await userService.removeFromWishlist(product._id);
+        setIsWishlisted(false);
+      } else {
+        await userService.addToWishlist(product._id);
+        setIsWishlisted(true);
+      }
+    } catch (error) {
+      console.error('Error toggling wishlist:', error);
+    } finally {
+      setWishlistLoading(false);
+    }
   };
 
   const handleShare = async () => {
@@ -467,10 +561,12 @@ const ProductDetail: React.FC = () => {
               </motion.button>
 
               <motion.button
-                className={`${styles.wishlistBtn} ${isWishlisted ? styles.active : ''}`}
+                className={`${styles.wishlistBtn} ${isWishlisted ? styles.active : ''} ${wishlistLoading ? styles.loading : ''}`}
                 onClick={handleWishlist}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+                disabled={wishlistLoading}
+                whileHover={{ scale: wishlistLoading ? 1 : 1.1 }}
+                whileTap={{ scale: wishlistLoading ? 1 : 0.9 }}
+                title={isWishlisted ? 'Xóa khỏi yêu thích' : 'Thêm vào yêu thích'}
               >
                 <FiHeart />
               </motion.button>
@@ -660,7 +756,119 @@ const ProductDetail: React.FC = () => {
 
               {activeTab === 'reviews' && (
                 <div className={styles.reviewsTab}>
-                  {product.reviews && product.reviews.length > 0 ? (
+                  {/* Write Review Button */}
+                  {isAuthenticated && !showReviewForm && (
+                    <motion.button 
+                      className={styles.writeReviewBtn}
+                      onClick={() => setShowReviewForm(true)}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <FiEdit3 /> Viết đánh giá
+                    </motion.button>
+                  )}
+
+                  {/* Review Form */}
+                  <AnimatePresence>
+                    {showReviewForm && (
+                      <motion.div 
+                        className={styles.reviewForm}
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                      >
+                        <h4>Đánh giá sản phẩm</h4>
+                        
+                        {/* Rating Selection */}
+                        <div className={styles.ratingSelection}>
+                          <label>Chọn số sao:</label>
+                          <div className={styles.starPicker}>
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <button
+                                key={star}
+                                type="button"
+                                className={`${styles.starBtn} ${(hoverRating || reviewRating) >= star ? styles.active : ''}`}
+                                onMouseEnter={() => setHoverRating(star)}
+                                onMouseLeave={() => setHoverRating(0)}
+                                onClick={() => setReviewRating(star)}
+                              >
+                                <FiStar />
+                              </button>
+                            ))}
+                            <span className={styles.ratingText}>
+                              {reviewRating === 1 && 'Rất tệ'}
+                              {reviewRating === 2 && 'Tệ'}
+                              {reviewRating === 3 && 'Bình thường'}
+                              {reviewRating === 4 && 'Tốt'}
+                              {reviewRating === 5 && 'Tuyệt vời'}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Comment Textarea */}
+                        <div className={styles.commentInput}>
+                          <label>Nhận xét của bạn:</label>
+                          <textarea
+                            value={reviewComment}
+                            onChange={(e) => setReviewComment(e.target.value)}
+                            placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."
+                            rows={4}
+                            maxLength={500}
+                          />
+                          <span className={styles.charCount}>{reviewComment.length}/500</span>
+                        </div>
+
+                        {reviewError && (
+                          <div className={styles.reviewError}>{reviewError}</div>
+                        )}
+
+                        {/* Form Actions */}
+                        <div className={styles.formActions}>
+                          <button 
+                            type="button" 
+                            className={styles.cancelBtn}
+                            onClick={() => {
+                              setShowReviewForm(false);
+                              setReviewComment('');
+                              setReviewRating(5);
+                              setReviewError(null);
+                            }}
+                          >
+                            Hủy
+                          </button>
+                          <button 
+                            type="button"
+                            className={styles.submitBtn}
+                            onClick={handleSubmitReview}
+                            disabled={reviewSubmitting}
+                          >
+                            {reviewSubmitting ? (
+                              <span className={styles.btnSpinner}></span>
+                            ) : (
+                              <>
+                                <FiSend /> Gửi đánh giá
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Login prompt for guests */}
+                  {!isAuthenticated && (
+                    <div className={styles.loginPrompt}>
+                      <p>Vui lòng <Link to="/login" state={{ from: `/products/${slug}` }}>đăng nhập</Link> để viết đánh giá</p>
+                    </div>
+                  )}
+
+                  {/* Reviews Loading */}
+                  {reviewsLoading ? (
+                    <div className={styles.reviewsLoading}>
+                      <div className={styles.spinner}></div>
+                      <p>Đang tải đánh giá...</p>
+                    </div>
+                  ) : reviews.length > 0 || (product.reviews && product.reviews.length > 0) ? (
                     <>
                       {/* Review Summary */}
                       <div className={styles.reviewSummary}>
@@ -669,41 +877,53 @@ const ProductDetail: React.FC = () => {
                           <div className={styles.starsWrapper}>
                             {renderStars(product.rating || 0)}
                           </div>
-                          <span className={styles.totalReviews}>{product.numReviews} đánh giá</span>
+                          <span className={styles.totalReviews}>{product.numReviews || reviews.length} đánh giá</span>
                         </div>
                       </div>
 
                       {/* Reviews List */}
                       <div className={styles.reviewsList}>
-                        {product.reviews.map((review, index) => (
-                          <motion.div 
-                            key={review._id.toString()} 
-                            className={styles.reviewCard}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                          >
-                            <div className={styles.reviewHeader}>
-                              <div className={styles.reviewerAvatar}>
-                                {(review.user as { name?: string })?.name?.charAt(0)?.toUpperCase() || 'U'}
+                        {(reviews.length > 0 ? reviews : product.reviews || []).map((review, index) => {
+                          const reviewUser = review.user as { firstName?: string; lastName?: string; name?: string; avatar?: string };
+                          const displayName = reviewUser?.firstName && reviewUser?.lastName 
+                            ? `${reviewUser.firstName} ${reviewUser.lastName}`
+                            : reviewUser?.name || 'Người dùng';
+                          const initial = displayName.charAt(0).toUpperCase();
+                          
+                          return (
+                            <motion.div 
+                              key={review._id.toString()} 
+                              className={styles.reviewCard}
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: index * 0.1 }}
+                            >
+                              <div className={styles.reviewHeader}>
+                                <div className={styles.reviewerAvatar}>
+                                  {reviewUser?.avatar ? (
+                                    <img src={reviewUser.avatar} alt={displayName} />
+                                  ) : (
+                                    initial
+                                  )}
+                                </div>
+                                <div className={styles.reviewerInfo}>
+                                  <strong>{displayName}</strong>
+                                  <span className={styles.reviewDate}>
+                                    {new Date(review.createdAt).toLocaleDateString('vi-VN', {
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric'
+                                    })}
+                                  </span>
+                                </div>
+                                <div className={styles.reviewRating}>
+                                  {renderStars(review.rating)}
+                                </div>
                               </div>
-                              <div className={styles.reviewerInfo}>
-                                <strong>{(review.user as { name?: string })?.name || 'Người dùng'}</strong>
-                                <span className={styles.reviewDate}>
-                                  {new Date(review.createdAt).toLocaleDateString('vi-VN', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
-                                  })}
-                                </span>
-                              </div>
-                              <div className={styles.reviewRating}>
-                                {renderStars(review.rating)}
-                              </div>
-                            </div>
-                            <p className={styles.reviewComment}>{review.comment}</p>
-                          </motion.div>
-                        ))}
+                              <p className={styles.reviewComment}>{review.comment}</p>
+                            </motion.div>
+                          );
+                        })}
                       </div>
                     </>
                   ) : (
@@ -711,7 +931,14 @@ const ProductDetail: React.FC = () => {
                       <div className={styles.noReviewsIcon}>⭐</div>
                       <h4>Chưa có đánh giá</h4>
                       <p>Hãy là người đầu tiên đánh giá sản phẩm này!</p>
-                      <button className={styles.writeReviewBtn}>Viết đánh giá</button>
+                      {isAuthenticated && (
+                        <button 
+                          className={styles.writeReviewBtnEmpty}
+                          onClick={() => setShowReviewForm(true)}
+                        >
+                          <FiEdit3 /> Viết đánh giá
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>

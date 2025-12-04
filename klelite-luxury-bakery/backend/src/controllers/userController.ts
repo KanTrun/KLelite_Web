@@ -196,14 +196,33 @@ export const deleteAddress = asyncHandler(async (req: AuthRequest, res: Response
 export const getWishlist = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   const user = await User.findById(req.user?._id).populate({
     path: 'wishlist',
-    select: 'name slug price comparePrice images rating numReviews isAvailable',
+    select: 'name slug price comparePrice images rating numReviews isAvailable stock mainImage',
   });
   
   if (!user) {
     throw NotFoundError('Không tìm thấy người dùng');
   }
   
-  successResponse(res, user.wishlist);
+  // Transform wishlist to match expected format
+  const wishlistItems = user.wishlist.map((product: any) => ({
+    _id: product._id.toString(),
+    product: {
+      _id: product._id.toString(),
+      name: product.name,
+      slug: product.slug,
+      price: product.price,
+      comparePrice: product.comparePrice,
+      images: product.images,
+      mainImage: product.mainImage,
+      rating: product.rating,
+      numReviews: product.numReviews,
+      stock: product.stock || 0,
+      isAvailable: product.isAvailable
+    },
+    addedAt: new Date().toISOString()
+  }));
+  
+  successResponse(res, wishlistItems);
 });
 
 // @desc    Add to wishlist

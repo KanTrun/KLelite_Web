@@ -5,7 +5,7 @@ import slugify from 'slugify';
 export interface IProductImage {
   _id?: mongoose.Types.ObjectId;
   url: string;
-  publicId: string;
+  publicId?: string;
   isMain: boolean;
 }
 
@@ -135,7 +135,7 @@ const ProductImageSchema = new Schema<IProductImage>({
   },
   publicId: {
     type: String,
-    required: true,
+    default: '',
   },
   isMain: {
     type: Boolean,

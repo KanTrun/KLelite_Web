@@ -386,3 +386,17 @@ export const getOrderStats = asyncHandler(async (req: AuthRequest, res: Response
     }, {} as Record<string, number>),
   });
 });
+
+// @desc    Get recent orders (admin)
+// @route   GET /api/orders/admin/recent
+// @access  Private/Admin
+export const getRecentOrders = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
+  const limit = parseInt(req.query.limit as string) || 5;
+  
+  const orders = await Order.find()
+    .populate('user', 'firstName lastName email')
+    .sort({ createdAt: -1 })
+    .limit(limit);
+  
+  successResponse(res, orders);
+});

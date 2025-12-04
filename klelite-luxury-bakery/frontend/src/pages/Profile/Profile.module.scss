@@ -1,35 +1,47 @@
-// Profile Page Styles
-// ==========================================================================
+// ============================================
+// Profile Page - Royal Luxury Style
+// KL'élite Luxury Bakery
+// ============================================
 
 .profilePage {
   min-height: 100vh;
-  background: #F5F5F5;
-  padding: 2rem 0 4rem;
+  background: $dark-primary;
+  padding: $spacing-3xl 0;
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 $spacing-xl;
+
+  @media (max-width: 768px) {
+    padding: 0 $spacing-md;
+  }
 }
 
+// ============================================
+// Profile Layout
+// ============================================
 .profileLayout {
   display: grid;
   grid-template-columns: 280px 1fr;
-  gap: 2rem;
+  gap: $spacing-2xl;
+  align-items: flex-start;
 
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
   }
 }
 
+// ============================================
 // Sidebar
+// ============================================
 .sidebar {
-  background: #ffffff;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  height: fit-content;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
+  border-radius: $radius-xl;
+  padding: $spacing-xl;
+  backdrop-filter: blur(10px);
   position: sticky;
   top: 100px;
 
@@ -39,36 +51,23 @@
 }
 
 .userInfo {
-  padding: 2rem;
   text-align: center;
-  border-bottom: 1px solid #EEEEEE;
-  background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%);
-  color: #ffffff;
-
-  h3 {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 1.25rem;
-    margin-top: 1rem;
-    margin-bottom: 0.25rem;
-  }
-
-  p {
-    font-size: 0.875rem;
-    opacity: 0.8;
-  }
+  padding-bottom: $spacing-xl;
+  border-bottom: 1px solid rgba($gold-primary, 0.1);
+  margin-bottom: $spacing-xl;
 }
 
 .avatar {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #D4AF37 0%, #E8C547 100%);
+  margin: 0 auto $spacing-md;
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: $shadow-gold-lg;
   overflow: hidden;
-  border: 3px solid rgba(255, 255, 255, 0.3);
 
   img {
     width: 100%;
@@ -77,44 +76,59 @@
   }
 
   span {
-    font-size: 2rem;
+    font-family: $font-heading;
+    font-size: 2.5rem;
+    color: $dark-primary;
     font-weight: 600;
-    color: #ffffff;
   }
 }
 
+.userInfo h3 {
+  font-family: $font-heading;
+  font-size: 1.25rem;
+  color: $light-text;
+  margin-bottom: $spacing-2xs;
+}
+
+.userInfo p {
+  font-size: 0.9rem;
+  color: rgba($light-text, 0.6);
+}
+
 .sidebarNav {
-  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
 }
 
 .navItem {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: $spacing-sm;
   width: 100%;
-  padding: 0.875rem 1rem;
-  border: none;
+  padding: $spacing-sm $spacing-md;
   background: transparent;
-  font-size: 0.9375rem;
-  color: #616161;
+  border: none;
+  color: rgba($light-text, 0.7);
+  font-size: 0.95rem;
+  border-radius: $radius-md;
   cursor: pointer;
-  border-radius: 0.5rem;
-  transition: all 150ms ease-out;
+  transition: all 0.3s ease;
   text-align: left;
 
   svg {
-    font-size: 1.125rem;
+    font-size: 1.1rem;
   }
 
   .arrow {
     margin-left: auto;
     opacity: 0;
-    transition: opacity 150ms ease-out;
+    transition: all 0.3s ease;
   }
 
   &:hover {
-    background: #F5F5F5;
-    color: #212121;
+    background: rgba($gold-primary, 0.05);
+    color: $light-text;
 
     .arrow {
       opacity: 1;
@@ -122,8 +136,8 @@
   }
 
   &.active {
-    background: rgba(212, 175, 55, 0.1);
-    color: #D4AF37;
+    background: rgba($gold-primary, 0.1);
+    color: $gold-primary;
     font-weight: 500;
 
     .arrow {
@@ -135,121 +149,145 @@
 .logoutBtn {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: $spacing-sm;
   width: 100%;
-  padding: 0.875rem 1rem;
-  border: none;
+  padding: $spacing-sm $spacing-md;
   background: transparent;
-  font-size: 0.9375rem;
+  border: none;
   color: #dc3545;
+  font-size: 0.95rem;
+  border-radius: $radius-md;
   cursor: pointer;
-  border-radius: 0.5rem;
-  transition: all 150ms ease-out;
-  margin-top: 0.5rem;
-  border-top: 1px solid #EEEEEE;
-  padding-top: 1.25rem;
+  transition: all 0.3s ease;
+  margin-top: $spacing-md;
+  border-top: 1px solid rgba($gold-primary, 0.1);
+  padding-top: $spacing-lg;
 
   &:hover {
     background: rgba(220, 53, 69, 0.1);
   }
 }
 
+// ============================================
 // Main Content
+// ============================================
 .mainContent {
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
+  border-radius: $radius-xl;
+  padding: $spacing-2xl;
+  backdrop-filter: blur(10px);
   min-height: 500px;
 }
 
 .tabContent {
-  background: #ffffff;
-  border-radius: 0.75rem;
-  padding: 2rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(10px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 .tabHeader {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #EEEEEE;
+  align-items: center;
+  margin-bottom: $spacing-2xl;
+  padding-bottom: $spacing-lg;
+  border-bottom: 1px solid rgba($gold-primary, 0.1);
+  flex-wrap: wrap;
+  gap: $spacing-md;
 
   h2 {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: $font-heading;
     font-size: 1.5rem;
-    color: #212121;
+    font-weight: 400;
+    color: $light-text;
   }
 }
 
+.tabDescription {
+  width: 100%;
+  color: rgba($light-text, 0.6);
+  font-size: 0.9rem;
+  margin-top: $spacing-xs;
+}
+
+// ============================================
+// Edit Buttons
+// ============================================
 .editBtn,
 .addBtn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1rem;
-  background: #D4AF37;
-  color: #ffffff;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border: none;
-  border-radius: 0.375rem;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
+  background: rgba($gold-primary, 0.1);
+  border: 1px solid rgba($gold-primary, 0.3);
+  color: $gold-primary;
+  font-size: 0.9rem;
+  border-radius: $radius-md;
   cursor: pointer;
-  transition: all 150ms ease-out;
+  transition: all 0.3s ease;
 
   &:hover {
-    background: #B8962F;
+    background: rgba($gold-primary, 0.2);
+    border-color: $gold-primary;
   }
 }
 
 .editActions {
   display: flex;
-  gap: 0.5rem;
+  gap: $spacing-sm;
 }
 
 .cancelBtn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1rem;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
   background: transparent;
-  color: #757575;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border: 1px solid #E0E0E0;
-  border-radius: 0.375rem;
+  border: 1px solid rgba($light-text, 0.2);
+  color: rgba($light-text, 0.7);
+  font-size: 0.9rem;
+  border-radius: $radius-md;
   cursor: pointer;
-  transition: all 150ms ease-out;
+  transition: all 0.3s ease;
 
   &:hover {
-    background: #F5F5F5;
+    border-color: rgba($light-text, 0.4);
+    color: $light-text;
   }
 }
 
 .saveBtn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1rem;
-  background: #4CAF50;
-  color: #ffffff;
-  font-size: 0.875rem;
-  font-weight: 500;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
   border: none;
-  border-radius: 0.375rem;
+  color: $dark-primary;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-radius: $radius-md;
   cursor: pointer;
-  transition: all 150ms ease-out;
+  transition: all 0.3s ease;
 
   &:hover:not(:disabled) {
-    background: #388E3C;
+    transform: translateY(-2px);
   }
 
   &:disabled {
-    opacity: 0.7;
+    opacity: 0.6;
     cursor: not-allowed;
   }
 }
 
+// ============================================
 // Profile Form
+// ============================================
 .profileForm,
 .passwordForm {
   max-width: 600px;
@@ -258,153 +296,271 @@
 .formRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+  gap: $spacing-md;
 
-  @media (max-width: 640px) {
+  @media (max-width: 576px) {
     grid-template-columns: 1fr;
   }
 }
 
 .formGroup {
-  margin-bottom: 1.5rem;
+  margin-bottom: $spacing-lg;
 
   label {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
+    gap: $spacing-xs;
+    font-size: 0.9rem;
+    color: rgba($light-text, 0.7);
+    margin-bottom: $spacing-xs;
     font-weight: 500;
-    color: #424242;
-    margin-bottom: 0.5rem;
 
     svg {
-      color: #D4AF37;
+      color: $gold-primary;
     }
   }
 
   input {
     width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid #E0E0E0;
-    border-radius: 0.5rem;
+    padding: $spacing-sm $spacing-md;
+    background: rgba($light-text, 0.03);
+    border: 1px solid rgba($gold-primary, 0.2);
+    border-radius: $radius-md;
+    color: $light-text;
     font-size: 1rem;
-    transition: all 150ms ease-out;
+    transition: all 0.3s ease;
+
+    &::placeholder {
+      color: rgba($light-text, 0.3);
+    }
 
     &:focus {
       outline: none;
-      border-color: #D4AF37;
-      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+      border-color: $gold-primary;
+      box-shadow: 0 0 0 3px rgba($gold-primary, 0.1);
     }
   }
 
   p {
-    padding: 0.75rem 0;
+    padding: $spacing-sm $spacing-md;
+    background: rgba($light-text, 0.02);
+    border: 1px solid rgba($gold-primary, 0.1);
+    border-radius: $radius-md;
+    color: $light-text;
     font-size: 1rem;
-    color: #212121;
-
-    &.readOnly {
-      color: #757575;
-    }
   }
+}
+
+.readOnly {
+  opacity: 0.7;
 }
 
 .hint {
   display: block;
-  font-size: 0.75rem;
-  color: #9E9E9E;
-  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: rgba($light-text, 0.4);
+  margin-top: $spacing-2xs;
 }
 
+.changePasswordBtn {
+  padding: $spacing-md $spacing-2xl;
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
+  border: none;
+  color: $dark-primary;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: $radius-full;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: $shadow-gold-lg;
+  margin-top: $spacing-md;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba($gold-primary, 0.4);
+  }
+}
+
+// ============================================
 // Address List
+// ============================================
 .addressList {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: $spacing-md;
 }
 
 .addressCard {
   position: relative;
-  padding: 1.5rem;
-  border: 1px solid #EEEEEE;
-  border-radius: 0.75rem;
-  transition: all 150ms ease-out;
+  display: flex;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
+  border-radius: $radius-lg;
+  transition: all 0.3s ease;
 
   &:hover {
-    border-color: #D4AF37;
-    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.1);
+    border-color: rgba($gold-primary, 0.3);
   }
 }
 
 .defaultBadge {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  padding: 0.25rem 0.75rem;
-  background: rgba(212, 175, 55, 0.1);
-  color: #D4AF37;
-  font-size: 0.75rem;
+  top: $spacing-md;
+  right: $spacing-md;
+  padding: 2px $spacing-sm;
+  background: rgba($gold-primary, 0.2);
+  color: $gold-primary;
+  font-size: 0.7rem;
   font-weight: 600;
-  border-radius: 1rem;
+  border-radius: $radius-sm;
+  text-transform: uppercase;
 }
 
 .addressInfo {
+  flex: 1;
+
   h4 {
     font-size: 1rem;
-    color: #212121;
-    margin-bottom: 0.25rem;
+    color: $light-text;
+    margin-bottom: $spacing-2xs;
   }
 
   p {
-    font-size: 0.875rem;
-    color: #616161;
+    color: rgba($light-text, 0.6);
+    font-size: 0.9rem;
     line-height: 1.5;
+    margin: 0;
   }
 }
 
 .addressActions {
   display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  flex-direction: column;
+  gap: $spacing-xs;
 }
 
 .editAddressBtn,
 .deleteAddressBtn {
-  padding: 0.5rem;
-  border: 1px solid #E0E0E0;
-  background: #ffffff;
-  border-radius: 0.375rem;
-  color: #616161;
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-sm;
+  background: transparent;
+  border: 1px solid rgba($gold-primary, 0.2);
+  color: $gold-primary;
   cursor: pointer;
-  transition: all 150ms ease-out;
+  transition: all 0.3s ease;
 
   &:hover {
-    border-color: #D4AF37;
-    color: #D4AF37;
+    background: rgba($gold-primary, 0.1);
+    border-color: $gold-primary;
   }
 }
 
-.deleteAddressBtn:hover {
-  border-color: #dc3545;
+.deleteAddressBtn {
+  border-color: rgba(220, 53, 69, 0.2);
   color: #dc3545;
+
+  &:hover {
+    background: rgba(220, 53, 69, 0.1);
+    border-color: #dc3545;
+  }
 }
 
+// ============================================
+// Empty State
+// ============================================
+.emptyState {
+  text-align: center;
+  padding: $spacing-4xl $spacing-xl;
+
+  svg {
+    font-size: 4rem;
+    color: rgba($gold-primary, 0.3);
+    margin-bottom: $spacing-lg;
+  }
+
+  p {
+    color: rgba($light-text, 0.6);
+    font-size: 1rem;
+    margin-bottom: $spacing-md;
+  }
+}
+
+.emptyDescription {
+  font-size: 0.9rem !important;
+  color: rgba($light-text, 0.4) !important;
+}
+
+.addFirstBtn,
+.shopNowBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-xl;
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
+  color: $dark-primary;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: $radius-full;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.4s ease;
+  box-shadow: $shadow-gold-lg;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba($gold-primary, 0.4);
+  }
+}
+
+// ============================================
+// Loading State
+// ============================================
+.loadingState {
+  text-align: center;
+  padding: $spacing-4xl;
+
+  p {
+    color: rgba($light-text, 0.6);
+    margin-top: $spacing-md;
+  }
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba($gold-primary, 0.2);
+  border-top-color: $gold-primary;
+  border-radius: 50%;
+  margin: 0 auto;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// ============================================
 // Order List
+// ============================================
 .orderList {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: $spacing-lg;
 }
 
 .orderCard {
-  padding: 1.5rem;
-  border: 1px solid #EEEEEE;
-  border-radius: 0.75rem;
-  transition: all 150ms ease-out;
-  background: #ffffff;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
+  border-radius: $radius-lg;
+  overflow: hidden;
+  transition: all 0.3s ease;
 
   &:hover {
-    border-color: #D4AF37;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: rgba($gold-primary, 0.3);
   }
 }
 
@@ -412,411 +568,266 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid #f5f5f5;
+  padding: $spacing-md $spacing-lg;
+  background: rgba($gold-primary, 0.05);
+  border-bottom: 1px solid rgba($gold-primary, 0.1);
 }
 
 .orderNumber {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: $spacing-xs;
   font-weight: 600;
-  color: #212121;
-  font-size: 1rem;
-  
+  color: $light-text;
+
   svg {
-    color: #D4AF37;
+    color: $gold-primary;
   }
 }
 
 .orderStatus {
-  font-size: 0.75rem;
+  padding: $spacing-2xs $spacing-sm;
+  border-radius: $radius-sm;
+  font-size: 0.8rem;
   font-weight: 600;
-  padding: 0.35rem 0.75rem;
-  border-radius: 20px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .orderItems {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-  padding: 1rem;
-  background: #fafafa;
-  border-radius: 0.5rem;
+  padding: $spacing-md $spacing-lg;
 }
 
 .orderItem {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: $spacing-md;
+  padding: $spacing-sm 0;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid rgba($gold-primary, 0.05);
+  }
 }
 
 .itemImage {
   width: 50px;
   height: 50px;
   object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid #eee;
+  border-radius: $radius-sm;
+  border: 1px solid rgba($gold-primary, 0.15);
 }
 
 .itemInfo {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
 }
 
 .itemName {
-  font-weight: 500;
-  color: #212121;
+  display: block;
   font-size: 0.9rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  color: $light-text;
 }
 
 .itemQuantity {
   font-size: 0.8rem;
-  color: #757575;
+  color: rgba($light-text, 0.5);
 }
 
 .itemPrice {
   font-weight: 600;
-  color: #D4AF37;
-  font-size: 0.9rem;
+  color: $gold-primary;
 }
 
 .moreItems {
   font-size: 0.85rem;
-  color: #757575;
-  font-style: italic;
-  padding-top: 0.5rem;
-  border-top: 1px dashed #e0e0e0;
+  color: rgba($light-text, 0.5);
+  text-align: center;
+  padding: $spacing-sm 0;
 }
 
 .orderInfo {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  padding: $spacing-sm $spacing-lg;
+  background: rgba($dark-primary, 0.3);
   flex-wrap: wrap;
-  gap: 0.5rem;
-
-  p {
-    font-size: 0.875rem;
-    color: #616161;
-    margin-bottom: 0.25rem;
-  }
+  gap: $spacing-sm;
 }
 
 .orderDate {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: $spacing-xs;
   font-size: 0.85rem;
-  color: #757575;
-  
+  color: rgba($light-text, 0.6);
+
   svg {
-    color: #9e9e9e;
+    color: $gold-primary;
   }
 }
 
 .orderPayment {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: $spacing-md;
 }
 
 .paymentMethod {
   font-size: 0.85rem;
-  color: #616161;
-  background: #f5f5f5;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  color: rgba($light-text, 0.6);
 }
 
 .paymentStatus {
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .orderFooter {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 1rem;
-  border-top: 1px solid #f5f5f5;
+  padding: $spacing-md $spacing-lg;
+  border-top: 1px solid rgba($gold-primary, 0.1);
 }
 
 .orderTotal {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  
   span {
+    color: rgba($light-text, 0.6);
     font-size: 0.9rem;
-    color: #757575;
+    margin-right: $spacing-sm;
   }
-  
+
   strong {
-    font-size: 1.1rem;
-    color: #D4AF37;
+    font-family: $font-heading;
+    font-size: 1.25rem;
+    color: $gold-primary;
   }
 }
 
 .viewOrderBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  color: #D4AF37;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-  border: 1px solid #D4AF37;
-  border-radius: 6px;
-  transition: all 150ms ease-out;
-
-  &:hover {
-    background: #D4AF37;
-    color: #ffffff;
-  }
-}
-
-.loadingState {
-  text-align: center;
-  padding: 3rem;
-  
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid #f0f0f0;
-    border-top-color: #D4AF37;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 1rem;
-  }
-  
-  p {
-    color: #757575;
-  }
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-// Empty State
-.emptyState {
-  text-align: center;
-  padding: 3rem;
-
-  svg {
-    font-size: 3rem;
-    color: #BDBDBD;
-    margin-bottom: 1rem;
-  }
-
-  p {
-    color: #757575;
-    margin-bottom: 1.5rem;
-  }
-}
-
-.addFirstBtn,
-.shopNowBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: #D4AF37;
-  color: #ffffff;
-  font-weight: 500;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 150ms ease-out;
-
-  &:hover {
-    background: #B8962F;
-  }
-}
-
-// Password Form
-.changePasswordBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.875rem 2rem;
-  background: #D4AF37;
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: all 150ms ease-out;
-
-  &:hover {
-    background: #B8962F;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 14px 0 rgba(212, 175, 55, 0.3);
-  }
-}
-
-// Voucher Styles
-.tabDescription {
-  font-size: 0.875rem;
-  color: #757575;
-  margin-top: 0.5rem;
-}
-
-.loadingState {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 3rem;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
+  background: transparent;
+  border: 1px solid rgba($gold-primary, 0.3);
+  color: $gold-primary;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: $radius-md;
+  text-decoration: none;
+  transition: all 0.3s ease;
 
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid #EEEEEE;
-    border-top-color: #D4AF37;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  p {
-    margin-top: 1rem;
-    color: #757575;
-  }
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+  &:hover {
+    background: rgba($gold-primary, 0.1);
+    border-color: $gold-primary;
   }
 }
 
+// ============================================
+// Voucher Grid
+// ============================================
 .voucherGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1rem;
-  margin-top: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: $spacing-lg;
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .voucherCard {
   display: flex;
-  background: #FFFFFF;
-  border: 1px solid #EEEEEE;
-  border-radius: 0.75rem;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.15);
+  border-radius: $radius-lg;
   overflow: hidden;
-  transition: all 150ms ease-out;
+  transition: all 0.3s ease;
 
   &:hover {
-    border-color: #D4AF37;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: rgba($gold-primary, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
   }
 }
 
 .voucherLeft {
+  width: 120px;
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
-  background: linear-gradient(135deg, #D4AF37 0%, #F4E5BA 100%);
-  min-width: 100px;
-  position: relative;
-
-  &::after {
-    content: '';
-    position: absolute;
-    right: -10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 20px;
-    height: 20px;
-    background: #FFFFFF;
-    border-radius: 50%;
-  }
+  padding: $spacing-md;
+  flex-shrink: 0;
 }
 
 .voucherIcon {
-  font-size: 1.5rem;
-  color: #FFFFFF;
-  margin-bottom: 0.5rem;
+  width: 40px;
+  height: 40px;
+  background: rgba($dark-primary, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: $spacing-xs;
+
+  svg {
+    font-size: 1.25rem;
+    color: $dark-primary;
+  }
 }
 
 .voucherValue {
-  font-size: 1.25rem;
+  font-family: $font-heading;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #FFFFFF;
+  color: $dark-primary;
   text-align: center;
 }
 
 .voucherRight {
   flex: 1;
-  padding: 1rem 1.5rem;
+  padding: $spacing-md;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: $spacing-xs;
 }
 
 .voucherCode {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #D4AF37;
-  margin-bottom: 0.25rem;
-  font-family: monospace;
-  letter-spacing: 0.5px;
+  font-family: $font-heading;
+  font-size: 1.1rem;
+  color: $gold-primary;
+  font-weight: 600;
 }
 
 .voucherDescription {
-  font-size: 0.875rem;
-  color: #212121;
-  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  color: rgba($light-text, 0.7);
   line-height: 1.4;
 }
 
 .voucherConditions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-
   span {
+    display: inline-block;
+    padding: 2px $spacing-xs;
+    background: rgba($gold-primary, 0.1);
+    border-radius: $radius-sm;
     font-size: 0.75rem;
-    color: #757575;
-    padding: 0.25rem 0.5rem;
-    background: #F5F5F5;
-    border-radius: 0.25rem;
+    color: $gold-primary;
+    margin-right: $spacing-2xs;
+    margin-top: $spacing-2xs;
   }
 }
 
 .voucherExpiry {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  font-size: 0.75rem;
-  color: #9E9E9E;
+  gap: $spacing-xs;
+  font-size: 0.8rem;
+  color: rgba($light-text, 0.5);
+  margin-top: auto;
 
   svg {
-    font-size: 0.875rem;
+    font-size: 0.9rem;
   }
-}
-
-.emptyDescription {
-  font-size: 0.875rem;
-  color: #9E9E9E;
-  margin-top: -1rem;
 }

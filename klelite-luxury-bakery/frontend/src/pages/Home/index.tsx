@@ -113,7 +113,7 @@ const featuredProducts = [
     slug: 'wedding-elegance',
     category: 'Wedding Collection',
     price: 3500000,
-    image: 'https://images.unsplash.com/photo-1535254973040-607b474d7f5b?w=600',
+    image: 'https://images.squarespace-cdn.com/content/v1/54850fc1e4b04d71ee5ddbb0/1643212164764-TJAHZTXDROT8N8NXN3X8/Wedding%2B3Tier%2BRibbon%2BFreshFlowers.jpg',
     rating: 5.0,
     reviewCount: 89,
     isFeatured: true,
@@ -145,7 +145,7 @@ const categories = [
   {
     name: 'Wedding Collection',
     description: 'Hoàn hảo cho ngày trọng đại',
-    image: 'https://images.unsplash.com/photo-1535254973040-607b474d7f5b?w=800',
+    image: 'https://images.stockcake.com/public/3/8/1/38155a17-c464-4881-884e-e3ea6267af29_large/elegant-wedding-cake-stockcake.jpg',
     slug: 'wedding-collection',
     count: 32,
     highlight: 'Premium',
@@ -235,7 +235,7 @@ const testimonials = [
 const instagramPosts = [
   { id: 1, image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400', likes: 2345 },
   { id: 2, image: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400', likes: 1892 },
-  { id: 3, image: 'https://images.unsplash.com/photo-1535254973040-607b474d7f5b?w=400', likes: 3156 },
+  { id: 3, image: 'https://images.squarespace-cdn.com/content/v1/54850fc1e4b04d71ee5ddbb0/1643212164764-TJAHZTXDROT8N8NXN3X8/Wedding%2B3Tier%2BRibbon%2BFreshFlowers.jpg', likes: 3156 },
   { id: 4, image: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400', likes: 2789 },
   { id: 5, image: 'https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=400', likes: 1654 },
   { id: 6, image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400', likes: 2103 },
@@ -272,7 +272,7 @@ const Home: React.FC = () => {
         <motion.div className={styles.heroBackground} style={{ y: heroY, scale: heroScale }}>
           <div className={styles.heroOverlay} />
           <img
-            src="https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=1920"
+            src="https://png.pngtree.com/thumb_back/fh260/background/20211128/pngtree-luxury-royal-golden-mandala-background-with-borders-for-invitation-and-wedding-image_916989.png"
             alt="Luxury Bakery Ambiance"
             className={styles.heroBgImage}
           />
@@ -412,7 +412,7 @@ const Home: React.FC = () => {
             <motion.div className={styles.aboutBriefRight} variants={slideInRight}>
               <div className={styles.aboutBriefImageWrapper}>
                 <img
-                  src="https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=800"
+                  src="https://danangfantasticity.com/wp-content/uploads/2025/09/bep-truong-matteo-boifava-va-hanh-trinh-dua-am-thuc-y-ve-sheraton-grand-danang-01-683x1024.jpg"
                   alt="KL'élite Master Pastry Chef"
                 />
                 <div className={styles.aboutBriefImageOverlay} />

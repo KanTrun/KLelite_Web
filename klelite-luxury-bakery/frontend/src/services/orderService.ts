@@ -8,6 +8,17 @@ import type {
   ApiResponse 
 } from '@/types';
 
+interface ApiResponseWithPagination<T> extends ApiResponse<T> {
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
+}
+
 // Order Service
 export const orderService = {
   // Get user orders
@@ -22,8 +33,16 @@ export const orderService = {
       });
     }
     
-    const response = await api.get<ApiResponse<OrdersResponse>>(`/orders?${params.toString()}`);
-    return response.data.data;
+    const response = await api.get<ApiResponseWithPagination<Order[]>>(`/orders?${params.toString()}`);
+    return {
+      orders: response.data.data,
+      pagination: response.data.pagination || {
+        page: 1,
+        limit: 10,
+        total: response.data.data.length,
+        totalPages: 1
+      }
+    };
   },
 
   // Get single order
@@ -62,8 +81,16 @@ export const orderService = {
       });
     }
     
-    const response = await api.get<ApiResponse<OrdersResponse>>(`/orders/admin/all?${params.toString()}`);
-    return response.data.data;
+    const response = await api.get<ApiResponseWithPagination<Order[]>>(`/orders/admin/all?${params.toString()}`);
+    return {
+      orders: response.data.data,
+      pagination: response.data.pagination || {
+        page: 1,
+        limit: 10,
+        total: response.data.data.length,
+        totalPages: 1
+      }
+    };
   },
 
   // Admin: Update order status
@@ -90,10 +117,34 @@ export const orderService = {
     return response.data.data;
   },
 
-  // Admin: Get recent orders
-  getRecentOrders: async (limit: number = 5): Promise<OrdersResponse> => {
-    const response = await api.get<ApiResponse<OrdersResponse>>(`/orders/admin/all?limit=${limit}&sort=-createdAt`);
+  // Admin: Get recent orders (optimized endpoint)
+  getRecentOrders: async (limit: number = 5): Promise<Order[]> => {
+    const response = await api.get<ApiResponse<Order[]>>(`/orders/admin/recent?limit=${limit}`);
     return response.data.data;
+  },
+
+  // Get my orders (user)
+  getMyOrders: async (filters?: OrderFilter): Promise<OrdersResponse> => {
+    const params = new URLSearchParams();
+    
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          params.append(key, String(value));
+        }
+      });
+    }
+    
+    const response = await api.get<ApiResponseWithPagination<Order[]>>(`/orders?${params.toString()}`);
+    return {
+      orders: response.data.data,
+      pagination: response.data.pagination || {
+        page: 1,
+        limit: 10,
+        total: response.data.data.length,
+        totalPages: 1
+      }
+    };
   },
 };
 

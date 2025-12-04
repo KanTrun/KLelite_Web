@@ -9,6 +9,17 @@ import {
   FiUserPlus,
   FiLock,
   FiUnlock,
+  FiMail,
+  FiPhone,
+  FiCalendar,
+  FiShoppingBag,
+  FiDollarSign,
+  FiMoreVertical,
+  FiChevronLeft,
+  FiChevronRight,
+  FiUsers,
+  FiUserCheck,
+  FiShield,
 } from 'react-icons/fi';
 import AdminLayout from './AdminLayout';
 import { adminUserService } from '../../services/userService';
@@ -34,8 +45,10 @@ const AdminUsers: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('all');
+  const [selectedStatus, setSelectedStatus] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalUsers, setTotalUsers] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -49,6 +62,14 @@ const AdminUsers: React.FC = () => {
     password: '',
     role: 'user' as 'user' | 'manager' | 'admin',
   });
+  
+  // Stats for quick overview
+  const [userStats, setUserStats] = useState({
+    total: 0,
+    active: 0,
+    admins: 0,
+    newThisMonth: 0,
+  });
 
   useEffect(() => {
     fetchUsers();
@@ -59,8 +80,23 @@ const AdminUsers: React.FC = () => {
     try {
       const data = await adminUserService.getUsers(currentPage, 10);
       if (data.success) {
-        setUsers(data.data || []);
+        const usersList = data.data || [];
+        setUsers(usersList);
         setTotalPages(data.pagination?.pages || 1);
+        setTotalUsers(data.pagination?.total || usersList.length);
+        
+        // Calculate stats
+        const activeCount = usersList.filter((u: User) => u.isActive).length;
+        const adminCount = usersList.filter((u: User) => u.role === 'admin').length;
+        const thisMonth = new Date().getMonth();
+        const newCount = usersList.filter((u: User) => new Date(u.createdAt).getMonth() === thisMonth).length;
+        
+        setUserStats({
+          total: data.pagination?.total || usersList.length,
+          active: activeCount,
+          admins: adminCount,
+          newThisMonth: newCount,
+        });
       }
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -76,7 +112,10 @@ const AdminUsers: React.FC = () => {
       fullName.includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRole = selectedRole === 'all' || user.role === selectedRole;
-    return matchesSearch && matchesRole;
+    const matchesStatus = selectedStatus === 'all' || 
+      (selectedStatus === 'active' && user.isActive) ||
+      (selectedStatus === 'inactive' && !user.isActive);
+    return matchesSearch && matchesRole && matchesStatus;
   });
 
   const handleViewUser = (user: User) => {
@@ -160,11 +199,74 @@ const AdminUsers: React.FC = () => {
         <div className={styles.pageHeader}>
           <div>
             <h1>Quản lý người dùng</h1>
-            <p>Xem và quản lý thông tin người dùng ({users.length} người dùng)</p>
+            <p>Quản lý tài khoản và phân quyền người dùng ({totalUsers} người dùng)</p>
           </div>
           <button className={styles.primaryBtn} onClick={() => setShowAddModal(true)}>
             <FiUserPlus /> Thêm người dùng
           </button>
+        </div>
+
+        {/* User Stats Cards */}
+        <div className={styles.statsGrid}>
+          <motion.div 
+            className={styles.statCard}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0 }}
+          >
+            <div className={`${styles.statIcon} ${styles.users}`}>
+              <FiUsers />
+            </div>
+            <div className={styles.statInfo}>
+              <span className={styles.statLabel}>Tổng người dùng</span>
+              <span className={styles.statValue}>{userStats.total}</span>
+            </div>
+          </motion.div>
+
+          <motion.div 
+            className={styles.statCard}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <div className={`${styles.statIcon} ${styles.revenue}`}>
+              <FiUserCheck />
+            </div>
+            <div className={styles.statInfo}>
+              <span className={styles.statLabel}>Đang hoạt động</span>
+              <span className={styles.statValue}>{userStats.active}</span>
+            </div>
+          </motion.div>
+
+          <motion.div 
+            className={styles.statCard}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <div className={`${styles.statIcon} ${styles.orders}`}>
+              <FiShield />
+            </div>
+            <div className={styles.statInfo}>
+              <span className={styles.statLabel}>Quản trị viên</span>
+              <span className={styles.statValue}>{userStats.admins}</span>
+            </div>
+          </motion.div>
+
+          <motion.div 
+            className={styles.statCard}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <div className={`${styles.statIcon} ${styles.products}`}>
+              <FiUserPlus />
+            </div>
+            <div className={styles.statInfo}>
+              <span className={styles.statLabel}>Mới tháng này</span>
+              <span className={styles.statValue}>{userStats.newThisMonth}</span>
+            </div>
+          </motion.div>
         </div>
 
         {/* Filters */}
@@ -187,6 +289,15 @@ const AdminUsers: React.FC = () => {
             <option value="user">Khách hàng</option>
             <option value="manager">Quản lý</option>
             <option value="admin">Admin</option>
+          </select>
+          <select
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            className={styles.filterSelect}
+          >
+            <option value="all">Tất cả trạng thái</option>
+            <option value="active">Hoạt động</option>
+            <option value="inactive">Bị khóa</option>
           </select>
         </div>
 
@@ -298,14 +409,14 @@ const AdminUsers: React.FC = () => {
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
             >
-              Trước
+              <FiChevronLeft /> Trước
             </button>
             <span>Trang {currentPage} / {totalPages}</span>
             <button
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage(currentPage + 1)}
             >
-              Sau
+              Sau <FiChevronRight />
             </button>
           </div>
         )}

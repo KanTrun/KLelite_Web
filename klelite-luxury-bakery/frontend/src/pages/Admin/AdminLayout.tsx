@@ -1,35 +1,38 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   FiTrendingUp,
   FiShoppingBag,
   FiPackage,
   FiUsers,
   FiGrid,
-  FiSettings,
+  FiHome,
   FiLogOut,
 } from 'react-icons/fi';
-import { RootState } from '@/store';
+import { RootState, AppDispatch } from '@/store';
+import { logout } from '@/store/slices/authSlice';
 import styles from './Admin.module.scss';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
-  title: string;
+  title?: string;
   subtitle?: string;
   actions?: React.ReactNode;
 }
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title, subtitle, actions }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
 
   const navItems = [
-    { path: '/admin', icon: <FiTrendingUp />, label: 'Dashboard' },
-    { path: '/admin/orders', icon: <FiShoppingBag />, label: 'Đơn hàng', badge: null },
-    { path: '/admin/products', icon: <FiPackage />, label: 'Sản phẩm' },
-    { path: '/admin/categories', icon: <FiGrid />, label: 'Danh mục' },
-    { path: '/admin/users', icon: <FiUsers />, label: 'Tài khoản' },
+    { path: '/admin', icon: <FiTrendingUp />, label: 'Dashboard', badge: null as string | null },
+    { path: '/admin/orders', icon: <FiShoppingBag />, label: 'Đơn hàng', badge: null as string | null },
+    { path: '/admin/products', icon: <FiPackage />, label: 'Sản phẩm', badge: null as string | null },
+    { path: '/admin/categories', icon: <FiGrid />, label: 'Danh mục', badge: null as string | null },
+    { path: '/admin/users', icon: <FiUsers />, label: 'Tài khoản', badge: null as string | null },
   ];
 
   const isActive = (path: string) => {
@@ -39,9 +42,21 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title, subtitle, ac
     return location.pathname.startsWith(path);
   };
 
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/');
+  };
+
+  // Get display name
+  const displayName = (user as any)?.fullName || (user as any)?.firstName ? 
+    `${(user as any)?.firstName || ''} ${(user as any)?.lastName || ''}`.trim() : 
+    'Admin';
+  const initials = displayName.charAt(0).toUpperCase() || 'A';
+
   return (
-    <div className={styles.adminPage}>
-      <div className={styles.adminSidebar}>
+    <div className={styles.adminLayout}>
+      {/* Sidebar */}
+      <aside className={styles.adminSidebar}>
         <div className={styles.sidebarLogo}>
           <Link to="/">KL'<span>élite</span></Link>
           <span className={styles.adminBadge}>Admin</span>
@@ -61,34 +76,45 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title, subtitle, ac
           ))}
         </nav>
 
-        <div className={styles.sidebarFooter}>
-          <div className={styles.userInfo}>
-            <div className={styles.userAvatar}>
-              {user?.fullName?.charAt(0) || 'A'}
-            </div>
-            <div className={styles.userDetails}>
-              <span className={styles.userName}>{user?.fullName || 'Admin'}</span>
-              <span className={styles.userRole}>{user?.role === 'admin' ? 'Quản trị viên' : 'Nhân viên'}</span>
-            </div>
-          </div>
-          <Link to="/" className={styles.logoutBtn} title="Về trang chủ">
-            <FiLogOut />
+        {/* Bottom Actions */}
+        <div className={styles.sidebarBottom}>
+          <Link to="/" className={styles.backToSite}>
+            <FiHome />
+            <span>Về trang chủ</span>
           </Link>
-        </div>
-      </div>
-
-      <main className={styles.adminMain}>
-        <div className={styles.adminHeader}>
-          <div>
-            <h1>{title}</h1>
-            {subtitle && <p>{subtitle}</p>}
+          
+          <div className={styles.sidebarUser}>
+            <div className={styles.userInfo}>
+              <div className={styles.userAvatar}>
+                {initials}
+              </div>
+              <div>
+                <span className={styles.userName}>{displayName}</span>
+                <span className={styles.userRole}>{user?.role === 'admin' ? 'Quản trị viên' : 'Nhân viên'}</span>
+              </div>
+            </div>
+            <button className={styles.logoutBtn} onClick={handleLogout} title="Đăng xuất">
+              <FiLogOut />
+            </button>
           </div>
-          {actions && <div className={styles.headerActions}>{actions}</div>}
         </div>
+      </aside>
 
-        <div className={styles.adminContent}>
-          {children}
-        </div>
+      {/* Main Content */}
+      <main className={styles.adminMain}>
+        {/* Page Header - only show if title provided */}
+        {title && (
+          <div className={styles.pageHeader}>
+            <div>
+              <h1>{title}</h1>
+              {subtitle && <p>{subtitle}</p>}
+            </div>
+            {actions && <div className={styles.headerActions}>{actions}</div>}
+          </div>
+        )}
+
+        {/* Page Content */}
+        {children}
       </main>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FiPlus,
@@ -8,6 +8,7 @@ import {
   FiX,
   FiGrid,
   FiImage,
+  FiUpload,
 } from 'react-icons/fi';
 import AdminLayout from './AdminLayout';
 import { categoryService } from '@/services/productService';
@@ -36,6 +37,8 @@ const AdminCategories: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -113,6 +116,53 @@ const AdminCategories: React.FC = () => {
         ...prev,
         [name]: value,
       }));
+    }
+  };
+
+  // File upload handler for category image
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append('image', file);
+      
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        toast.error('Vui lòng đăng nhập lại');
+        return;
+      }
+      
+      const response = await fetch('http://localhost:5000/api/upload', {
+        method: 'POST',
+        body: formDataUpload,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const imgUrl = data.data?.url || data.url;
+        if (imgUrl) {
+          setFormData((prev) => ({
+            ...prev,
+            image: imgUrl,
+          }));
+          toast.success('Upload ảnh thành công!');
+        }
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        toast.error(errorData.message || 'Upload ảnh thất bại');
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Có lỗi khi upload ảnh');
+    } finally {
+      setUploadingImage(false);
+      e.target.value = '';
     }
   };
 
@@ -296,16 +346,44 @@ const AdminCategories: React.FC = () => {
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label>URL hình ảnh</label>
-                    <input
-                      type="text"
-                      name="image"
-                      value={formData.image}
-                      onChange={handleInputChange}
-                      placeholder="https://..."
-                    />
+                    <label>Hình ảnh danh mục</label>
+                    <div className={styles.imageUploadSection}>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileUpload}
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                      />
+                      <button
+                        type="button"
+                        className={styles.uploadBtn}
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploadingImage}
+                      >
+                        <FiUpload /> {uploadingImage ? 'Đang tải...' : 'Tải ảnh từ máy'}
+                      </button>
+                      <span className={styles.orText}>hoặc</span>
+                      <input
+                        type="text"
+                        name="image"
+                        value={formData.image}
+                        onChange={handleInputChange}
+                        placeholder="Nhập URL hình ảnh..."
+                        className={styles.urlInput}
+                      />
+                    </div>
                     {formData.image && (
-                      <img src={formData.image} alt="Preview" className={styles.imagePreview} />
+                      <div className={styles.imagePreviewContainer}>
+                        <img src={formData.image} alt="Preview" className={styles.imagePreview} />
+                        <button 
+                          type="button" 
+                          className={styles.removeImageBtn}
+                          onClick={() => setFormData(prev => ({ ...prev, image: '' }))}
+                        >
+                          <FiX />
+                        </button>
+                      </div>
                     )}
                   </div>
 

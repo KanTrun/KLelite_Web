@@ -1,107 +1,256 @@
-// Checkout Page Styles
-
-@import '@/styles/variables';
-@import '@/styles/mixins';
+// ============================================
+// Checkout Page - Royal Luxury Style
+// KL'élite Luxury Bakery
+// ============================================
 
 .checkoutPage {
   min-height: 100vh;
-  padding: $spacing-2xl 0;
-  background: $bg-secondary;
+  background: $dark-primary;
+  padding-top: $spacing-2xl;
+  padding-bottom: $spacing-4xl;
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
-  padding: 0 $spacing-lg;
+  padding: 0 $spacing-xl;
+
+  @media (max-width: 768px) {
+    padding: 0 $spacing-md;
+  }
 }
 
-// Loading & Empty States
+// ============================================
+// Loading Wrapper
+// ============================================
 .loadingWrapper {
+  min-height: 60vh;
   display: flex;
-  justify-content: center;
   align-items: center;
-  min-height: 400px;
+  justify-content: center;
 }
 
+// ============================================
+// Empty Cart State
+// ============================================
 .emptyCart {
   text-align: center;
-  padding: $spacing-3xl;
-  background: $bg-primary;
+  padding: $spacing-4xl $spacing-xl;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
   border-radius: $radius-xl;
+  backdrop-filter: blur(10px);
+  max-width: 500px;
+  margin: 0 auto;
+}
 
-  .emptyIcon {
-    font-size: 4rem;
-    color: $gold-primary;
-    margin-bottom: $spacing-lg;
+.emptyIcon {
+  font-size: 4rem;
+  color: $gold-primary;
+  margin-bottom: $spacing-xl;
+}
+
+.emptyCart h2 {
+  font-family: $font-heading;
+  font-size: 1.5rem;
+  color: $light-text;
+  margin-bottom: $spacing-sm;
+}
+
+.emptyCart p {
+  color: rgba($light-text, 0.6);
+  margin-bottom: $spacing-xl;
+}
+
+.shopBtn {
+  display: inline-block;
+  padding: $spacing-md $spacing-2xl;
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
+  color: $dark-primary;
+  font-weight: 700;
+  border-radius: $radius-full;
+  text-decoration: none;
+  transition: all 0.4s ease;
+  box-shadow: $shadow-gold-lg;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba($gold-primary, 0.4);
+  }
+}
+
+// ============================================
+// Order Success State
+// ============================================
+.orderSuccess {
+  text-align: center;
+  padding: $spacing-4xl $spacing-xl;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.2);
+  border-radius: $radius-xl;
+  backdrop-filter: blur(10px);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.successIcon {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto $spacing-xl;
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: $shadow-gold-lg;
+
+  svg {
+    font-size: 3rem;
+    color: $dark-primary;
+  }
+}
+
+.orderSuccess h1 {
+  font-family: $font-heading;
+  font-size: 2rem;
+  color: $light-text;
+  margin-bottom: $spacing-sm;
+}
+
+.orderSuccess > p {
+  color: rgba($light-text, 0.7);
+  font-size: 1rem;
+  margin-bottom: $spacing-xl;
+}
+
+.orderInfo {
+  background: rgba($gold-primary, 0.05);
+  border: 1px solid rgba($gold-primary, 0.15);
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-xl;
+}
+
+.orderInfoRow {
+  display: flex;
+  justify-content: space-between;
+  padding: $spacing-xs 0;
+
+  span {
+    color: rgba($light-text, 0.7);
   }
 
-  h2 {
-    font-family: $font-heading;
-    font-size: 1.75rem;
+  strong {
+    color: $gold-primary;
+    font-weight: 600;
+  }
+}
+
+.bankInfo {
+  background: rgba(40, 167, 69, 0.1);
+  border: 1px solid rgba(40, 167, 69, 0.3);
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-xl;
+  text-align: left;
+
+  h3 {
+    color: #28a745;
     margin-bottom: $spacing-sm;
-    color: $text-primary;
+    font-size: 1rem;
   }
 
   p {
-    color: $text-secondary;
-    margin-bottom: $spacing-xl;
-  }
+    color: rgba($light-text, 0.8);
+    font-size: 0.9rem;
+    margin-bottom: $spacing-2xs;
 
-  .shopBtn {
-    display: inline-flex;
-    align-items: center;
-    gap: $spacing-sm;
-    padding: $spacing-md $spacing-xl;
-    background: $gold-primary;
-    color: $dark-primary;
-    font-weight: 600;
-    border-radius: $radius-md;
-    transition: all 0.3s ease;
-
-    &:hover {
-      background: darken($gold-primary, 10%);
+    strong {
+      color: $light-text;
     }
   }
 }
 
-// Header
+.successActions {
+  display: flex;
+  gap: $spacing-md;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.viewOrderBtn {
+  padding: $spacing-sm $spacing-xl;
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
+  color: $dark-primary;
+  font-weight: 700;
+  border-radius: $radius-full;
+  text-decoration: none;
+  transition: all 0.4s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.continueBtn {
+  padding: $spacing-sm $spacing-xl;
+  background: transparent;
+  border: 1px solid rgba($gold-primary, 0.4);
+  color: $gold-primary;
+  font-weight: 500;
+  border-radius: $radius-full;
+  text-decoration: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba($gold-primary, 0.1);
+    border-color: $gold-primary;
+  }
+}
+
+// ============================================
+// Checkout Header
+// ============================================
 .checkoutHeader {
   display: flex;
   align-items: center;
   gap: $spacing-xl;
-  margin-bottom: $spacing-xl;
+  margin-bottom: $spacing-2xl;
+}
 
-  .backBtn {
-    display: flex;
-    align-items: center;
-    gap: $spacing-xs;
-    color: $text-secondary;
-    font-size: 0.875rem;
-    transition: color 0.3s ease;
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  color: rgba($light-text, 0.6);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
 
-    &:hover {
-      color: $gold-primary;
-    }
-  }
-
-  h1 {
-    font-family: $font-heading;
-    font-size: 2rem;
-    color: $text-primary;
+  &:hover {
+    color: $gold-primary;
   }
 }
 
+.checkoutHeader h1 {
+  font-family: $font-heading;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 400;
+  color: $light-text;
+}
+
+// ============================================
 // Progress Steps
+// ============================================
 .progressSteps {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: $spacing-xs;
   margin-bottom: $spacing-2xl;
-  padding: $spacing-lg;
-  background: $bg-primary;
-  border-radius: $radius-lg;
+  padding: $spacing-lg 0;
 
-  @media (max-width: 576px) {
+  @media (max-width: 640px) {
     flex-wrap: wrap;
     gap: $spacing-sm;
   }
@@ -112,42 +261,53 @@
   align-items: center;
   gap: $spacing-sm;
   cursor: pointer;
+  opacity: 0.5;
   transition: all 0.3s ease;
 
-  &.active .stepNumber {
-    background: $gold-primary;
-    color: $dark-primary;
+  &.active {
+    opacity: 1;
   }
 
-  &.completed .stepNumber {
-    background: $success-color;
-    color: white;
-  }
-
-  &:not(.active):not(.completed) {
-    opacity: 0.5;
-    cursor: not-allowed;
+  &.completed {
+    opacity: 0.8;
+    cursor: pointer;
   }
 }
 
 .stepNumber {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba($light-text, 0.1);
+  border: 2px solid rgba($gold-primary, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: $border-color;
-  color: $text-secondary;
-  font-weight: 600;
-  font-size: 0.875rem;
+  font-weight: 700;
+  color: rgba($light-text, 0.6);
   transition: all 0.3s ease;
+
+  .active & {
+    background: linear-gradient(135deg, $gold-primary, $gold-secondary);
+    border-color: transparent;
+    color: $dark-primary;
+  }
+
+  .completed & {
+    background: rgba($gold-primary, 0.2);
+    border-color: $gold-primary;
+    color: $gold-primary;
+  }
 }
 
 .stepLabel {
-  font-size: 0.9375rem;
+  font-size: 0.9rem;
+  color: rgba($light-text, 0.6);
   font-weight: 500;
-  color: $text-primary;
+
+  .active & {
+    color: $gold-primary;
+  }
 
   @media (max-width: 768px) {
     display: none;
@@ -157,8 +317,7 @@
 .stepLine {
   width: 60px;
   height: 2px;
-  background: $border-color;
-  margin: 0 $spacing-md;
+  background: rgba($gold-primary, 0.2);
   transition: background 0.3s ease;
 
   &.active {
@@ -167,24 +326,25 @@
 
   @media (max-width: 768px) {
     width: 30px;
-    margin: 0 $spacing-sm;
   }
 }
 
+// ============================================
 // Error Message
+// ============================================
 .errorMessage {
   display: flex;
   align-items: center;
   gap: $spacing-sm;
   padding: $spacing-md $spacing-lg;
-  background: rgba($error-color, 0.1);
-  border: 1px solid rgba($error-color, 0.2);
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
   border-radius: $radius-md;
-  margin-bottom: $spacing-lg;
-  color: $error-color;
+  margin-bottom: $spacing-xl;
+  color: #dc3545;
 
   svg {
-    flex-shrink: 0;
+    font-size: 1.25rem;
   }
 
   span {
@@ -194,73 +354,86 @@
   button {
     background: none;
     border: none;
+    color: #dc3545;
     font-size: 1.25rem;
-    color: $error-color;
     cursor: pointer;
     padding: 0;
   }
 }
 
-// Layout
+// ============================================
+// Checkout Layout
+// ============================================
 .checkoutLayout {
   display: grid;
   grid-template-columns: 1fr 380px;
-  gap: $spacing-xl;
+  gap: $spacing-2xl;
+  align-items: flex-start;
 
-  @media (max-width: 992px) {
+  @media (max-width: 1024px) {
     grid-template-columns: 1fr;
   }
 }
 
-// Main Content
+// ============================================
+// Checkout Main Content
+// ============================================
 .checkoutMain {
-  background: $bg-primary;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
   border-radius: $radius-xl;
   padding: $spacing-xl;
+  backdrop-filter: blur(10px);
 }
 
 .stepContent {
-  min-height: 300px;
+  min-height: 400px;
 }
 
 .sectionHeader {
   display: flex;
   align-items: center;
   gap: $spacing-sm;
-  margin-bottom: $spacing-lg;
+  margin-bottom: $spacing-xl;
+  padding-bottom: $spacing-md;
+  border-bottom: 1px solid rgba($gold-primary, 0.1);
 
   svg {
-    font-size: 1.25rem;
     color: $gold-primary;
+    font-size: 1.25rem;
   }
 
   h2, h3 {
     font-family: $font-heading;
     font-size: 1.25rem;
-    color: $text-primary;
+    font-weight: 400;
+    color: $light-text;
+    margin: 0;
   }
 }
 
+// ============================================
 // Address Section
+// ============================================
 .addressList {
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
-  margin-bottom: $spacing-lg;
+  margin-bottom: $spacing-xl;
 }
 
 .addressCard {
   display: flex;
-  align-items: flex-start;
   gap: $spacing-md;
   padding: $spacing-lg;
-  border: 2px solid $border-color;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
   border-radius: $radius-lg;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: rgba($gold-primary, 0.5);
+    border-color: rgba($gold-primary, 0.3);
   }
 
   &.selected {
@@ -269,8 +442,10 @@
   }
 }
 
-.addressRadio, .paymentRadio {
+.addressRadio {
   position: relative;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
 
   input {
@@ -280,10 +455,12 @@
   }
 
   .radioMark {
-    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 20px;
     height: 20px;
-    border: 2px solid $border-color;
+    border: 2px solid rgba($gold-primary, 0.4);
     border-radius: 50%;
     transition: all 0.3s ease;
 
@@ -297,7 +474,7 @@
       height: 10px;
       background: $gold-primary;
       border-radius: 50%;
-      transition: transform 0.3s ease;
+      transition: transform 0.2s ease;
     }
   }
 
@@ -318,74 +495,79 @@
   display: flex;
   align-items: center;
   gap: $spacing-sm;
-  margin-bottom: $spacing-xs;
+  margin-bottom: $spacing-2xs;
 
   strong {
+    color: $light-text;
     font-size: 1rem;
-    color: $text-primary;
   }
 }
 
 .defaultTag {
-  font-size: 0.75rem;
-  padding: 2px 8px;
-  background: rgba($gold-primary, 0.15);
+  padding: 2px $spacing-xs;
+  background: rgba($gold-primary, 0.2);
   color: $gold-primary;
+  font-size: 0.7rem;
+  font-weight: 600;
   border-radius: $radius-sm;
-  font-weight: 500;
+  text-transform: uppercase;
 }
 
 .addressPhone {
-  font-size: 0.9375rem;
-  color: $text-secondary;
-  margin-bottom: $spacing-xs;
+  color: rgba($light-text, 0.7);
+  font-size: 0.9rem;
+  margin-bottom: $spacing-2xs;
 }
 
 .addressDetail {
-  font-size: 0.875rem;
-  color: $text-secondary;
+  color: rgba($light-text, 0.6);
+  font-size: 0.85rem;
   line-height: 1.5;
 }
 
 .noAddress {
   text-align: center;
   padding: $spacing-xl;
-  color: $text-secondary;
+  color: rgba($light-text, 0.5);
 }
 
 .addAddressBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: $spacing-sm;
+  gap: $spacing-xs;
   width: 100%;
   padding: $spacing-md;
-  border: 2px dashed $border-color;
+  background: transparent;
+  border: 1px dashed rgba($gold-primary, 0.4);
+  color: $gold-primary;
+  font-size: 0.95rem;
+  font-weight: 500;
   border-radius: $radius-lg;
-  background: none;
-  color: $text-secondary;
-  font-size: 0.9375rem;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
+    background: rgba($gold-primary, 0.05);
     border-color: $gold-primary;
-    color: $gold-primary;
   }
 }
 
+// ============================================
 // Address Form
+// ============================================
 .addressForm {
-  padding: $spacing-lg;
-  background: $bg-secondary;
+  background: rgba($gold-primary, 0.03);
+  border: 1px solid rgba($gold-primary, 0.15);
   border-radius: $radius-lg;
-  margin-top: $spacing-lg;
+  padding: $spacing-xl;
+  margin-top: $spacing-xl;
 
   h3 {
     font-family: $font-heading;
-    font-size: 1.125rem;
-    margin-bottom: $spacing-lg;
-    color: $text-primary;
+    font-size: 1.1rem;
+    color: $light-text;
+    margin-bottom: $spacing-xl;
   }
 }
 
@@ -404,33 +586,31 @@
 
   label {
     display: block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: $text-primary;
+    font-size: 0.85rem;
+    color: rgba($light-text, 0.7);
     margin-bottom: $spacing-xs;
+    font-weight: 500;
   }
 
-  input, select, textarea {
+  input {
     width: 100%;
     padding: $spacing-sm $spacing-md;
-    border: 1px solid $border-color;
+    background: rgba($light-text, 0.03);
+    border: 1px solid rgba($gold-primary, 0.2);
     border-radius: $radius-md;
-    font-size: 0.9375rem;
-    transition: border-color 0.3s ease;
+    color: $light-text;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+
+    &::placeholder {
+      color: rgba($light-text, 0.3);
+    }
 
     &:focus {
       outline: none;
       border-color: $gold-primary;
+      box-shadow: 0 0 0 3px rgba($gold-primary, 0.1);
     }
-
-    &::placeholder {
-      color: $text-muted;
-    }
-  }
-
-  textarea {
-    resize: vertical;
-    min-height: 80px;
   }
 }
 
@@ -438,7 +618,7 @@
   display: flex;
   align-items: center;
   gap: $spacing-sm;
-  margin-bottom: $spacing-lg;
+  margin-bottom: $spacing-xl;
 
   input {
     width: 18px;
@@ -447,46 +627,47 @@
   }
 
   label {
-    font-size: 0.9375rem;
-    color: $text-secondary;
+    color: rgba($light-text, 0.7);
+    font-size: 0.9rem;
     cursor: pointer;
   }
 }
 
 .formActions {
   display: flex;
-  justify-content: flex-end;
   gap: $spacing-md;
+  justify-content: flex-end;
 }
 
 .cancelBtn {
   padding: $spacing-sm $spacing-lg;
-  background: none;
-  border: 1px solid $border-color;
+  background: transparent;
+  border: 1px solid rgba($light-text, 0.2);
+  color: rgba($light-text, 0.6);
+  font-size: 0.9rem;
   border-radius: $radius-md;
-  color: $text-secondary;
-  font-size: 0.9375rem;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    background: $bg-secondary;
+    border-color: rgba($light-text, 0.4);
+    color: $light-text;
   }
 }
 
 .submitBtn {
   padding: $spacing-sm $spacing-lg;
-  background: $gold-primary;
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
   border: none;
-  border-radius: $radius-md;
   color: $dark-primary;
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-radius: $radius-md;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover:not(:disabled) {
-    background: darken($gold-primary, 10%);
+    transform: translateY(-2px);
   }
 
   &:disabled {
@@ -495,7 +676,9 @@
   }
 }
 
+// ============================================
 // Payment Section
+// ============================================
 .paymentList {
   display: flex;
   flex-direction: column;
@@ -508,13 +691,14 @@
   align-items: center;
   gap: $spacing-md;
   padding: $spacing-lg;
-  border: 2px solid $border-color;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
   border-radius: $radius-lg;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: rgba($gold-primary, 0.5);
+    border-color: rgba($gold-primary, 0.3);
   }
 
   &.selected {
@@ -523,9 +707,12 @@
   }
 }
 
+.paymentRadio {
+  @extend .addressRadio;
+}
+
 .paymentIcon {
-  font-size: 1.75rem;
-  flex-shrink: 0;
+  font-size: 2rem;
 }
 
 .paymentInfo {
@@ -533,23 +720,32 @@
 
   strong {
     display: block;
+    color: $light-text;
     font-size: 1rem;
-    color: $text-primary;
-    margin-bottom: 4px;
+    margin-bottom: $spacing-2xs;
   }
 
   p {
-    font-size: 0.875rem;
-    color: $text-secondary;
+    color: rgba($light-text, 0.6);
+    font-size: 0.85rem;
+    margin: 0;
   }
 }
 
-// Voucher Section
+// ============================================
+// Voucher Section (Checkout)
+// ============================================
 .voucherSection {
+  margin-bottom: $spacing-xl;
   padding: $spacing-lg;
-  background: $bg-secondary;
+  background: rgba($gold-primary, 0.03);
+  border: 1px solid rgba($gold-primary, 0.1);
   border-radius: $radius-lg;
-  margin-bottom: $spacing-lg;
+
+  .sectionHeader {
+    margin-bottom: $spacing-md;
+    padding-bottom: $spacing-sm;
+  }
 }
 
 .voucherInput {
@@ -559,17 +755,19 @@
   input {
     flex: 1;
     padding: $spacing-sm $spacing-md;
-    border: 1px solid $border-color;
+    background: rgba($light-text, 0.03);
+    border: 1px solid rgba($gold-primary, 0.2);
     border-radius: $radius-md;
-    font-size: 0.9375rem;
+    color: $light-text;
+    font-size: 0.95rem;
+
+    &::placeholder {
+      color: rgba($light-text, 0.4);
+    }
 
     &:focus {
       outline: none;
       border-color: $gold-primary;
-    }
-    
-    &:disabled {
-      background: $bg-tertiary;
     }
   }
 
@@ -577,26 +775,28 @@
     padding: $spacing-sm $spacing-lg;
     background: $gold-primary;
     border: none;
-    border-radius: $radius-md;
     color: $dark-primary;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: $radius-md;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
+    white-space: nowrap;
 
     &:hover:not(:disabled) {
-      background: darken($gold-primary, 10%);
+      background: $gold-secondary;
     }
 
     &:disabled {
-      opacity: 0.6;
+      opacity: 0.5;
       cursor: not-allowed;
     }
   }
 }
 
 .voucherError {
-  color: $error-color;
-  font-size: 0.8125rem;
+  color: #dc3545;
+  font-size: 0.85rem;
   margin-top: $spacing-xs;
 }
 
@@ -604,9 +804,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: $spacing-md;
-  background: rgba($success-color, 0.1);
-  border: 1px solid rgba($success-color, 0.3);
+  padding: $spacing-sm $spacing-md;
+  background: rgba(40, 167, 69, 0.1);
+  border: 1px solid rgba(40, 167, 69, 0.3);
   border-radius: $radius-md;
 }
 
@@ -614,65 +814,60 @@
   display: flex;
   align-items: center;
   gap: $spacing-sm;
-  
+
   .checkIcon {
-    color: $success-color;
+    color: #28a745;
     font-size: 1.25rem;
   }
-  
+
   strong {
     display: block;
-    color: $success-color;
-    font-weight: 600;
+    color: $light-text;
+    font-size: 0.95rem;
   }
-  
+
   span {
-    font-size: 0.8125rem;
-    color: $text-secondary;
+    font-size: 0.8rem;
+    color: #28a745;
   }
 }
 
 .removeVoucherBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 28px;
   height: 28px;
-  background: transparent;
+  border-radius: 50%;
+  background: rgba($light-text, 0.1);
   border: none;
-  color: $text-muted;
+  color: rgba($light-text, 0.6);
   cursor: pointer;
-  border-radius: $radius-sm;
-  transition: all 0.2s ease;
-  
+  transition: all 0.3s ease;
+
   &:hover {
-    background: rgba($error-color, 0.1);
-    color: $error-color;
+    background: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
   }
 }
 
 .availableVouchers {
-  margin-top: $spacing-md;
+  margin-top: $spacing-sm;
 }
 
 .showVouchersBtn {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: $spacing-xs;
-  width: 100%;
   padding: $spacing-sm;
   background: transparent;
-  border: 1px dashed $gold-primary;
-  border-radius: $radius-sm;
+  border: 1px dashed rgba($gold-primary, 0.3);
   color: $gold-primary;
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 0.85rem;
+  border-radius: $radius-sm;
   cursor: pointer;
-  transition: all 0.2s ease;
-  
+  transition: all 0.3s ease;
+
   &:hover {
     background: rgba($gold-primary, 0.05);
+    border-color: $gold-primary;
   }
 }
 
@@ -680,90 +875,90 @@
   margin-top: $spacing-sm;
   max-height: 200px;
   overflow-y: auto;
-  border: 1px solid $border-color;
-  border-radius: $radius-sm;
-  background: $bg-primary;
+  border: 1px solid rgba($gold-primary, 0.1);
+  border-radius: $radius-md;
 }
 
 .voucherItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: $spacing-sm $spacing-md;
-  border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid rgba($gold-primary, 0.08);
   cursor: pointer;
-  transition: all 0.2s ease;
-  
+  transition: background 0.3s ease;
+
   &:last-child {
     border-bottom: none;
   }
-  
+
   &:hover {
-    background: $bg-secondary;
+    background: rgba($gold-primary, 0.05);
   }
 }
 
 .voucherItemInfo {
-  display: flex;
-  flex-direction: column;
-  
   strong {
+    display: block;
     color: $gold-primary;
-    font-weight: 600;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
   }
-  
+
   span {
-    font-size: 0.75rem;
-    color: $text-secondary;
+    display: block;
+    font-size: 0.8rem;
+    color: rgba($light-text, 0.6);
   }
 }
 
 .maxDiscount {
-  color: $warning-color !important;
-  font-style: italic;
+  color: #28a745 !important;
 }
 
 .voucherExpiry {
-  font-size: 0.6875rem;
-  color: $text-muted;
-  white-space: nowrap;
+  font-size: 0.75rem;
+  color: rgba($light-text, 0.4);
 }
 
+// ============================================
 // Note Section
+// ============================================
 .noteSection {
   label {
     display: block;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    color: $text-primary;
+    font-size: 0.9rem;
+    color: rgba($light-text, 0.7);
     margin-bottom: $spacing-sm;
+    font-weight: 500;
   }
 
   textarea {
     width: 100%;
     padding: $spacing-md;
-    border: 1px solid $border-color;
+    background: rgba($light-text, 0.03);
+    border: 1px solid rgba($gold-primary, 0.15);
     border-radius: $radius-md;
-    font-size: 0.9375rem;
+    color: $light-text;
+    font-size: 0.95rem;
     resize: vertical;
+    font-family: inherit;
+
+    &::placeholder {
+      color: rgba($light-text, 0.3);
+    }
 
     &:focus {
       outline: none;
       border-color: $gold-primary;
     }
-
-    &::placeholder {
-      color: $text-muted;
-    }
   }
 }
 
+// ============================================
 // Confirmation Section
+// ============================================
 .confirmSection {
-  padding: $spacing-lg;
-  background: $bg-secondary;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
   border-radius: $radius-lg;
+  padding: $spacing-lg;
   margin-bottom: $spacing-lg;
 }
 
@@ -779,38 +974,45 @@
 
   h3 {
     flex: 1;
+    font-family: $font-heading;
     font-size: 1rem;
-    font-weight: 600;
-    color: $text-primary;
+    color: $light-text;
+    margin: 0;
   }
+}
 
-  .editBtn {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 0.875rem;
-    color: $gold-primary;
-    transition: color 0.3s ease;
+.editBtn {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2xs;
+  padding: $spacing-2xs $spacing-sm;
+  background: transparent;
+  border: 1px solid rgba($gold-primary, 0.3);
+  color: $gold-primary;
+  font-size: 0.8rem;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
 
-    &:hover {
-      color: darken($gold-primary, 10%);
-    }
+  &:hover {
+    background: rgba($gold-primary, 0.1);
   }
 }
 
 .confirmContent {
   p {
-    font-size: 0.9375rem;
-    color: $text-secondary;
+    color: rgba($light-text, 0.8);
+    font-size: 0.95rem;
     line-height: 1.6;
+    margin: 0 0 $spacing-2xs;
 
     strong {
-      color: $text-primary;
+      color: $light-text;
     }
   }
 }
 
-// Order Items in Confirmation
 .orderItems {
   display: flex;
   flex-direction: column;
@@ -822,7 +1024,7 @@
   align-items: center;
   gap: $spacing-md;
   padding: $spacing-sm;
-  background: $bg-primary;
+  background: rgba($gold-primary, 0.03);
   border-radius: $radius-md;
 
   img {
@@ -830,6 +1032,7 @@
     height: 50px;
     object-fit: cover;
     border-radius: $radius-sm;
+    border: 1px solid rgba($gold-primary, 0.15);
   }
 }
 
@@ -837,72 +1040,101 @@
   flex: 1;
 
   h4 {
-    font-size: 0.9375rem;
+    font-size: 0.9rem;
+    color: $light-text;
+    margin: 0 0 $spacing-2xs;
     font-weight: 500;
-    color: $text-primary;
-    margin-bottom: 4px;
   }
 
   span {
-    font-size: 0.8125rem;
-    color: $text-secondary;
+    display: inline-block;
+    font-size: 0.8rem;
+    color: rgba($light-text, 0.5);
+    margin-right: $spacing-sm;
   }
 }
 
 .orderItemQty {
-  margin-left: $spacing-sm;
+  color: $gold-primary !important;
 }
 
 .orderItemPrice {
   font-weight: 600;
   color: $gold-primary;
+  font-size: 0.95rem;
 }
 
+// ============================================
 // Step Navigation
+// ============================================
 .stepNavigation {
   display: flex;
   justify-content: space-between;
-  margin-top: $spacing-xl;
-  padding-top: $spacing-lg;
-  border-top: 1px solid $border-color;
+  gap: $spacing-md;
+  margin-top: $spacing-2xl;
+  padding-top: $spacing-xl;
+  border-top: 1px solid rgba($gold-primary, 0.1);
 }
 
 .prevBtn {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
-  padding: $spacing-md $spacing-lg;
-  background: none;
-  border: 1px solid $border-color;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-lg;
+  background: transparent;
+  border: 1px solid rgba($light-text, 0.2);
+  color: rgba($light-text, 0.7);
+  font-size: 0.95rem;
   border-radius: $radius-md;
-  color: $text-secondary;
-  font-size: 0.9375rem;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: $text-secondary;
-    color: $text-primary;
+    border-color: rgba($light-text, 0.4);
+    color: $light-text;
   }
 }
 
-.nextBtn, .placeOrderBtn {
+.nextBtn {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
-  padding: $spacing-md $spacing-xl;
-  background: $gold-primary;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-xl;
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
   border: none;
-  border-radius: $radius-md;
   color: $dark-primary;
-  font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: $radius-md;
   cursor: pointer;
   transition: all 0.3s ease;
   margin-left: auto;
 
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba($gold-primary, 0.3);
+  }
+}
+
+.placeOrderBtn {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-md $spacing-2xl;
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
+  border: none;
+  color: $dark-primary;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: $radius-full;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  margin-left: auto;
+  box-shadow: $shadow-gold-lg;
+
   &:hover:not(:disabled) {
-    background: darken($gold-primary, 10%);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba($gold-primary, 0.4);
   }
 
   &:disabled {
@@ -911,266 +1143,160 @@
   }
 }
 
+// ============================================
 // Order Summary Sidebar
+// ============================================
 .orderSummary {
-  background: $bg-primary;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
   border-radius: $radius-xl;
   padding: $spacing-xl;
-  height: fit-content;
+  backdrop-filter: blur(10px);
   position: sticky;
   top: 100px;
 
   h3 {
     font-family: $font-heading;
     font-size: 1.25rem;
-    color: $text-primary;
-    margin-bottom: $spacing-lg;
-  }
-
-  @media (max-width: 992px) {
-    position: static;
+    color: $light-text;
+    margin-bottom: $spacing-xl;
+    padding-bottom: $spacing-md;
+    border-bottom: 1px solid rgba($gold-primary, 0.1);
   }
 }
 
 .summaryItems {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
   margin-bottom: $spacing-lg;
 }
 
 .summaryItem {
   display: flex;
-  gap: $spacing-md;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-sm;
 }
 
 .summaryItemImg {
   position: relative;
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   flex-shrink: 0;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: $radius-md;
+    border-radius: $radius-sm;
+    border: 1px solid rgba($gold-primary, 0.15);
   }
+}
 
-  .itemQty {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    width: 22px;
-    height: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: $gold-primary;
-    color: $dark-primary;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border-radius: 50%;
-  }
+.itemQty {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  background: $gold-primary;
+  color: $dark-primary;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .summaryItemInfo {
   flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .summaryItemName {
-  font-size: 0.9375rem;
-  color: $text-primary;
-  line-height: 1.4;
-  margin-bottom: 4px;
+  font-size: 0.85rem;
+  color: $light-text;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .summaryItemPrice {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.9rem;
   color: $gold-primary;
+  font-weight: 600;
 }
 
 .moreItems {
+  font-size: 0.85rem;
+  color: rgba($light-text, 0.5);
   text-align: center;
-  font-size: 0.875rem;
-  color: $text-secondary;
-  font-style: italic;
+  margin-top: $spacing-sm;
 }
 
 .summaryDivider {
   height: 1px;
-  background: $border-color;
+  background: rgba($gold-primary, 0.1);
   margin: $spacing-md 0;
 }
 
 .summaryRow {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-size: 0.9375rem;
-  color: $text-secondary;
-  margin-bottom: $spacing-sm;
+  padding: $spacing-xs 0;
+  font-size: 0.9rem;
+
+  span:first-child {
+    display: flex;
+    align-items: center;
+    color: rgba($light-text, 0.7);
+  }
+
+  span:last-child {
+    color: $light-text;
+    font-weight: 500;
+  }
 
   &.discount {
-    color: $success-color;
+    span:last-child {
+      color: #28a745;
+    }
   }
 }
 
 .summaryTotal {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: $text-primary;
-  padding-top: $spacing-sm;
+  padding: $spacing-md 0;
+
+  span:first-child {
+    font-family: $font-accent;
+    font-size: 1rem;
+    color: rgba($light-text, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 
   span:last-child {
-    font-size: 1.25rem;
+    font-family: $font-heading;
+    font-size: 1.5rem;
     color: $gold-primary;
+    font-weight: 600;
   }
 }
 
 .freeShipNote {
+  padding: $spacing-sm $spacing-md;
+  background: rgba($gold-primary, 0.05);
+  border: 1px dashed rgba($gold-primary, 0.3);
+  border-radius: $radius-md;
+  font-size: 0.85rem;
+  color: rgba($light-text, 0.7);
   text-align: center;
-  font-size: 0.8125rem;
-  color: $text-secondary;
   margin-top: $spacing-md;
-  padding: $spacing-sm;
-  background: rgba($gold-primary, 0.1);
-  border-radius: $radius-md;
 
   strong {
     color: $gold-primary;
-  }
-}
-
-// Order Success
-.orderSuccess {
-  text-align: center;
-  padding: $spacing-3xl;
-  background: $bg-primary;
-  border-radius: $radius-xl;
-  max-width: 500px;
-  margin: 0 auto;
-
-  .successIcon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 80px;
-    height: 80px;
-    margin: 0 auto $spacing-lg;
-    background: rgba($success-color, 0.1);
-    border-radius: 50%;
-    color: $success-color;
-    font-size: 2.5rem;
-  }
-
-  h1 {
-    font-family: $font-heading;
-    font-size: 1.75rem;
-    color: $text-primary;
-    margin-bottom: $spacing-sm;
-  }
-
-  > p {
-    color: $text-secondary;
-    margin-bottom: $spacing-xl;
-  }
-}
-
-.orderInfo {
-  background: $bg-secondary;
-  border-radius: $radius-lg;
-  padding: $spacing-lg;
-  margin-bottom: $spacing-xl;
-  text-align: left;
-}
-
-.orderInfoRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: $spacing-sm 0;
-  border-bottom: 1px solid $border-color;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  span {
-    color: $text-secondary;
-    font-size: 0.9375rem;
-  }
-
-  strong {
-    color: $text-primary;
-    font-size: 1rem;
-  }
-}
-
-.bankInfo {
-  background: rgba($gold-primary, 0.1);
-  border-radius: $radius-lg;
-  padding: $spacing-lg;
-  margin-bottom: $spacing-xl;
-  text-align: left;
-
-  h3 {
-    font-size: 1rem;
-    color: $gold-primary;
-    margin-bottom: $spacing-md;
-  }
-
-  p {
-    font-size: 0.9375rem;
-    color: $text-primary;
-    margin-bottom: $spacing-xs;
-
-    strong {
-      color: $gold-primary;
-    }
-  }
-}
-
-.successActions {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
-}
-
-.viewOrderBtn {
-  display: block;
-  padding: $spacing-md $spacing-xl;
-  background: $gold-primary;
-  color: $dark-primary;
-  font-weight: 600;
-  border-radius: $radius-md;
-  text-align: center;
-  transition: background 0.3s ease;
-
-  &:hover {
-    background: darken($gold-primary, 10%);
-  }
-}
-
-.continueBtn {
-  display: block;
-  padding: $spacing-md $spacing-xl;
-  background: none;
-  border: 1px solid $border-color;
-  color: $text-secondary;
-  font-weight: 500;
-  border-radius: $radius-md;
-  text-align: center;
-  transition: all 0.3s ease;
-
-  &:hover {
-    border-color: $text-secondary;
-    color: $text-primary;
   }
 }
