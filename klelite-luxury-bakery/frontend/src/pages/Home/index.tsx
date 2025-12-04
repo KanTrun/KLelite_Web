@@ -1,18 +1,44 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { FiArrowRight, FiStar, FiTruck, FiHeart, FiAward } from 'react-icons/fi';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
+import {
+  FiArrowRight,
+  FiStar,
+  FiTruck,
+  FiHeart,
+  FiAward,
+  FiClock,
+  FiShield,
+  FiGift,
+} from 'react-icons/fi';
 import styles from './Home.module.scss';
 
-// Animation variants following claudekit-engineer timing (200-500ms)
+// ============================================
+// Animation Variants - Professional Timing
+// Following claudekit-engineer: 200-500ms for smooth feel
+// ============================================
 const fadeInUp = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: { opacity: 0, y: 60 },
   visible: (delay: number = 0) => ({
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.5,
+      duration: 0.7,
       delay,
-      ease: [0.25, 0.46, 0.45, 0.94], // ease-out
+      ease: [0.22, 1, 0.36, 1], // custom ease-out
+    },
+  }),
+};
+
+const fadeInScale = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: (delay: number = 0) => ({
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.6,
+      delay,
+      ease: [0.22, 1, 0.36, 1],
     },
   }),
 };
@@ -22,151 +48,197 @@ const staggerContainer = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
+      staggerChildren: 0.12,
+      delayChildren: 0.1,
     },
   },
 };
 
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.8 },
-  visible: (delay: number = 0) => ({
+const slideInLeft = {
+  hidden: { opacity: 0, x: -80 },
+  visible: {
     opacity: 1,
-    scale: 1,
+    x: 0,
     transition: {
-      duration: 0.4,
-      delay,
-      ease: [0.34, 1.56, 0.64, 1], // bounce
+      duration: 0.8,
+      ease: [0.22, 1, 0.36, 1],
     },
-  }),
+  },
 };
 
-// Sample featured products (would come from API)
+const slideInRight = {
+  hidden: { opacity: 0, x: 80 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.8,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+};
+
+// ============================================
+// Data - Featured Products & Categories
+// ============================================
 const featuredProducts = [
   {
     id: '1',
-    name: 'Royal Chocolate Dream',
-    slug: 'royal-chocolate-dream',
-    category: 'Bánh Sinh Nhật',
-    price: 850000,
-    originalPrice: 1000000,
+    name: 'Royal Chocolate Symphony',
+    slug: 'royal-chocolate-symphony',
+    category: 'Signature Collection',
+    price: 1250000,
+    originalPrice: 1500000,
     image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600',
-    rating: 4.9,
-    reviewCount: 128,
+    rating: 5.0,
+    reviewCount: 156,
     isNew: true,
+    badge: 'Chef\'s Choice',
   },
   {
     id: '2',
-    name: 'Tiramisu Classic',
-    slug: 'tiramisu-classic',
-    category: 'Bánh Ngọt',
-    price: 650000,
+    name: 'Tiramisu Royale',
+    slug: 'tiramisu-royale',
+    category: 'Italian Collection',
+    price: 850000,
     image: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600',
-    rating: 4.8,
-    reviewCount: 96,
+    rating: 4.9,
+    reviewCount: 128,
     isBestseller: true,
+    badge: 'Bestseller',
   },
   {
     id: '3',
     name: 'Wedding Elegance',
     slug: 'wedding-elegance',
-    category: 'Bánh Cưới',
-    price: 2500000,
+    category: 'Wedding Collection',
+    price: 3500000,
     image: 'https://images.unsplash.com/photo-1535254973040-607b474d7f5b?w=600',
     rating: 5.0,
-    reviewCount: 42,
+    reviewCount: 89,
     isFeatured: true,
+    badge: 'Premium',
   },
   {
     id: '4',
-    name: 'Fruit Paradise',
-    slug: 'fruit-paradise',
-    category: 'Bánh Trái Cây',
-    price: 750000,
-    originalPrice: 850000,
+    name: 'Fruit Paradise Deluxe',
+    slug: 'fruit-paradise-deluxe',
+    category: 'Fresh Collection',
+    price: 950000,
+    originalPrice: 1100000,
     image: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600',
-    rating: 4.7,
-    reviewCount: 84,
-    isSale: true,
+    rating: 4.8,
+    reviewCount: 103,
+    badge: 'Sale',
   },
 ];
 
 const categories = [
   {
-    name: 'Bánh Sinh Nhật',
-    description: 'Làm rạng ngời ngày đặc biệt',
-    image: 'https://images.unsplash.com/photo-1558636508-e0db3814bd1d?w=800',
-    slug: 'banh-sinh-nhat',
+    name: 'Signature Cakes',
+    description: 'Tuyệt phẩm từ bậc thầy',
+    image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800',
+    slug: 'signature-cakes',
     count: 45,
+    highlight: 'Bestseller',
   },
   {
-    name: 'Bánh Cưới',
+    name: 'Wedding Collection',
     description: 'Hoàn hảo cho ngày trọng đại',
     image: 'https://images.unsplash.com/photo-1535254973040-607b474d7f5b?w=800',
-    slug: 'banh-cuoi',
-    count: 28,
+    slug: 'wedding-collection',
+    count: 32,
+    highlight: 'Premium',
   },
   {
-    name: 'Bánh Ngọt',
-    description: 'Hương vị tinh tế mỗi ngày',
+    name: 'French Pastries',
+    description: 'Nghệ thuật bánh Pháp',
     image: 'https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=800',
-    slug: 'banh-ngot',
-    count: 62,
+    slug: 'french-pastries',
+    count: 58,
+    highlight: 'Popular',
   },
   {
-    name: 'Bánh Mì Artisan',
-    description: 'Nghệ thuật từ lò nướng',
+    name: 'Artisan Breads',
+    description: 'Hương vị thủ công',
     image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800',
-    slug: 'banh-mi',
-    count: 35,
+    slug: 'artisan-breads',
+    count: 28,
+    highlight: 'New',
   },
 ];
 
-const features = [
-  {
-    icon: <FiStar />,
-    title: 'Nguyên Liệu Cao Cấp',
-    description: 'Sử dụng 100% nguyên liệu tươi ngon, được chọn lọc kỹ lưỡng từ các nhà cung cấp uy tín nhất.',
-  },
+const luxuryFeatures = [
   {
     icon: <FiAward />,
-    title: 'Đầu Bếp Chuyên Nghiệp',
-    description: 'Đội ngũ Pastry Chef được đào tạo bài bản từ các học viện ẩm thực hàng đầu châu Âu.',
+    title: 'Premium Ingredients',
+    description: 'Nguyên liệu nhập khẩu từ Pháp, Bỉ & Thụy Sĩ. Chocolate Valrhona, bơ Échiré, cream tươi hàng ngày.',
+    highlight: '100% Authentic',
+  },
+  {
+    icon: <FiStar />,
+    title: 'Master Pastry Chefs',
+    description: 'Đội ngũ đầu bếp được đào tạo tại Le Cordon Bleu Paris, với hơn 15 năm kinh nghiệm.',
+    highlight: 'World-Class',
+  },
+  {
+    icon: <FiClock />,
+    title: 'Fresh Daily',
+    description: 'Mỗi chiếc bánh được làm mới mỗi ngày, đảm bảo hương vị tươi ngon nhất.',
+    highlight: 'Daily Made',
   },
   {
     icon: <FiTruck />,
-    title: 'Giao Hàng Tận Tâm',
-    description: 'Giao hàng trong ngày với xe chuyên dụng, đảm bảo bánh luôn hoàn hảo khi đến tay bạn.',
+    title: 'White Glove Delivery',
+    description: 'Giao hàng bằng xe chuyên dụng có điều hòa, đảm bảo bánh luôn hoàn hảo.',
+    highlight: 'Premium Service',
   },
   {
     icon: <FiHeart />,
-    title: 'Thiết Kế Theo Yêu Cầu',
-    description: 'Tùy chỉnh mẫu mã, hương vị và thông điệp theo mong muốn của từng khách hàng.',
+    title: 'Bespoke Creations',
+    description: 'Thiết kế riêng theo yêu cầu của bạn, mang đến sự độc đáo cho mỗi dịp.',
+    highlight: 'Customizable',
+  },
+  {
+    icon: <FiShield />,
+    title: 'Quality Guarantee',
+    description: 'Cam kết hoàn tiền 100% nếu bạn không hài lòng với sản phẩm.',
+    highlight: '100% Guaranteed',
   },
 ];
 
 const testimonials = [
   {
-    name: 'Nguyễn Minh Anh',
-    role: 'Khách hàng thân thiết',
+    name: 'Nguyễn Minh Châu',
+    role: 'CEO, Luxury Events',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
-    content: 'Bánh của KL\'élite luôn vượt qua mọi kỳ vọng. Hương vị tinh tế, thiết kế sang trọng - hoàn hảo cho mọi dịp lễ của gia đình tôi.',
+    content: 'KL\'élite đã biến đám cưới của tôi thành một tác phẩm nghệ thuật. Mỗi chi tiết trên chiếc bánh đều hoàn hảo đến từng milimet.',
     rating: 5,
+    featured: true,
   },
   {
     name: 'Trần Đức Hùng',
     role: 'Wedding Planner',
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
-    content: 'Đối tác tin cậy cho mọi đám cưới tôi tổ chức. Chất lượng nhất quán, dịch vụ chuyên nghiệp và luôn đúng hẹn.',
+    content: 'Đối tác tin cậy cho mọi sự kiện cao cấp. Chất lượng nhất quán và dịch vụ chuyên nghiệp vượt mọi kỳ vọng.',
     rating: 5,
   },
   {
-    name: 'Lê Thị Hương',
-    role: 'Food Blogger',
+    name: 'Lê Thị Hương Giang',
+    role: 'Food Critic',
     avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
-    content: 'Từng miếng bánh là một tác phẩm nghệ thuật. KL\'élite xứng đáng với danh hiệu "Luxury Bakery" mà họ theo đuổi.',
+    content: 'Đây là định nghĩa của luxury bakery tại Việt Nam. Hương vị tinh tế, thiết kế đẳng cấp quốc tế.',
     rating: 5,
   },
+];
+
+const instagramPosts = [
+  { id: 1, image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400', likes: 2345 },
+  { id: 2, image: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400', likes: 1892 },
+  { id: 3, image: 'https://images.unsplash.com/photo-1535254973040-607b474d7f5b?w=400', likes: 3156 },
+  { id: 4, image: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400', likes: 2789 },
+  { id: 5, image: 'https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=400', likes: 1654 },
+  { id: 6, image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400', likes: 2103 },
 ];
 
 const formatPrice = (price: number): string => {
@@ -176,155 +248,196 @@ const formatPrice = (price: number): string => {
   }).format(price);
 };
 
+// ============================================
+// Home Component - Royal Luxury Design
+// ============================================
 const Home: React.FC = () => {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+
+  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.5], [1, 1.1]);
+
   return (
     <div className={styles.home}>
       {/* ============================================ */}
-      {/* Hero Section - Storytelling First Impression */}
+      {/* Hero Section - Royal First Impression */}
       {/* ============================================ */}
-      <section className={styles.hero}>
-        <div className={styles.heroBackground}>
+      <section className={styles.hero} ref={heroRef}>
+        {/* Parallax Background */}
+        <motion.div className={styles.heroBackground} style={{ y: heroY, scale: heroScale }}>
           <div className={styles.heroOverlay} />
           <img
-            src="https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=1920"
-            alt="Luxury Bakery Background"
+            src="https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=1920"
+            alt="Luxury Bakery Ambiance"
             className={styles.heroBgImage}
           />
-        </div>
+        </motion.div>
 
-        <div className={styles.heroContainer}>
+        {/* Decorative Elements */}
+        <div className={styles.heroDecorations}>
+          <div className={styles.heroGoldLine} />
+          <div className={styles.heroGoldLineRight} />
           <motion.div
-            className={styles.heroContent}
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
+            className={styles.heroFloatingBadge}
+            animate={{ y: [0, -15, 0], rotate: [0, 2, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           >
-            <motion.span className={styles.heroTagline} variants={fadeInUp} custom={0}>
-              ✨ Nghệ Thuật Ẩm Thực Đỉnh Cao
-            </motion.span>
-
-            <motion.h1 className={styles.heroTitle} variants={fadeInUp} custom={0.1}>
-              Bánh Cao Cấp
-              <span className={styles.heroTitleAccent}>Cho Khoảnh Khắc</span>
-              <span className={styles.heroTitleHighlight}>Đặc Biệt</span>
-            </motion.h1>
-
-            <motion.p className={styles.heroDescription} variants={fadeInUp} custom={0.2}>
-              Khám phá bộ sưu tập bánh thủ công được chế tác từ những nguyên liệu premium nhất,
-              mang đến trải nghiệm ẩm thực độc đáo và sang trọng cho mọi dịp.
-            </motion.p>
-
-            <motion.div className={styles.heroActions} variants={fadeInUp} custom={0.3}>
-              <Link to="/products" className={styles.heroPrimaryBtn}>
-                <span>Khám Phá Ngay</span>
-                <FiArrowRight />
-              </Link>
-              <Link to="/about" className={styles.heroSecondaryBtn}>
-                Câu Chuyện Của Chúng Tôi
-              </Link>
-            </motion.div>
-
-            <motion.div className={styles.heroStats} variants={fadeInUp} custom={0.4}>
-              <div className={styles.heroStat}>
-                <span className={styles.heroStatNumber}>5000+</span>
-                <span className={styles.heroStatLabel}>Khách hàng</span>
-              </div>
-              <div className={styles.heroStatDivider} />
-              <div className={styles.heroStat}>
-                <span className={styles.heroStatNumber}>150+</span>
-                <span className={styles.heroStatLabel}>Loại bánh</span>
-              </div>
-              <div className={styles.heroStatDivider} />
-              <div className={styles.heroStat}>
-                <span className={styles.heroStatNumber}>4.9</span>
-                <span className={styles.heroStatLabel}>Đánh giá</span>
-              </div>
-            </motion.div>
-          </motion.div>
-
-          <motion.div
-            className={styles.heroImageWrapper}
-            initial={{ opacity: 0, x: 60, scale: 0.9 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            transition={{ duration: 0.7, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-          >
-            <div className={styles.heroImageMain}>
-              <img
-                src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800"
-                alt="Luxury Chocolate Cake"
-              />
-            </div>
-            <motion.div
-              className={styles.heroImageFloat1}
-              animate={{ y: [0, -15, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <img
-                src="https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=400"
-                alt="Pastry"
-              />
-            </motion.div>
-            <motion.div
-              className={styles.heroImageFloat2}
-              animate={{ y: [0, 12, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-            >
-              <img
-                src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400"
-                alt="Fruit Cake"
-              />
-            </motion.div>
-            <div className={styles.heroDecoration}>
-              <span className={styles.heroDecorationText}>Premium Quality</span>
-            </div>
+            <span>Est. 2020</span>
           </motion.div>
         </div>
 
-        {/* Scroll indicator */}
+        {/* Main Content */}
+        <motion.div
+          className={styles.heroContent}
+          style={{ opacity: heroOpacity }}
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+        >
+          <motion.div className={styles.heroTaglineWrapper} variants={fadeInUp} custom={0}>
+            <div className={styles.heroTaglineLine} />
+            <span className={styles.heroTagline}>The Art of Luxury Pastry</span>
+            <div className={styles.heroTaglineLine} />
+          </motion.div>
+
+          <motion.h1 className={styles.heroTitle} variants={fadeInUp} custom={0.1}>
+            <span className={styles.heroTitleMain}>KL'élite</span>
+            <span className={styles.heroTitleSub}>Luxury Bakery</span>
+          </motion.h1>
+
+          <motion.p className={styles.heroDescription} variants={fadeInUp} custom={0.2}>
+            Nơi nghệ thuật bánh ngọt gặp gỡ sự hoàn hảo. <br />
+            Mỗi tác phẩm là một câu chuyện, mỗi hương vị là một kỷ niệm.
+          </motion.p>
+
+          <motion.div className={styles.heroActions} variants={fadeInUp} custom={0.3}>
+            <Link to="/products" className={styles.heroPrimaryBtn}>
+              <span>Khám Phá Bộ Sưu Tập</span>
+              <FiArrowRight />
+            </Link>
+            <Link to="/about" className={styles.heroSecondaryBtn}>
+              <span>Câu Chuyện Của Chúng Tôi</span>
+            </Link>
+          </motion.div>
+
+          <motion.div className={styles.heroStats} variants={fadeInUp} custom={0.4}>
+            <div className={styles.heroStat}>
+              <span className={styles.heroStatNumber}>10K+</span>
+              <span className={styles.heroStatLabel}>Khách hàng hài lòng</span>
+            </div>
+            <div className={styles.heroStatDivider} />
+            <div className={styles.heroStat}>
+              <span className={styles.heroStatNumber}>200+</span>
+              <span className={styles.heroStatLabel}>Tác phẩm độc đáo</span>
+            </div>
+            <div className={styles.heroStatDivider} />
+            <div className={styles.heroStat}>
+              <span className={styles.heroStatNumber}>5.0</span>
+              <span className={styles.heroStatLabel}>Đánh giá trung bình</span>
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* Scroll Indicator */}
         <motion.div
           className={styles.scrollIndicator}
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
+          animate={{ y: [0, 12, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <span>Cuộn xuống</span>
-          <div className={styles.scrollMouse}>
-            <div className={styles.scrollWheel} />
+          <span>Cuộn để khám phá</span>
+          <div className={styles.scrollLine}>
+            <motion.div
+              className={styles.scrollDot}
+              animate={{ y: [0, 24, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            />
           </div>
         </motion.div>
       </section>
 
       {/* ============================================ */}
-      {/* Features Section - Trust Building */}
+      {/* Marquee Section - Luxury Brands */}
       {/* ============================================ */}
-      <section className={styles.features}>
+      <section className={styles.marquee}>
+        <div className={styles.marqueeTrack}>
+          <div className={styles.marqueeContent}>
+            {['Valrhona Chocolate', '✦', 'Échiré Butter', '✦', 'Madagascar Vanilla', '✦', 'Belgian Cream', '✦', 'French Flour', '✦', 'Swiss Precision', '✦'].map((item, index) => (
+              <span key={index} className={item === '✦' ? styles.marqueeSymbol : styles.marqueeText}>
+                {item}
+              </span>
+            ))}
+            {['Valrhona Chocolate', '✦', 'Échiré Butter', '✦', 'Madagascar Vanilla', '✦', 'Belgian Cream', '✦', 'French Flour', '✦', 'Swiss Precision', '✦'].map((item, index) => (
+              <span key={`dup-${index}`} className={item === '✦' ? styles.marqueeSymbol : styles.marqueeText}>
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* About Brief Section */}
+      {/* ============================================ */}
+      <section className={styles.aboutBrief}>
         <div className={styles.container}>
           <motion.div
-            className={styles.featureGrid}
+            className={styles.aboutBriefContent}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-100px' }}
-            variants={staggerContainer}
           >
-            {features.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                className={styles.featureCard}
-                variants={scaleIn}
-                custom={index * 0.1}
-              >
-                <div className={styles.featureIcon}>{feature.icon}</div>
-                <h3 className={styles.featureTitle}>{feature.title}</h3>
-                <p className={styles.featureDescription}>{feature.description}</p>
-              </motion.div>
-            ))}
+            <motion.div className={styles.aboutBriefLeft} variants={slideInLeft}>
+              <span className={styles.sectionLabel}>Về Chúng Tôi</span>
+              <h2 className={styles.aboutBriefTitle}>
+                Nghệ Thuật <br />
+                <span className={styles.titleAccent}>Hoàng Gia</span>
+              </h2>
+              <p className={styles.aboutBriefText}>
+                KL'élite ra đời từ niềm đam mê cháy bỏng với nghệ thuật làm bánh và khát vọng
+                mang đến trải nghiệm ẩm thực đỉnh cao cho người Việt. Mỗi chiếc bánh tại
+                KL'élite đều được chế tác bởi những nghệ nhân hàng đầu, kết hợp giữa kỹ thuật
+                Pháp truyền thống và sự sáng tạo đương đại.
+              </p>
+              <Link to="/about" className={styles.aboutBriefLink}>
+                <span>Tìm hiểu thêm</span>
+                <FiArrowRight />
+              </Link>
+            </motion.div>
+
+            <motion.div className={styles.aboutBriefRight} variants={slideInRight}>
+              <div className={styles.aboutBriefImageWrapper}>
+                <img
+                  src="https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=800"
+                  alt="KL'élite Master Pastry Chef"
+                />
+                <div className={styles.aboutBriefImageOverlay} />
+                <motion.div
+                  className={styles.aboutBriefFloatingCard}
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  <FiAward className={styles.floatingCardIcon} />
+                  <div>
+                    <span className={styles.floatingCardTitle}>Award Winning</span>
+                    <span className={styles.floatingCardText}>Best Luxury Bakery 2024</span>
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* ============================================ */}
-      {/* Categories Section - Navigation */}
+      {/* Categories Section - Elegant Grid */}
       {/* ============================================ */}
       <section className={styles.categories}>
+        <div className={styles.categoriesBg} />
         <div className={styles.container}>
           <motion.div
             className={styles.sectionHeader}
@@ -333,10 +446,10 @@ const Home: React.FC = () => {
             viewport={{ once: true, margin: '-50px' }}
             variants={fadeInUp}
           >
-            <span className={styles.sectionLabel}>Danh Mục</span>
-            <h2 className={styles.sectionTitle}>Khám Phá Bộ Sưu Tập</h2>
+            <span className={styles.sectionLabel}>Bộ Sưu Tập</span>
+            <h2 className={styles.sectionTitle}>Danh Mục Nổi Bật</h2>
             <p className={styles.sectionSubtitle}>
-              Từ bánh sinh nhật độc đáo đến bánh cưới sang trọng, chúng tôi mang đến sự hoàn hảo cho mọi dịp
+              Khám phá những bộ sưu tập bánh cao cấp được chế tác dành riêng cho những dịp đặc biệt
             </p>
           </motion.div>
 
@@ -348,21 +461,70 @@ const Home: React.FC = () => {
             variants={staggerContainer}
           >
             {categories.map((category, index) => (
-              <motion.div key={category.slug} variants={fadeInUp} custom={index * 0.1}>
+              <motion.div key={category.slug} variants={fadeInScale} custom={index * 0.1}>
                 <Link to={`/products?category=${category.slug}`} className={styles.categoryCard}>
                   <div className={styles.categoryImageWrapper}>
                     <img src={category.image} alt={category.name} />
                     <div className={styles.categoryOverlay} />
+                    <div className={styles.categoryShine} />
                   </div>
                   <div className={styles.categoryContent}>
-                    <span className={styles.categoryCount}>{category.count} sản phẩm</span>
+                    <span className={styles.categoryHighlight}>{category.highlight}</span>
                     <h3 className={styles.categoryName}>{category.name}</h3>
                     <p className={styles.categoryDescription}>{category.description}</p>
-                    <span className={styles.categoryLink}>
-                      Xem thêm <FiArrowRight />
-                    </span>
+                    <div className={styles.categoryFooter}>
+                      <span className={styles.categoryCount}>{category.count} sản phẩm</span>
+                      <span className={styles.categoryLink}>
+                        Xem ngay <FiArrowRight />
+                      </span>
+                    </div>
                   </div>
                 </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* Features Section - Luxury Highlights */}
+      {/* ============================================ */}
+      <section className={styles.features}>
+        <div className={styles.container}>
+          <motion.div
+            className={styles.sectionHeader}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-50px' }}
+            variants={fadeInUp}
+          >
+            <span className={styles.sectionLabel}>Tại Sao Chọn Chúng Tôi</span>
+            <h2 className={styles.sectionTitle}>Trải Nghiệm Đẳng Cấp</h2>
+            <p className={styles.sectionSubtitle}>
+              Mỗi chi tiết đều được chăm chút tỉ mỉ để mang đến sự hoàn hảo tuyệt đối
+            </p>
+          </motion.div>
+
+          <motion.div
+            className={styles.featureGrid}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-50px' }}
+            variants={staggerContainer}
+          >
+            {luxuryFeatures.map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                className={styles.featureCard}
+                variants={fadeInUp}
+                custom={index * 0.08}
+              >
+                <div className={styles.featureIconWrapper}>
+                  <div className={styles.featureIcon}>{feature.icon}</div>
+                  <span className={styles.featureHighlight}>{feature.highlight}</span>
+                </div>
+                <h3 className={styles.featureTitle}>{feature.title}</h3>
+                <p className={styles.featureDescription}>{feature.description}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -373,6 +535,7 @@ const Home: React.FC = () => {
       {/* Featured Products Section */}
       {/* ============================================ */}
       <section className={styles.featured}>
+        <div className={styles.featuredBg} />
         <div className={styles.container}>
           <motion.div
             className={styles.sectionHeader}
@@ -381,10 +544,10 @@ const Home: React.FC = () => {
             viewport={{ once: true, margin: '-50px' }}
             variants={fadeInUp}
           >
-            <span className={styles.sectionLabel}>Nổi Bật</span>
-            <h2 className={styles.sectionTitle}>Sản Phẩm Được Yêu Thích</h2>
+            <span className={styles.sectionLabel}>Sản Phẩm Nổi Bật</span>
+            <h2 className={styles.sectionTitle}>Tuyển Tập Tinh Hoa</h2>
             <p className={styles.sectionSubtitle}>
-              Những tác phẩm được khách hàng đánh giá cao nhất
+              Những tác phẩm được yêu thích và đánh giá cao nhất từ bộ sưu tập của chúng tôi
             </p>
           </motion.div>
 
@@ -399,21 +562,17 @@ const Home: React.FC = () => {
               <motion.article
                 key={product.id}
                 className={styles.productCard}
-                variants={fadeInUp}
+                variants={fadeInScale}
                 custom={index * 0.1}
               >
                 <Link to={`/products/${product.slug}`} className={styles.productImageWrapper}>
                   <img src={product.image} alt={product.name} />
                   <div className={styles.productOverlay} />
-                  {product.isNew && <span className={styles.productBadgeNew}>Mới</span>}
-                  {product.isBestseller && (
-                    <span className={styles.productBadgeBest}>Bán chạy</span>
-                  )}
-                  {product.originalPrice && (
-                    <span className={styles.productBadgeSale}>
-                      -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
-                    </span>
-                  )}
+                  <div className={styles.productBadge}>{product.badge}</div>
+                  <div className={styles.productQuickView}>
+                    <FiGift />
+                    <span>Xem chi tiết</span>
+                  </div>
                 </Link>
 
                 <div className={styles.productContent}>
@@ -431,7 +590,7 @@ const Home: React.FC = () => {
                         />
                       ))}
                     </div>
-                    <span>({product.reviewCount})</span>
+                    <span className={styles.productReviews}>({product.reviewCount} đánh giá)</span>
                   </div>
 
                   <div className={styles.productPricing}>
@@ -449,13 +608,13 @@ const Home: React.FC = () => {
 
           <motion.div
             className={styles.viewAllWrapper}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.4, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
             <Link to="/products" className={styles.viewAllBtn}>
-              Xem Tất Cả Sản Phẩm
+              <span>Xem Tất Cả Sản Phẩm</span>
               <FiArrowRight />
             </Link>
           </motion.div>
@@ -474,10 +633,10 @@ const Home: React.FC = () => {
             viewport={{ once: true, margin: '-50px' }}
             variants={fadeInUp}
           >
-            <span className={styles.sectionLabel}>Đánh Giá</span>
-            <h2 className={styles.sectionTitle}>Khách Hàng Nói Gì?</h2>
+            <span className={styles.sectionLabel}>Khách Hàng Nói Gì</span>
+            <h2 className={styles.sectionTitle}>Đánh Giá & Nhận Xét</h2>
             <p className={styles.sectionSubtitle}>
-              Niềm tin và sự hài lòng của khách hàng là thước đo thành công của chúng tôi
+              Sự hài lòng của khách hàng là thước đo thành công của chúng tôi
             </p>
           </motion.div>
 
@@ -491,16 +650,17 @@ const Home: React.FC = () => {
             {testimonials.map((testimonial, index) => (
               <motion.div
                 key={testimonial.name}
-                className={styles.testimonialCard}
+                className={`${styles.testimonialCard} ${testimonial.featured ? styles.testimonialFeatured : ''}`}
                 variants={fadeInUp}
-                custom={index * 0.1}
+                custom={index * 0.12}
               >
+                <div className={styles.testimonialQuote}>"</div>
+                <p className={styles.testimonialContent}>{testimonial.content}</p>
                 <div className={styles.testimonialStars}>
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <FiStar key={i} className={styles.starFilled} />
                   ))}
                 </div>
-                <p className={styles.testimonialContent}>"{testimonial.content}"</p>
                 <div className={styles.testimonialAuthor}>
                   <img src={testimonial.avatar} alt={testimonial.name} />
                   <div>
@@ -515,13 +675,57 @@ const Home: React.FC = () => {
       </section>
 
       {/* ============================================ */}
+      {/* Instagram Section */}
+      {/* ============================================ */}
+      <section className={styles.instagram}>
+        <div className={styles.container}>
+          <motion.div
+            className={styles.instagramHeader}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+          >
+            <h2>@klelite.bakery</h2>
+            <p>Theo dõi chúng tôi trên Instagram</p>
+          </motion.div>
+
+          <motion.div
+            className={styles.instagramGrid}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+          >
+            {instagramPosts.map((post, index) => (
+              <motion.a
+                key={post.id}
+                href="https://instagram.com/klelite.bakery"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.instagramItem}
+                variants={fadeInScale}
+                custom={index * 0.08}
+              >
+                <img src={post.image} alt={`Instagram post ${post.id}`} />
+                <div className={styles.instagramOverlay}>
+                  <FiHeart />
+                  <span>{post.likes.toLocaleString()}</span>
+                </div>
+              </motion.a>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ============================================ */}
       {/* CTA Section - Conversion */}
       {/* ============================================ */}
       <section className={styles.cta}>
         <div className={styles.ctaBackground}>
           <img
             src="https://images.unsplash.com/photo-1517433670267-30f41c09c0a0?w=1920"
-            alt="Bakery Interior"
+            alt="Luxury Bakery Interior"
           />
           <div className={styles.ctaOverlay} />
         </div>
@@ -534,23 +738,28 @@ const Home: React.FC = () => {
             viewport={{ once: true, margin: '-50px' }}
             variants={staggerContainer}
           >
-            <motion.span className={styles.ctaLabel} variants={fadeInUp}>
-              Ưu Đãi Đặc Biệt
-            </motion.span>
+            <motion.div className={styles.ctaBadge} variants={fadeInUp}>
+              <FiGift />
+              <span>Ưu Đãi Đặc Biệt</span>
+            </motion.div>
+
             <motion.h2 className={styles.ctaTitle} variants={fadeInUp} custom={0.1}>
-              Đặt Bánh Ngay Hôm Nay
+              Trở Thành Thành Viên <br />
+              <span className={styles.ctaTitleAccent}>KL'élite Club</span>
             </motion.h2>
+
             <motion.p className={styles.ctaDescription} variants={fadeInUp} custom={0.2}>
-              Nhận ngay ưu đãi giảm <strong>15%</strong> cho đơn hàng đầu tiên <br />
-              khi đăng ký thành viên KL'élite Club
+              Đăng ký ngay để nhận ưu đãi <strong>giảm 15%</strong> cho đơn hàng đầu tiên <br />
+              cùng nhiều đặc quyền dành riêng cho thành viên
             </motion.p>
+
             <motion.div className={styles.ctaActions} variants={fadeInUp} custom={0.3}>
               <Link to="/register" className={styles.ctaPrimaryBtn}>
-                Đăng Ký Ngay
+                <span>Đăng Ký Ngay</span>
                 <FiArrowRight />
               </Link>
               <Link to="/contact" className={styles.ctaSecondaryBtn}>
-                Liên Hệ Tư Vấn
+                <span>Liên Hệ Tư Vấn</span>
               </Link>
             </motion.div>
           </motion.div>
@@ -566,17 +775,19 @@ const Home: React.FC = () => {
             className={styles.newsletterContent}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: '-50px' }}
+            viewport={{ once: true }}
             variants={fadeInUp}
           >
             <div className={styles.newsletterText}>
-              <h3>Nhận Ưu Đãi Độc Quyền</h3>
-              <p>Đăng ký để nhận thông tin về sản phẩm mới và khuyến mãi đặc biệt</p>
+              <h3>Nhận Thông Tin Ưu Đãi</h3>
+              <p>Đăng ký để cập nhật sản phẩm mới và khuyến mãi độc quyền</p>
             </div>
             <form className={styles.newsletterForm} onSubmit={(e) => e.preventDefault()}>
-              <input type="email" placeholder="Nhập email của bạn..." />
-              <button type="submit">
-                Đăng Ký
+              <div className={styles.newsletterInputWrapper}>
+                <input type="email" placeholder="Nhập email của bạn..." />
+              </div>
+              <button type="submit" className={styles.newsletterBtn}>
+                <span>Đăng Ký</span>
                 <FiArrowRight />
               </button>
             </form>

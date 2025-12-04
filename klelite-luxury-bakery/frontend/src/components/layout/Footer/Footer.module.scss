@@ -1,17 +1,17 @@
 // ============================================
-// KL'élite Footer - Elegant Dark Theme
-// Following claudekit-engineer: BEAUTIFUL + PEAK
+// KL'élite Footer - Royal Dark Theme
+// Premium Aesthetic with Gold Accents
 // Variables auto-injected via Vite
 // ============================================
 
 .footer {
-  background: linear-gradient(180deg, $dark-primary 0%, #141422 100%);
+  background: linear-gradient(180deg, $dark-primary 0%, #050508 100%);
   color: $light-text;
   padding-top: $spacing-3xl;
   position: relative;
   overflow: hidden;
   
-  // Subtle pattern overlay
+  // Subtle luxury pattern overlay
   &::before {
     content: '';
     position: absolute;
@@ -20,9 +20,25 @@
     right: 0;
     bottom: 0;
     background-image: 
-      radial-gradient(rgba($gold-primary, 0.03) 1px, transparent 1px);
-    background-size: 30px 30px;
+      radial-gradient(rgba($gold-primary, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
     pointer-events: none;
+  }
+  
+  // Gold accent line at top
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba($gold-primary, 0.4),
+      transparent
+    );
   }
 }
 
@@ -86,19 +102,20 @@
   font-family: $font-heading;
   font-size: $text-2xl;
   font-weight: $font-bold;
-  background: linear-gradient(135deg, $gold-primary, $gold-light);
+  background: linear-gradient(135deg, $gold-primary, $gold-champagne, $gold-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 }
 
 .logoSubtext {
   font-family: $font-accent;
-  font-size: 0.625rem;
-  font-weight: $font-medium;
-  color: $text-muted;
-  letter-spacing: 3px;
+  font-size: 0.5rem;
+  font-weight: $font-normal;
+  font-style: italic;
+  color: $gold-muted;
+  letter-spacing: 4px;
   text-transform: uppercase;
   margin-top: 2px;
 }

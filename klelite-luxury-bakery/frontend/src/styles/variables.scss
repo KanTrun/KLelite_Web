@@ -1,54 +1,67 @@
 // ==========================================================================
 // KL'élite Luxury Bakery - Design System Variables
+// Royal Luxury Theme - Premium & Elegant
 // Following claudekit-engineer aesthetic principles
 // ==========================================================================
 
 // --------------------------------------------------------------------------
-// Color System - Luxury Bakery Brand
+// Color System - Royal Luxury Bakery Brand
 // --------------------------------------------------------------------------
 
-// Primary Colors - Gold tones for luxury feel
-$primary-color: #D4AF37;
-$primary-light: #E8C547;
-$primary-dark: #B8962F;
-$primary-50: rgba(212, 175, 55, 0.05);
-$primary-100: rgba(212, 175, 55, 0.1);
-$primary-200: rgba(212, 175, 55, 0.2);
+// Primary Colors - Royal Gold tones for luxury feel
+$primary-color: #C9A962;
+$primary-light: #D4B978;
+$primary-dark: #A68B4E;
+$primary-50: rgba(201, 169, 98, 0.05);
+$primary-100: rgba(201, 169, 98, 0.1);
+$primary-200: rgba(201, 169, 98, 0.2);
+$primary-300: rgba(201, 169, 98, 0.3);
 
 // Gold Palette Aliases (used in components)
-$gold-primary: $primary-color;
-$gold-light: $primary-light;
-$gold-dark: $primary-dark;
-$gold-accent: #C9A962;
-$gold-muted: #B8A66B;
-$gold-secondary: #C9A962;
-$gold-hover: #E8C547;
+$gold-primary: #C9A962;
+$gold-light: #D4B978;
+$gold-dark: #A68B4E;
+$gold-accent: #B8976B;
+$gold-muted: #9E8A6B;
+$gold-secondary: #B8976B;
+$gold-hover: #D4B978;
+$gold-royal: #FFD700;
+$gold-champagne: #F7E7CE;
 
-// Secondary Colors - Deep elegant tones
-$secondary-color: #1A1A2E;
-$secondary-light: #2D2D44;
-$secondary-dark: #0F0F1A;
+// Secondary Colors - Deep Royal elegant tones
+$secondary-color: #0A0A0F;
+$secondary-light: #1A1A24;
+$secondary-dark: #050508;
 
 // Dark Theme Aliases (used in components)
-$dark-primary: $secondary-color;
-$dark-secondary: $secondary-light;
-$dark-deeper: $secondary-dark;
+$dark-primary: #0A0A0F;
+$dark-secondary: #1A1A24;
+$dark-deeper: #050508;
+$dark-royal: #0D0D14;
+$dark-surface: #12121A;
 
 // Light Theme Aliases
 $light-primary: #FFFFFF;
-$light-secondary: #F8F9FA;
+$light-secondary: #FAFAF8;
 $light-text: #FFFFFF;
+$light-cream: #FDF9F3;
+$light-ivory: #FFFFF0;
 
 // Accent Colors
-$accent-color: #C9A962;
+$accent-color: #B8976B;
 $accent-rose: #E8B4B8;
 $accent-cream: #FDF8F3;
 $accent-light: #ff6b81;
 $accent-dark: #c73e54;
+$accent-burgundy: #722F37;
+$accent-wine: #4A0E0E;
 
 // Color Aliases
-$cream: $accent-cream;
+$cream: #FDF8F3;
+$cream-light: #FFFEF9;
+$cream-dark: #F5EFE6;
 $rose: $accent-rose;
+$ivory: #FFFFF0;
 
 // Semantic Colors
 $success-color: #4CAF50;
@@ -98,15 +111,20 @@ $border-dark: $gray-400;
 $border-gold: $primary-color;
 
 // --------------------------------------------------------------------------
-// Gradients - Luxury effects
+// Gradients - Royal Luxury effects
 // --------------------------------------------------------------------------
 
-$gradient-gold: linear-gradient(135deg, $primary-color 0%, $primary-light 50%, $primary-color 100%);
+$gradient-gold: linear-gradient(135deg, #B8976B 0%, #C9A962 25%, #D4B978 50%, #C9A962 75%, #B8976B 100%);
+$gradient-gold-shimmer: linear-gradient(120deg, #B8976B 0%, #FFD700 50%, #B8976B 100%);
 $gradient-gold-radial: radial-gradient(circle, $primary-light 0%, $primary-color 100%);
-$gradient-dark: linear-gradient(180deg, $secondary-color 0%, $secondary-dark 100%);
-$gradient-cream: linear-gradient(180deg, $accent-cream 0%, #F0E5D8 100%);
-$gradient-hero: linear-gradient(180deg, rgba($black, 0.3) 0%, rgba($black, 0.6) 100%);
-$gradient-overlay: linear-gradient(180deg, transparent 0%, rgba($black, 0.8) 100%);
+$gradient-dark: linear-gradient(180deg, #0A0A0F 0%, #050508 100%);
+$gradient-dark-royal: linear-gradient(135deg, #0A0A0F 0%, #1A1A24 50%, #0A0A0F 100%);
+$gradient-cream: linear-gradient(180deg, #FDF8F3 0%, #F5EFE6 100%);
+$gradient-hero: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.7) 100%);
+$gradient-overlay: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.85) 100%);
+$gradient-royal: linear-gradient(135deg, #0A0A0F 0%, #1A1A24 25%, #0D0D14 50%, #1A1A24 75%, #0A0A0F 100%);
+$gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+$gradient-shine: linear-gradient(90deg, transparent, rgba(201, 169, 98, 0.4), transparent);
 
 // --------------------------------------------------------------------------
 // Icon Sizes
@@ -121,15 +139,16 @@ $icon-2xl: 2.5rem;      // 40px
 $icon-3xl: 3rem;        // 48px
 
 // --------------------------------------------------------------------------
-// Typography System - Elegant Font Pairing
+// Typography System - Royal Elegant Font Pairing
 // --------------------------------------------------------------------------
 
-// Font Families
-$font-primary: 'Poppins', 'Segoe UI', sans-serif;
+// Font Families - Luxury Typography
+$font-primary: 'Inter', 'Segoe UI', sans-serif;
 $font-heading: 'Playfair Display', Georgia, serif;
 $font-accent: 'Cormorant Garamond', Georgia, serif;
-$font-body: $font-primary;  // Alias for body text
-$font-display: $font-heading;  // Alias for display/headline
+$font-body: $font-primary;
+$font-display: $font-heading;
+$font-royal: 'Cinzel', Georgia, serif;
 
 // Font Sizes - Based on 1.25 scale ratio
 $font-size-xs: 0.75rem;      // 12px
@@ -229,7 +248,7 @@ $radius-3xl: 2rem;       // 32px
 $radius-full: 9999px;
 
 // --------------------------------------------------------------------------
-// Shadows - Subtle luxury feel
+// Shadows - Royal Luxury feel
 // --------------------------------------------------------------------------
 
 $shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -240,10 +259,13 @@ $shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0
 $shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 $shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
 
-// Gold glow shadows for CTAs
-$shadow-gold: 0 4px 14px 0 rgba(212, 175, 55, 0.3);
-$shadow-gold-lg: 0 10px 30px 0 rgba(212, 175, 55, 0.4);
-$shadow-gold-hover: 0 8px 25px 0 rgba(212, 175, 55, 0.5);
+// Royal Gold glow shadows for premium elements
+$shadow-gold: 0 4px 20px 0 rgba(201, 169, 98, 0.25);
+$shadow-gold-lg: 0 10px 40px 0 rgba(201, 169, 98, 0.35);
+$shadow-gold-hover: 0 8px 32px 0 rgba(201, 169, 98, 0.45);
+$shadow-gold-glow: 0 0 30px rgba(201, 169, 98, 0.3);
+$shadow-royal: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(201, 169, 98, 0.1);
+$shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.12);
 
 // --------------------------------------------------------------------------
 // Transitions & Animations - Micro-interactions (150-300ms)
