@@ -16,6 +16,9 @@ import { errorHandler, notFound } from './middleware';
 // Create Express app
 const app: Application = express();
 
+// Trust proxy for Render/Vercel deployment
+app.set('trust proxy', 1);
+
 // Connect to database
 connectDB();
 
