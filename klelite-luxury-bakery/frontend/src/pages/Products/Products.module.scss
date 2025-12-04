@@ -1,86 +1,267 @@
-// Products Page Styles - Following claudekit-engineer guidelines
+// ============================================
+// Products Page - Royal Luxury Style
+// Following the royal theme from Home page
+// ============================================
 
 // ============================================
-// Hero Banner
+// Page Container
+// ============================================
+.productsPage {
+  background: $dark-primary;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+// ============================================
+// Hero Banner - Royal Luxury Style
 // ============================================
 .heroBanner {
   position: relative;
-  padding: $spacing-4xl 0;
-  background: url('https://images.unsplash.com/photo-1517433670267-30f41c09c0a0?w=1920') center / cover;
-  text-align: center;
-  color: $light-text;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
 
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba($dark-primary, 0.85) 0%, rgba($gold-primary, 0.2) 100%);
-  }
+.heroBackground {
+  position: absolute;
+  inset: 0;
+  background: url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=1920&q=80') center / cover no-repeat;
+  filter: brightness(0.4);
+  will-change: transform;
 }
 
 .heroOverlay {
   position: absolute;
   inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba($dark-primary, 0.95) 0%,
+    rgba($dark-primary, 0.7) 30%,
+    rgba($gold-primary, 0.15) 70%,
+    rgba($dark-primary, 0.9) 100%
+  );
 }
 
-.heroLabel {
-  display: inline-block;
-  padding: $spacing-xs $spacing-md;
-  background: rgba($gold-primary, 0.2);
-  border: 1px solid rgba($gold-primary, 0.5);
-  border-radius: $radius-full;
-  font-size: 0.875rem;
-  color: $gold-primary;
-  margin-bottom: $spacing-md;
-  position: relative;
+.heroPattern {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba($gold-primary, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba($gold-primary, 0.05) 0%, transparent 40%);
+  pointer-events: none;
 }
 
-.heroBanner h1 {
-  position: relative;
-  font-size: 2.5rem;
-  font-weight: 700;
-  font-family: $font-heading;
-  margin-bottom: $spacing-md;
-
+.floatingCrown {
+  position: absolute;
+  top: 15%;
+  right: 10%;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba($gold-primary, 0.1);
+  border: 1px solid rgba($gold-primary, 0.3);
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  
+  svg {
+    font-size: 2.5rem;
+    color: $gold-primary;
+    filter: drop-shadow(0 0 20px rgba($gold-primary, 0.5));
+  }
+  
   @media (max-width: 768px) {
-    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    top: 10%;
+    right: 5%;
+    
+    svg {
+      font-size: 1.75rem;
+    }
   }
 }
 
-.heroBanner p {
+.heroContent {
   position: relative;
-  font-size: 1.125rem;
-  opacity: 0.9;
-  max-width: 600px;
-  margin: 0 auto;
+  z-index: 10;
+  text-align: center;
+  max-width: 900px;
+  padding: 0 $spacing-lg;
+}
+
+.royalBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-xl;
+  background: rgba($gold-primary, 0.1);
+  border: 1px solid rgba($gold-primary, 0.4);
+  border-radius: $radius-full;
+  margin-bottom: $spacing-xl;
+  backdrop-filter: blur(10px);
+  
+  span {
+    font-family: $font-accent;
+    font-size: 0.9rem;
+    color: $gold-primary;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  
+  .badgeIcon {
+    color: $gold-secondary;
+    font-size: 0.75rem;
+  }
+}
+
+.heroBanner h1 {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-lg;
+  
+  .titleAccent {
+    font-family: $font-accent;
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    color: $gold-primary;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+  
+  .titleMain {
+    font-family: $font-heading;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 400;
+    color: $light-text;
+    line-height: 1.1;
+    
+    background: linear-gradient(135deg, $light-text 0%, $gold-secondary 50%, $light-text 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmerText 4s ease-in-out infinite;
+  }
+}
+
+@keyframes shimmerText {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 200% center; }
+}
+
+.heroBanner p {
+  font-family: $font-accent;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: rgba($light-text, 0.8);
+  line-height: 1.8;
+  max-width: 700px;
+  margin: 0 auto $spacing-2xl;
+}
+
+.heroStats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xl;
+  
+  @media (max-width: 576px) {
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-2xs;
+}
+
+.statNumber {
+  font-family: $font-heading;
+  font-size: 2rem;
+  font-weight: 600;
+  color: $gold-primary;
+  
+  @media (max-width: 576px) {
+    font-size: 1.5rem;
+  }
+}
+
+.statLabel {
+  font-family: $font-accent;
+  font-size: 0.85rem;
+  color: rgba($light-text, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.statDivider {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(180deg, transparent, $gold-primary, transparent);
+  
+  @media (max-width: 576px) {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, $gold-primary, transparent);
+  }
+}
+
+.scrollIndicator {
+  position: absolute;
+  bottom: $spacing-xl;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-xs;
+  color: rgba($light-text, 0.5);
+  cursor: pointer;
+  
+  span {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  
+  svg {
+    font-size: 1.25rem;
+    color: $gold-primary;
+  }
 }
 
 // ============================================
 // Container
 // ============================================
 .container {
-  max-width: 1400px;
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 0 $spacing-lg;
+  padding: 0 $spacing-xl;
 
-  @media (max-width: 576px) {
+  @media (max-width: 768px) {
     padding: 0 $spacing-md;
   }
 }
 
 // ============================================
-// Layout
+// Products Layout
 // ============================================
-.productsPage {
-  background: $bg-secondary;
-  min-height: 100vh;
-}
-
 .productsLayout {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 320px 1fr;
   gap: $spacing-2xl;
-  padding: $spacing-2xl 0;
+  padding: $spacing-3xl 0;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 280px 1fr;
+    gap: $spacing-xl;
+  }
 
   @media (max-width: 992px) {
     grid-template-columns: 1fr;
@@ -88,11 +269,31 @@
 }
 
 // ============================================
-// Sidebar
+// Sidebar - Royal Luxury Style
 // ============================================
 .sidebar {
   @media (max-width: 992px) {
     display: none;
+  }
+}
+
+.sidebarHeader {
+  margin-bottom: $spacing-lg;
+  padding-bottom: $spacing-md;
+  border-bottom: 1px solid rgba($gold-primary, 0.2);
+  
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    font-family: $font-heading;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: $light-text;
+    
+    svg {
+      color: $gold-primary;
+    }
   }
 }
 
@@ -102,36 +303,46 @@
   justify-content: center;
   gap: $spacing-xs;
   width: 100%;
-  padding: $spacing-sm $spacing-md;
-  margin-bottom: $spacing-md;
-  background: rgba(#dc3545, 0.1);
-  border: 1px solid rgba(#dc3545, 0.2);
+  padding: $spacing-md;
+  margin-bottom: $spacing-lg;
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
   border-radius: $radius-md;
   color: #dc3545;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  transition: $transition-fast;
+  transition: all 0.3s ease;
 
   &:hover {
-    background: #dc3545;
-    color: white;
+    background: rgba(220, 53, 69, 0.2);
   }
 }
 
 .filterSection {
-  background: $bg-primary;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
   border-radius: $radius-lg;
   padding: $spacing-lg;
   margin-bottom: $spacing-lg;
+  backdrop-filter: blur(10px);
 
-  h3, h4 {
+  h4 {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    font-family: $font-heading;
     font-size: 1rem;
-    font-weight: 600;
-    color: $text-primary;
+    font-weight: 500;
+    color: $light-text;
     margin-bottom: $spacing-md;
     padding-bottom: $spacing-sm;
-    border-bottom: 1px solid $border-light;
+    border-bottom: 1px solid rgba($gold-primary, 0.15);
+    
+    .filterIcon {
+      color: $gold-primary;
+      font-size: 0.8rem;
+    }
   }
 }
 
@@ -141,7 +352,7 @@
   margin: 0;
 
   li {
-    margin-bottom: $spacing-xs;
+    margin-bottom: $spacing-2xs;
   }
 
   button {
@@ -151,27 +362,36 @@
     justify-content: space-between;
     padding: $spacing-sm $spacing-md;
     background: transparent;
-    border: none;
+    border: 1px solid transparent;
     border-radius: $radius-sm;
     font-size: 0.9375rem;
-    color: $text-secondary;
+    color: rgba($light-text, 0.7);
     cursor: pointer;
-    transition: $transition-fast;
+    transition: all 0.3s ease;
+
+    .catName {
+      font-family: $font-body;
+    }
+    
+    .catCount {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      background: rgba($gold-primary, 0.1);
+      border-radius: $radius-full;
+      color: $gold-primary;
+    }
 
     &:hover {
-      background: $bg-secondary;
-      color: $text-primary;
+      background: rgba($gold-primary, 0.05);
+      color: $light-text;
+      border-color: rgba($gold-primary, 0.2);
     }
 
     &.active {
       background: rgba($gold-primary, 0.1);
+      border-color: rgba($gold-primary, 0.3);
       color: $gold-primary;
       font-weight: 500;
-    }
-
-    span {
-      font-size: 0.8125rem;
-      color: $text-muted;
     }
   }
 }
@@ -187,16 +407,13 @@
   }
 }
 
-.checkboxLabel {
+.luxuryCheckbox {
   display: flex;
   align-items: center;
   gap: $spacing-sm;
   cursor: pointer;
-  font-size: 0.9375rem;
-  color: $text-secondary;
-  position: relative;
-  padding-left: 28px;
-
+  padding: $spacing-xs 0;
+  
   input[type="checkbox"] {
     position: absolute;
     opacity: 0;
@@ -204,67 +421,48 @@
     height: 0;
     width: 0;
   }
-
+  
   .checkmark {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 18px;
-    height: 18px;
-    background: $bg-secondary;
-    border: 2px solid $border-color;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: rgba($light-text, 0.05);
+    border: 1px solid rgba($gold-primary, 0.3);
     border-radius: $radius-sm;
-    transition: $transition-fast;
-
-    &::after {
-      content: '';
-      position: absolute;
-      display: none;
-      left: 5px;
-      top: 1px;
-      width: 5px;
-      height: 10px;
-      border: solid white;
-      border-width: 0 2px 2px 0;
-      transform: rotate(45deg);
+    transition: all 0.3s ease;
+    
+    svg {
+      font-size: 0.75rem;
+      color: transparent;
+      transition: all 0.3s ease;
     }
   }
-
+  
+  .labelText {
+    font-size: 0.9rem;
+    color: rgba($light-text, 0.7);
+    transition: color 0.3s ease;
+  }
+  
   input[type="checkbox"]:checked ~ .checkmark {
-    background: $gold-primary;
+    background: rgba($gold-primary, 0.2);
     border-color: $gold-primary;
-
-    &::after {
-      display: block;
+    
+    svg {
+      color: $gold-primary;
     }
   }
-
+  
   &:hover {
-    color: $text-primary;
-
     .checkmark {
       border-color: $gold-primary;
     }
-  }
-}
-
-.clearFiltersBtnMobile {
-  width: 100%;
-  padding: $spacing-md;
-  margin-top: $spacing-md;
-  background: rgba(#dc3545, 0.1);
-  border: 1px solid rgba(#dc3545, 0.2);
-  border-radius: $radius-md;
-  color: #dc3545;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: $transition-fast;
-
-  &:hover {
-    background: #dc3545;
-    color: white;
+    
+    .labelText {
+      color: $light-text;
+    }
   }
 }
 
@@ -276,17 +474,78 @@
   svg {
     width: 14px;
     height: 14px;
-    color: #ddd;
+    color: rgba($light-text, 0.2);
+    transition: color 0.3s ease;
 
     &.filled {
-      color: #ffc107;
-      fill: #ffc107;
+      color: $gold-primary;
+      fill: $gold-primary;
     }
   }
 
-  span {
+  .ratingText {
     margin-left: $spacing-xs;
-    font-size: 0.8125rem;
+    font-size: 0.8rem;
+    color: rgba($light-text, 0.5);
+  }
+}
+
+// Sidebar CTA
+.sidebarCta {
+  background: linear-gradient(135deg, rgba($gold-primary, 0.1) 0%, rgba($gold-primary, 0.05) 100%);
+  border: 1px solid rgba($gold-primary, 0.2);
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+  text-align: center;
+  margin-top: $spacing-lg;
+  
+  .ctaIcon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto $spacing-md;
+    background: rgba($gold-primary, 0.1);
+    border: 1px solid rgba($gold-primary, 0.3);
+    border-radius: 50%;
+    
+    svg {
+      font-size: 1.5rem;
+      color: $gold-primary;
+    }
+  }
+  
+  h5 {
+    font-family: $font-heading;
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: $light-text;
+    margin-bottom: $spacing-xs;
+  }
+  
+  p {
+    font-size: 0.875rem;
+    color: rgba($light-text, 0.6);
+    margin-bottom: $spacing-md;
+  }
+  
+  .ctaBtn {
+    display: inline-block;
+    padding: $spacing-sm $spacing-lg;
+    background: transparent;
+    border: 1px solid $gold-primary;
+    border-radius: $radius-full;
+    color: $gold-primary;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: $gold-primary;
+      color: $dark-primary;
+    }
   }
 }
 
@@ -298,17 +557,19 @@
 }
 
 // ============================================
-// Toolbar
+// Toolbar - Royal Style
 // ============================================
 .toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: $spacing-md;
-  background: $bg-primary;
+  background: rgba($light-text, 0.03);
+  border: 1px solid rgba($gold-primary, 0.1);
   padding: $spacing-md $spacing-lg;
   border-radius: $radius-lg;
-  margin-bottom: $spacing-lg;
+  margin-bottom: $spacing-xl;
+  backdrop-filter: blur(10px);
 
   @media (max-width: 768px) {
     flex-wrap: wrap;
@@ -327,20 +588,20 @@
   align-items: center;
   gap: $spacing-xs;
   padding: $spacing-sm $spacing-md;
-  background: $bg-secondary;
-  border: 1px solid $border-light;
+  background: rgba($gold-primary, 0.1);
+  border: 1px solid rgba($gold-primary, 0.3);
   border-radius: $radius-md;
   font-size: 0.9375rem;
-  color: $text-primary;
+  color: $gold-primary;
   cursor: pointer;
-  transition: $transition-fast;
+  transition: all 0.3s ease;
 
   @media (max-width: 992px) {
     display: flex;
   }
 
   &:hover {
-    border-color: $gold-primary;
+    background: rgba($gold-primary, 0.2);
   }
 }
 
@@ -351,18 +612,18 @@
   flex: 1;
   max-width: 400px;
   padding: $spacing-sm $spacing-md;
-  background: $bg-secondary;
+  background: rgba($light-text, 0.05);
   border: 1px solid transparent;
   border-radius: $radius-md;
-  transition: $transition-fast;
+  transition: all 0.3s ease;
 
   &:focus-within {
-    border-color: $gold-primary;
-    background: $bg-primary;
+    border-color: rgba($gold-primary, 0.5);
+    background: rgba($light-text, 0.08);
   }
 
   svg {
-    color: $text-muted;
+    color: rgba($light-text, 0.4);
     flex-shrink: 0;
   }
 
@@ -371,10 +632,11 @@
     border: none;
     background: transparent;
     font-size: 0.9375rem;
+    color: $light-text;
     outline: none;
 
     &::placeholder {
-      color: $text-muted;
+      color: rgba($light-text, 0.4);
     }
   }
 }
@@ -387,7 +649,12 @@
 
 .resultCount {
   font-size: 0.875rem;
-  color: $text-secondary;
+  color: rgba($light-text, 0.6);
+  
+  .countNumber {
+    font-weight: 600;
+    color: $gold-primary;
+  }
 
   @media (max-width: 576px) {
     display: none;
@@ -400,14 +667,19 @@
   select {
     appearance: none;
     padding: $spacing-sm $spacing-2xl $spacing-sm $spacing-md;
-    background: $bg-secondary;
-    border: 1px solid $border-light;
+    background: rgba($light-text, 0.05);
+    border: 1px solid rgba($gold-primary, 0.2);
     border-radius: $radius-md;
     font-size: 0.9375rem;
-    color: $text-primary;
+    color: $light-text;
     cursor: pointer;
     outline: none;
-    transition: $transition-fast;
+    transition: all 0.3s ease;
+
+    option {
+      background: $dark-primary;
+      color: $light-text;
+    }
 
     &:focus {
       border-color: $gold-primary;
@@ -420,13 +692,13 @@
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
-    color: $text-muted;
+    color: $gold-primary;
   }
 }
 
 .viewToggle {
   display: flex;
-  border: 1px solid $border-light;
+  border: 1px solid rgba($gold-primary, 0.2);
   border-radius: $radius-md;
   overflow: hidden;
 
@@ -438,16 +710,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     background: transparent;
     border: none;
-    color: $text-muted;
+    color: rgba($light-text, 0.5);
     cursor: pointer;
-    transition: $transition-fast;
+    transition: all 0.3s ease;
 
     &:hover {
-      color: $text-primary;
+      color: $light-text;
+      background: rgba($gold-primary, 0.1);
     }
 
     &.active {
@@ -458,20 +731,28 @@
 }
 
 // ============================================
-// Products Grid
+// Products Grid - Royal Luxury Cards
 // ============================================
 .productsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: $spacing-lg;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: $spacing-xl;
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
 
   &.listView {
     grid-template-columns: 1fr;
 
     .productCard {
       display: grid;
-      grid-template-columns: 200px 1fr;
-      gap: $spacing-lg;
+      grid-template-columns: 280px 1fr;
+      gap: $spacing-xl;
+
+      @media (max-width: 768px) {
+        grid-template-columns: 200px 1fr;
+      }
 
       @media (max-width: 576px) {
         grid-template-columns: 1fr;
@@ -479,101 +760,190 @@
     }
 
     .productImage {
-      height: 200px;
+      height: 220px;
+    }
+
+    .productInfo {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
   }
 }
 
 // ============================================
-// Product Card
+// Product Card - Royal Luxury Style
 // ============================================
 .productCard {
-  background: $bg-primary;
-  border-radius: $radius-lg;
+  position: relative;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
+  border-radius: $radius-xl;
   overflow: hidden;
-  transition: $transition-normal;
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   &:hover {
-    box-shadow: 0 12px 40px rgba($dark-primary, 0.1);
-    transform: translateY(-4px);
+    border-color: rgba($gold-primary, 0.3);
+    box-shadow: $shadow-gold-lg;
+    
+    .cardGlow {
+      opacity: 1;
+    }
 
     .productActions {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateX(-50%) translateY(0);
+    }
+    
+    .imageOverlay {
+      opacity: 0.6;
     }
   }
+}
+
+.cardGlow {
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, rgba($gold-primary, 0.2), transparent, rgba($gold-primary, 0.1));
+  border-radius: $radius-xl;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba($gold-primary, 0.1) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 1;
 }
 
 .productImage {
   position: relative;
   display: block;
-  height: 280px;
+  height: 320px;
   overflow: hidden;
+}
 
+.imageWrapper {
+  width: 100%;
+  height: 100%;
+  
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform $transition-normal;
+    transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
-
+  
   &:hover img {
-    transform: scale(1.05);
+    transform: scale(1.08);
   }
 }
 
-.badge {
+.imageOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba($dark-primary, 0.8) 100%);
+  opacity: 0.4;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.badgeContainer {
   position: absolute;
   top: $spacing-md;
   left: $spacing-md;
+  right: $spacing-md;
+  display: flex;
+  justify-content: space-between;
+  z-index: 5;
+}
+
+.discountBadge {
   padding: $spacing-2xs $spacing-sm;
-  background: $error-color;
+  background: linear-gradient(135deg, #dc3545, #c82333);
   color: $light-text;
   font-size: 0.75rem;
   font-weight: 600;
   border-radius: $radius-sm;
+  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+}
 
-  &.featuredBadge {
-    background: $gold-primary;
-    color: $dark-primary;
-    left: auto;
-    right: $spacing-md;
+.featuredBadge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: $spacing-2xs $spacing-sm;
+  background: linear-gradient(135deg, $gold-primary, $gold-secondary);
+  color: $dark-primary;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: $radius-sm;
+  box-shadow: 0 4px 15px rgba($gold-primary, 0.4);
+  
+  svg {
+    font-size: 0.7rem;
   }
 }
 
 .productActions {
   position: absolute;
-  bottom: $spacing-md;
+  bottom: $spacing-lg;
   left: 50%;
-  transform: translateX(-50%) translateY(10px);
+  transform: translateX(-50%) translateY(20px);
   display: flex;
   gap: $spacing-sm;
   opacity: 0;
-  transition: $transition-normal;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 10;
 }
 
 .actionBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  background: $bg-primary;
-  border: none;
+  width: 48px;
+  height: 48px;
+  background: rgba($dark-primary, 0.9);
+  border: 1px solid rgba($gold-primary, 0.3);
   border-radius: $radius-full;
-  color: $text-primary;
+  color: $light-text;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: $transition-fast;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+
+  svg {
+    font-size: 1.125rem;
+  }
 
   &:hover {
     background: $gold-primary;
+    border-color: $gold-primary;
     color: $dark-primary;
+    transform: scale(1.1);
   }
 
   &.wishlisted {
     background: #dc3545;
+    border-color: #dc3545;
     color: white;
+    
+    svg {
+      fill: currentColor;
+    }
 
     &:hover {
       background: darken(#dc3545, 10%);
@@ -588,25 +958,30 @@
 
 .productInfo {
   padding: $spacing-lg;
+  position: relative;
+  z-index: 2;
 }
 
 .productCategory {
-  font-size: 0.75rem;
+  font-family: $font-accent;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1.5px;
   color: $gold-primary;
   font-weight: 500;
 }
 
 .productInfo h3 {
   margin: $spacing-xs 0;
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-family: $font-heading;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.3;
 
   a {
-    color: $text-primary;
+    color: $light-text;
     text-decoration: none;
-    transition: color $transition-fast;
+    transition: color 0.3s ease;
 
     &:hover {
       color: $gold-primary;
@@ -616,7 +991,7 @@
 
 .productDescription {
   font-size: 0.9375rem;
-  color: $text-secondary;
+  color: rgba($light-text, 0.6);
   line-height: 1.6;
   margin: $spacing-sm 0;
 }
@@ -634,18 +1009,18 @@
     svg {
       width: 14px;
       height: 14px;
-      color: #ddd;
+      color: rgba($light-text, 0.2);
 
       &.filled {
-        color: #ffc107;
-        fill: #ffc107;
+        color: $gold-primary;
+        fill: $gold-primary;
       }
     }
   }
 
-  span {
-    font-size: 0.8125rem;
-    color: $text-muted;
+  .reviewCount {
+    font-size: 0.8rem;
+    color: rgba($light-text, 0.4);
   }
 }
 
@@ -657,14 +1032,15 @@
 }
 
 .price {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-family: $font-heading;
+  font-size: 1.375rem;
+  font-weight: 600;
   color: $gold-primary;
 }
 
 .originalPrice {
   font-size: 0.9375rem;
-  color: $text-muted;
+  color: rgba($light-text, 0.4);
   text-decoration: line-through;
 }
 
@@ -675,102 +1051,158 @@
   gap: $spacing-sm;
   width: 100%;
   margin-top: $spacing-md;
-  padding: $spacing-sm $spacing-lg;
-  background: $gold-primary;
-  border: none;
+  padding: $spacing-md $spacing-lg;
+  background: transparent;
+  border: 1px solid $gold-primary;
   border-radius: $radius-md;
-  color: $dark-primary;
+  color: $gold-primary;
   font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
-  transition: $transition-fast;
+  transition: all 0.3s ease;
 
   &:hover {
-    background: $gold-secondary;
+    background: $gold-primary;
+    color: $dark-primary;
   }
 }
 
 // ============================================
-// Loading & Empty State
+// Loading State - Luxury Loader
 // ============================================
 .loadingWrapper {
   display: flex;
   justify-content: center;
+  align-items: center;
+  min-height: 400px;
   padding: $spacing-4xl 0;
 }
 
+.luxuryLoader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-md;
+  
+  .loaderInner {
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgba($gold-primary, 0.1);
+    border-top-color: $gold-primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  span {
+    font-family: $font-accent;
+    font-size: 0.9rem;
+    color: rgba($light-text, 0.5);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// ============================================
+// Empty State - Royal Style
+// ============================================
 .emptyState {
   text-align: center;
   padding: $spacing-4xl $spacing-lg;
-  background: $bg-primary;
-  border-radius: $radius-lg;
+  background: rgba($light-text, 0.02);
+  border: 1px solid rgba($gold-primary, 0.1);
+  border-radius: $radius-xl;
 
-  img {
-    width: 200px;
-    height: auto;
-    opacity: 0.6;
-    margin-bottom: $spacing-lg;
+  .emptyIcon {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto $spacing-xl;
+    background: rgba($gold-primary, 0.1);
+    border: 1px solid rgba($gold-primary, 0.2);
+    border-radius: 50%;
+    
+    svg {
+      font-size: 2.5rem;
+      color: $gold-primary;
+    }
   }
 
   h3 {
-    font-size: 1.25rem;
-    color: $text-primary;
+    font-family: $font-heading;
+    font-size: 1.5rem;
+    color: $light-text;
     margin-bottom: $spacing-sm;
   }
 
   p {
-    color: $text-secondary;
-    margin-bottom: $spacing-lg;
+    color: rgba($light-text, 0.6);
+    margin-bottom: $spacing-xl;
   }
 
   button {
-    padding: $spacing-sm $spacing-xl;
-    background: $gold-primary;
-    border: none;
-    border-radius: $radius-md;
-    color: $dark-primary;
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-md $spacing-xl;
+    background: transparent;
+    border: 1px solid $gold-primary;
+    border-radius: $radius-full;
+    color: $gold-primary;
     font-weight: 600;
     cursor: pointer;
-    transition: $transition-fast;
+    transition: all 0.3s ease;
 
     &:hover {
-      background: $gold-secondary;
+      background: $gold-primary;
+      color: $dark-primary;
     }
   }
 }
 
 // ============================================
-// Pagination
+// Pagination - Royal Style
 // ============================================
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: $spacing-xs;
-  margin-top: $spacing-2xl;
+  gap: $spacing-lg;
+  margin-top: $spacing-3xl;
+}
 
+.pageNumbers {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  
   button {
-    min-width: 40px;
-    height: 40px;
+    min-width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 $spacing-md;
-    background: $bg-primary;
-    border: 1px solid $border-light;
+    background: rgba($light-text, 0.03);
+    border: 1px solid rgba($gold-primary, 0.2);
     border-radius: $radius-md;
-    font-size: 0.9375rem;
-    color: $text-primary;
+    font-size: 1rem;
+    color: rgba($light-text, 0.6);
     cursor: pointer;
-    transition: $transition-fast;
+    transition: all 0.3s ease;
 
     &:hover:not(:disabled) {
       border-color: $gold-primary;
       color: $gold-primary;
+      background: rgba($gold-primary, 0.1);
     }
 
     &.active {
-      background: $gold-primary;
+      background: linear-gradient(135deg, $gold-primary, $gold-secondary);
       border-color: $gold-primary;
       color: $dark-primary;
       font-weight: 600;
@@ -781,20 +1213,46 @@
       cursor: not-allowed;
     }
   }
+}
 
-  .ellipsis {
-    color: $text-muted;
-    padding: 0 $spacing-sm;
+.pageNav {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-lg;
+  background: transparent;
+  border: 1px solid rgba($gold-primary, 0.3);
+  border-radius: $radius-full;
+  font-size: 0.9rem;
+  color: $gold-primary;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover:not(:disabled) {
+    background: rgba($gold-primary, 0.1);
+  }
+  
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
   }
 }
 
+.ellipsis {
+  color: rgba($light-text, 0.3);
+  padding: 0 $spacing-xs;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+}
+
 // ============================================
-// Mobile Filter
+// Mobile Filter - Royal Style
 // ============================================
 .mobileFilterOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba($dark-primary, 0.8);
+  backdrop-filter: blur(10px);
   z-index: 1000;
 }
 
@@ -803,9 +1261,10 @@
   top: 0;
   left: 0;
   bottom: 0;
-  width: 85%;
-  max-width: 320px;
-  background: $bg-primary;
+  width: 90%;
+  max-width: 360px;
+  background: $dark-primary;
+  border-right: 1px solid rgba($gold-primary, 0.2);
   overflow-y: auto;
   z-index: 1001;
 }
@@ -815,27 +1274,45 @@
   align-items: center;
   justify-content: space-between;
   padding: $spacing-lg;
-  border-bottom: 1px solid $border-light;
+  border-bottom: 1px solid rgba($gold-primary, 0.2);
   position: sticky;
   top: 0;
-  background: $bg-primary;
+  background: $dark-primary;
+  z-index: 10;
 
   h3 {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    font-family: $font-heading;
     font-size: 1.125rem;
-    font-weight: 600;
+    font-weight: 500;
+    color: $light-text;
     margin: 0;
+    
+    svg {
+      color: $gold-primary;
+    }
   }
 
   button {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: transparent;
-    border: none;
+    width: 44px;
+    height: 44px;
+    background: rgba($light-text, 0.05);
+    border: 1px solid rgba($gold-primary, 0.2);
+    border-radius: $radius-md;
     font-size: 1.25rem;
+    color: $light-text;
     cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: rgba($gold-primary, 0.1);
+      border-color: $gold-primary;
+    }
   }
 }
 
@@ -844,753 +1321,31 @@
 
   .filterSection {
     margin-bottom: $spacing-lg;
-    padding: 0;
-    background: transparent;
+    padding: $spacing-md;
+    background: rgba($light-text, 0.02);
+    border: 1px solid rgba($gold-primary, 0.1);
+    border-radius: $radius-md;
   }
 }
 
-// ============================================
-// Product Detail Page
-// ============================================
-.productDetailPage {
-  background: #f8f9fa;
-  min-height: 100vh;
-  padding-bottom: 4rem;
-}
-
-.detailContainer {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-}
-
-.breadcrumb {
+.clearFiltersBtnMobile {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-  font-size: 0.9rem;
-
-  a {
-    color: #666;
-    text-decoration: none;
-    transition: color 0.3s ease;
-
-    &:hover {
-      color: #c9a86c;
-    }
-  }
-
-  span {
-    color: #999;
-  }
-
-  .current {
-    color: #1a1a1a;
-    font-weight: 500;
-  }
-}
-
-.productGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  margin-bottom: 4rem;
-}
-
-@media (max-width: 992px) {
-  .productGrid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-}
-
-// Image Gallery
-.imageGallery {
-  position: sticky;
-  top: 2rem;
-}
-
-.mainImage {
+  justify-content: center;
+  gap: $spacing-sm;
   width: 100%;
-  aspect-ratio: 1;
-  border-radius: 16px;
-  overflow: hidden;
-  background: white;
-  margin-bottom: 1rem;
-  cursor: zoom-in;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-  }
-
-  &:hover img {
-    transform: scale(1.05);
-  }
-}
-
-.thumbnailList {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.thumbnail {
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  &.active,
-  &:hover {
-    border-color: #c9a86c;
-  }
-}
-
-// Product Info Section
-.productDetails {
-  background: white;
-  border-radius: 16px;
-  padding: 2rem;
-}
-
-.categoryTag {
-  display: inline-block;
-  background: rgba(201, 168, 108, 0.1);
-  color: #c9a86c;
-  padding: 0.375rem 0.875rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
+  padding: $spacing-md;
+  margin-top: $spacing-md;
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  border-radius: $radius-md;
+  color: #dc3545;
+  font-size: 0.9375rem;
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 1rem;
-}
-
-.productDetails h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 1rem;
-  font-family: 'Playfair Display', serif;
-}
-
-.ratingSection {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid #f0f0f0;
-
-  .detailStars {
-    display: flex;
-    gap: 2px;
-
-    svg {
-      width: 18px;
-      height: 18px;
-      color: #ddd;
-
-      &.filled {
-        color: #ffc107;
-        fill: #ffc107;
-      }
-    }
-  }
-
-  .ratingText {
-    font-size: 0.9rem;
-    color: #666;
-
-    strong {
-      color: #1a1a1a;
-    }
-  }
-
-  .soldCount {
-    color: #999;
-    font-size: 0.9rem;
-  }
-}
-
-.pricingSection {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-
-  .currentPrice {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #c9a86c;
-  }
-
-  .oldPrice {
-    font-size: 1.25rem;
-    color: #999;
-    text-decoration: line-through;
-  }
-
-  .discountBadge {
-    background: #dc3545;
-    color: white;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: 600;
-  }
-}
-
-.shortDescription {
-  font-size: 1rem;
-  color: #666;
-  line-height: 1.7;
-  margin-bottom: 1.5rem;
-}
-
-// Options Section
-.optionsSection {
-  margin-bottom: 1.5rem;
-}
-
-.optionGroup {
-  margin-bottom: 1.25rem;
-
-  label {
-    display: block;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin-bottom: 0.75rem;
-    font-size: 0.95rem;
-  }
-}
-
-.sizeOptions {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.sizeBtn {
-  padding: 0.75rem 1.5rem;
-  border: 2px solid #e0e0e0;
-  background: white;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.9rem;
-
-  &:hover {
-    border-color: #c9a86c;
-  }
-
-  &.active {
-    border-color: #c9a86c;
-    background: rgba(201, 168, 108, 0.1);
-    color: #c9a86c;
-    font-weight: 500;
-  }
-}
-
-.quantitySelector {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  width: fit-content;
-
-  button {
-    width: 44px;
-    height: 44px;
-    border: 1px solid #e0e0e0;
-    background: white;
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: all 0.3s ease;
-
-    &:first-child {
-      border-radius: 8px 0 0 8px;
-    }
-
-    &:last-child {
-      border-radius: 0 8px 8px 0;
-    }
-
-    &:hover:not(:disabled) {
-      border-color: #c9a86c;
-      color: #c9a86c;
-    }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-  }
-
-  input {
-    width: 60px;
-    height: 44px;
-    border: 1px solid #e0e0e0;
-    border-left: none;
-    border-right: none;
-    text-align: center;
-    font-size: 1rem;
-    font-weight: 500;
-
-    &:focus {
-      outline: none;
-    }
-  }
-}
-
-// Action Buttons
-.actionButtons {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.addToCartDetailBtn {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  background: #c9a86c;
-  border: none;
-  border-radius: 10px;
-  color: white;
-  font-size: 1rem;
-  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    background: #b8975b;
-    transform: translateY(-2px);
-  }
-
-  svg {
-    font-size: 1.25rem;
-  }
-}
-
-.buyNowBtn {
-  flex: 1;
-  padding: 1rem;
-  background: #1a1a1a;
-  border: none;
-  border-radius: 10px;
-  color: white;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: #333;
-    transform: translateY(-2px);
-  }
-}
-
-.wishlistDetailBtn {
-  width: 52px;
-  height: 52px;
-  border: 2px solid #e0e0e0;
-  background: white;
-  border-radius: 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-
-  svg {
-    font-size: 1.25rem;
-    color: #666;
-  }
-
-  &:hover,
-  &.active {
-    border-color: #dc3545;
-
-    svg {
-      color: #dc3545;
-    }
-  }
-
-  &.active svg {
-    fill: #dc3545;
-  }
-}
-
-// Meta Info
-.metaInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #f0f0f0;
-  font-size: 0.9rem;
-  color: #666;
-
-  span {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    svg {
-      color: #c9a86c;
-    }
-
-    strong {
-      color: #1a1a1a;
-    }
-  }
-}
-
-// Product Features
-.productFeatures {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-  margin-top: 2rem;
-  padding: 2rem;
-  background: white;
-  border-radius: 16px;
-}
-
-@media (max-width: 768px) {
-  .productFeatures {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.featureItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 0.75rem;
-
-  .featureIcon {
-    width: 56px;
-    height: 56px;
-    background: rgba(201, 168, 108, 0.1);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    svg {
-      font-size: 1.5rem;
-      color: #c9a86c;
-    }
-  }
-
-  h4 {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin-bottom: 0.25rem;
-  }
-
-  p {
-    font-size: 0.85rem;
-    color: #666;
-  }
-}
-
-// Product Tabs
-.productTabs {
-  background: white;
-  border-radius: 16px;
-  overflow: hidden;
-  margin-top: 2rem;
-}
-
-.tabButtons {
-  display: flex;
-  border-bottom: 1px solid #f0f0f0;
-
-  button {
-    flex: 1;
-    padding: 1rem 1.5rem;
-    background: transparent;
-    border: none;
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: #666;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: #c9a86c;
-      transform: scaleX(0);
-      transition: transform 0.3s ease;
-    }
-
-    &:hover {
-      color: #1a1a1a;
-    }
-
-    &.active {
-      color: #c9a86c;
-
-      &::after {
-        transform: scaleX(1);
-      }
-    }
-  }
-}
-
-.tabContent {
-  padding: 2rem;
-}
-
-.tabPanel {
-  display: none;
-
-  &.active {
-    display: block;
-  }
-
-  h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin-bottom: 1rem;
-  }
-
-  p {
-    font-size: 1rem;
-    color: #666;
-    line-height: 1.8;
-    margin-bottom: 1rem;
-  }
-}
-
-.ingredientsList {
-  list-style: none;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem;
-
-  li {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.95rem;
-    color: #666;
-
-    &::before {
-      content: '✓';
-      color: #28a745;
-      font-weight: bold;
-    }
-  }
-}
-
-@media (max-width: 576px) {
-  .ingredientsList {
-    grid-template-columns: 1fr;
-  }
-}
-
-// Reviews Section
-.reviewsSummary {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  padding: 1.5rem;
-  background: #f8f9fa;
-  border-radius: 12px;
-  margin-bottom: 2rem;
-}
-
-.overallRating {
-  text-align: center;
-  padding-right: 2rem;
-  border-right: 1px solid #e0e0e0;
-
-  .bigRating {
-    font-size: 3rem;
-    font-weight: 700;
-    color: #1a1a1a;
-  }
-
-  .totalReviews {
-    font-size: 0.9rem;
-    color: #666;
-    margin-top: 0.5rem;
-  }
-}
-
-.ratingBreakdown {
-  flex: 1;
-}
-
-.ratingBar {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.5rem;
-
-  span {
-    font-size: 0.85rem;
-    color: #666;
-    min-width: 50px;
-  }
-
-  .barContainer {
-    flex: 1;
-    height: 8px;
-    background: #e0e0e0;
-    border-radius: 4px;
-    overflow: hidden;
-
-    .barFill {
-      height: 100%;
-      background: #ffc107;
-      border-radius: 4px;
-    }
-  }
-}
-
-.reviewsList {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.reviewItem {
-  padding: 1.5rem;
-  background: #f8f9fa;
-  border-radius: 12px;
-}
-
-.reviewHeader {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-
-  .reviewAvatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #c9a86c, #e8d5b7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    color: white;
-    font-size: 1.1rem;
-  }
-
-  .reviewInfo {
-    flex: 1;
-
-    h4 {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 0.25rem;
-    }
-
-    span {
-      font-size: 0.85rem;
-      color: #999;
-    }
-  }
-
-  .reviewRating {
-    display: flex;
-    gap: 2px;
-
-    svg {
-      width: 16px;
-      height: 16px;
-      color: #ffc107;
-      fill: #ffc107;
-    }
-  }
-}
-
-.reviewText {
-  font-size: 0.95rem;
-  color: #666;
-  line-height: 1.7;
-}
-
-.writeReviewBtn {
-  display: block;
-  width: 100%;
-  padding: 1rem;
-  margin-top: 1.5rem;
-  background: transparent;
-  border: 2px dashed #e0e0e0;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  color: #666;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    border-color: #c9a86c;
-    color: #c9a86c;
-  }
-}
-
-// Related Products
-.relatedProducts {
-  margin-top: 4rem;
-
-  h2 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #1a1a1a;
-    margin-bottom: 2rem;
-    text-align: center;
-    font-family: 'Playfair Display', serif;
-  }
-}
-
-.relatedGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-}
-
-@media (max-width: 992px) {
-  .relatedGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 576px) {
-  .relatedGrid {
-    grid-template-columns: 1fr;
+    background: rgba(220, 53, 69, 0.2);
   }
 }

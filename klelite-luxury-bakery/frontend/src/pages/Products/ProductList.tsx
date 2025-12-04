@@ -1,11 +1,12 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { 
   FiGrid, FiList, FiFilter, FiX, FiStar, 
   FiShoppingCart, FiHeart, FiChevronDown,
-  FiSearch, FiSliders
+  FiSearch, FiSliders, FiEye, FiArrowRight,
+  FiAward, FiCheckCircle
 } from 'react-icons/fi';
 import { fetchProducts, fetchCategories, setFilters } from '@/store/slices/productSlice';
 import { addToCart } from '@/store/slices/cartSlice';
@@ -14,6 +15,42 @@ import { AppDispatch, RootState } from '@/store';
 import { formatCurrency } from '@/utils/formatters';
 import Loading from '@/components/common/Loading';
 import styles from './Products.module.scss';
+
+// Animation variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 60 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }
+  }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08, delayChildren: 0.1 }
+  }
+};
+
+const cardVariant = {
+  hidden: { opacity: 0, y: 40, scale: 0.95 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1,
+    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }
+  }
+};
+
+const shimmer = {
+  hidden: { x: '-100%' },
+  visible: { 
+    x: '100%',
+    transition: { duration: 2, repeat: Infinity, repeatDelay: 3 }
+  }
+};
 
 const sortOptions = [
   { value: 'createdAt-desc', label: 'Mới nhất' },
@@ -38,6 +75,15 @@ const ProductList: React.FC = () => {
     (state: RootState) => state.product
   );
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  
+  // Hero parallax
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
+  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showMobileFilter, setShowMobileFilter] = useState(false);
@@ -241,111 +287,217 @@ const ProductList: React.FC = () => {
 
   return (
     <div className={styles.productsPage}>
-      {/* Hero Banner */}
-      <section className={styles.heroBanner}>
+      {/* Hero Banner - Royal Luxury Style */}
+      <section className={styles.heroBanner} ref={heroRef}>
+        <motion.div 
+          className={styles.heroBackground}
+          style={{ y: heroY }}
+        />
         <div className={styles.heroOverlay} />
+        <div className={styles.heroPattern} />
+        
+        {/* Floating Elements */}
+        <motion.div 
+          className={styles.floatingCrown}
+          animate={{ 
+            y: [0, -15, 0],
+            rotate: [0, 5, -5, 0]
+          }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <FiAward />
+        </motion.div>
+        
         <div className={styles.container}>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            className={styles.heroContent}
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+            style={{ opacity: heroOpacity }}
           >
-            <span className={styles.heroLabel}>Bộ Sưu Tập</span>
-            <h1>{activeCategory?.name || 'Tất Cả Sản Phẩm'}</h1>
-            <p>
+            <motion.div className={styles.royalBadge} variants={fadeInUp}>
+              <span className={styles.badgeIcon}>✦</span>
+              <span>Bộ Sưu Tập Hoàng Gia</span>
+              <span className={styles.badgeIcon}>✦</span>
+            </motion.div>
+            
+            <motion.h1 variants={fadeInUp}>
+              <span className={styles.titleAccent}>
+                {activeCategory?.name || 'Nghệ Thuật'}
+              </span>
+              <span className={styles.titleMain}>Bánh Thượng Lưu</span>
+            </motion.h1>
+            
+            <motion.p variants={fadeInUp}>
               {activeCategory?.description ||
-                'Khám phá những chiếc bánh thủ công cao cấp được chế tác từ nguyên liệu tuyển chọn'}
-            </p>
+                'Khám phá những tuyệt phẩm bánh được chế tác bởi nghệ nhân hàng đầu, từ nguyên liệu quý hiếm nhập khẩu từ Pháp, Bỉ và Thụy Sĩ'}
+            </motion.p>
+            
+            <motion.div className={styles.heroStats} variants={fadeInUp}>
+              <div className={styles.statItem}>
+                <span className={styles.statNumber}>{paginationData.total}+</span>
+                <span className={styles.statLabel}>Tuyệt Phẩm</span>
+              </div>
+              <div className={styles.statDivider} />
+              <div className={styles.statItem}>
+                <span className={styles.statNumber}>{categoryList.length}</span>
+                <span className={styles.statLabel}>Bộ Sưu Tập</span>
+              </div>
+              <div className={styles.statDivider} />
+              <div className={styles.statItem}>
+                <span className={styles.statNumber}>5★</span>
+                <span className={styles.statLabel}>Đánh Giá</span>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
+        
+        {/* Scroll Indicator */}
+        <motion.div 
+          className={styles.scrollIndicator}
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          <span>Khám phá</span>
+          <FiChevronDown />
+        </motion.div>
       </section>
 
       <div className={styles.container}>
         <div className={styles.productsLayout}>
           {/* Sidebar Filters - Desktop */}
           <aside className={styles.sidebar}>
-            {hasActiveFilters && (
-              <button className={styles.clearFiltersBtn} onClick={handleClearFilters}>
-                <FiX /> Xóa bộ lọc
-              </button>
-            )}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className={styles.sidebarHeader}>
+                <h3>
+                  <FiSliders />
+                  <span>Bộ Lọc Tinh Tế</span>
+                </h3>
+              </div>
 
-            <div className={styles.filterSection}>
-              <h3>Danh Mục</h3>
-              <ul className={styles.categoryList}>
-                <li>
-                  <button
-                    className={!categorySlug ? styles.active : ''}
-                    onClick={() => handleCategoryChange(null)}
-                  >
-                    Tất cả
-                    <span>{paginationData.total}</span>
-                  </button>
-                </li>
-                {categoryList.map((category) => (
-                  <li key={category._id}>
+              {hasActiveFilters && (
+                <motion.button 
+                  className={styles.clearFiltersBtn} 
+                  onClick={handleClearFilters}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <FiX /> Xóa tất cả bộ lọc
+                </motion.button>
+              )}
+
+              <div className={styles.filterSection}>
+                <h4>
+                  <span className={styles.filterIcon}>✦</span>
+                  Danh Mục Cao Cấp
+                </h4>
+                <ul className={styles.categoryList}>
+                  <li>
                     <button
-                      className={categorySlug === category.slug ? styles.active : ''}
-                      onClick={() => handleCategoryChange(category.slug)}
+                      className={!categorySlug ? styles.active : ''}
+                      onClick={() => handleCategoryChange(null)}
                     >
-                      {category.name}
+                      <span className={styles.catName}>Tất cả</span>
+                      <span className={styles.catCount}>{paginationData.total}</span>
                     </button>
                   </li>
-                ))}
-              </ul>
-            </div>
+                  {categoryList.map((category) => (
+                    <li key={category._id}>
+                      <button
+                        className={categorySlug === category.slug ? styles.active : ''}
+                        onClick={() => handleCategoryChange(category.slug)}
+                      >
+                        <span className={styles.catName}>{category.name}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-            <div className={styles.filterSection}>
-              <h3>Khoảng Giá</h3>
-              <ul className={styles.priceRanges}>
-                {priceRanges.map((range) => (
-                  <li key={range.id}>
-                    <label className={styles.checkboxLabel}>
-                      <input 
-                        type="checkbox" 
-                        checked={selectedPriceRange === range.id}
-                        onChange={() => handlePriceRangeChange(range.id)}
-                      />
-                      <span className={styles.checkmark}></span>
-                      <span>{range.label}</span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
-            </div>
+              <div className={styles.filterSection}>
+                <h4>
+                  <span className={styles.filterIcon}>◆</span>
+                  Phân Khúc Giá
+                </h4>
+                <ul className={styles.priceRanges}>
+                  {priceRanges.map((range) => (
+                    <li key={range.id}>
+                      <label className={styles.luxuryCheckbox}>
+                        <input 
+                          type="checkbox" 
+                          checked={selectedPriceRange === range.id}
+                          onChange={() => handlePriceRangeChange(range.id)}
+                        />
+                        <span className={styles.checkmark}>
+                          <FiCheckCircle />
+                        </span>
+                        <span className={styles.labelText}>{range.label}</span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-            <div className={styles.filterSection}>
-              <h3>Đánh Giá</h3>
-              <ul className={styles.ratingFilter}>
-                {[5, 4, 3, 2, 1].map((ratingValue) => (
-                  <li key={ratingValue}>
-                    <label className={styles.checkboxLabel}>
-                      <input 
-                        type="checkbox" 
-                        checked={selectedRating === ratingValue}
-                        onChange={() => handleRatingChange(ratingValue)}
-                      />
-                      <span className={styles.checkmark}></span>
-                      <span className={styles.stars}>
-                        {[...Array(5)].map((_, i) => (
-                          <FiStar
-                            key={i}
-                            className={i < ratingValue ? styles.filled : ''}
-                          />
-                        ))}
-                        <span>& trở lên</span>
-                      </span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
-            </div>
+              <div className={styles.filterSection}>
+                <h4>
+                  <span className={styles.filterIcon}>★</span>
+                  Đánh Giá
+                </h4>
+                <ul className={styles.ratingFilter}>
+                  {[5, 4, 3, 2, 1].map((ratingValue) => (
+                    <li key={ratingValue}>
+                      <label className={styles.luxuryCheckbox}>
+                        <input 
+                          type="checkbox" 
+                          checked={selectedRating === ratingValue}
+                          onChange={() => handleRatingChange(ratingValue)}
+                        />
+                        <span className={styles.checkmark}>
+                          <FiCheckCircle />
+                        </span>
+                        <span className={styles.stars}>
+                          {[...Array(5)].map((_, i) => (
+                            <FiStar
+                              key={i}
+                              className={i < ratingValue ? styles.filled : ''}
+                            />
+                          ))}
+                          <span className={styles.ratingText}>& trở lên</span>
+                        </span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              {/* Sidebar CTA */}
+              <div className={styles.sidebarCta}>
+                <div className={styles.ctaIcon}>
+                  <FiAward />
+                </div>
+                <h5>Đặt Hàng Riêng</h5>
+                <p>Thiết kế bánh theo yêu cầu đặc biệt của bạn</p>
+                <Link to="/contact" className={styles.ctaBtn}>
+                  Liên hệ ngay
+                </Link>
+              </div>
+            </motion.div>
           </aside>
 
           {/* Main Content */}
           <main className={styles.mainContent}>
             {/* Toolbar */}
-            <div className={styles.toolbar}>
+            <motion.div 
+              className={styles.toolbar}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
               <div className={styles.toolbarLeft}>
                 <button
                   className={styles.mobileFilterBtn}
@@ -359,7 +511,7 @@ const ProductList: React.FC = () => {
                   <FiSearch />
                   <input
                     type="text"
-                    placeholder="Tìm kiếm sản phẩm..."
+                    placeholder="Tìm kiếm tuyệt phẩm..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
@@ -368,7 +520,7 @@ const ProductList: React.FC = () => {
 
               <div className={styles.toolbarRight}>
                 <span className={styles.resultCount}>
-                  {paginationData.total} sản phẩm
+                  <span className={styles.countNumber}>{paginationData.total}</span> tuyệt phẩm
                 </span>
 
                 <div className={styles.sortSelect}>
@@ -399,75 +551,112 @@ const ProductList: React.FC = () => {
                   </button>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Products Grid */}
             {isLoading ? (
               <div className={styles.loadingWrapper}>
-                <Loading />
+                <div className={styles.luxuryLoader}>
+                  <div className={styles.loaderInner} />
+                  <span>Đang tải...</span>
+                </div>
               </div>
             ) : productList.length === 0 ? (
-              <div className={styles.emptyState}>
-                <img src="/images/empty-products.svg" alt="No products" />
-                <h3>Không tìm thấy sản phẩm</h3>
-                <p>Thử thay đổi bộ lọc hoặc tìm kiếm với từ khóa khác</p>
-                <button onClick={() => handleCategoryChange(null)}>
-                  Xem tất cả sản phẩm
-                </button>
-              </div>
+              <motion.div 
+                className={styles.emptyState}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+              >
+                <div className={styles.emptyIcon}>
+                  <FiSearch />
+                </div>
+                <h3>Không tìm thấy tuyệt phẩm</h3>
+                <p>Hãy thử thay đổi bộ lọc hoặc tìm kiếm với từ khóa khác</p>
+                <motion.button 
+                  onClick={() => handleCategoryChange(null)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span>Xem tất cả sản phẩm</span>
+                  <FiArrowRight />
+                </motion.button>
+              </motion.div>
             ) : (
               <motion.div
                 className={`${styles.productsGrid} ${viewMode === 'list' ? styles.listView : ''}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
+                variants={staggerContainer}
+                initial="hidden"
+                animate="visible"
               >
-                <AnimatePresence>
+                <AnimatePresence mode="wait">
                   {productList.map((product, index) => (
                     <motion.article
                       key={product._id}
                       className={styles.productCard}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ delay: index * 0.05 }}
+                      variants={cardVariant}
+                      layout
+                      whileHover={{ y: -8 }}
                     >
+                      {/* Card Glow Effect */}
+                      <div className={styles.cardGlow} />
+                      
                       <Link
                         to={`/products/${product.slug}`}
                         className={styles.productImage}
                       >
-                        <img
-                          src={product.mainImage || (product.images[0]?.url) || '/images/placeholder-product.png'}
-                          alt={product.name}
-                          loading="lazy"
-                        />
-                        {product.discount && product.discount > 0 && (
-                          <span className={styles.badge}>-{product.discount}%</span>
-                        )}
-                        {(product.isFeatured || product.featured) && (
-                          <span className={`${styles.badge} ${styles.featuredBadge}`}>
-                            Hot
-                          </span>
-                        )}
+                        <div className={styles.imageWrapper}>
+                          <img
+                            src={product.mainImage || (product.images[0]?.url) || '/images/placeholder-product.png'}
+                            alt={product.name}
+                            loading="lazy"
+                          />
+                          <div className={styles.imageOverlay} />
+                        </div>
+                        
+                        {/* Badges */}
+                        <div className={styles.badgeContainer}>
+                          {product.discount && product.discount > 0 && (
+                            <span className={styles.discountBadge}>-{product.discount}%</span>
+                          )}
+                          {(product.isFeatured || product.featured) && (
+                            <span className={styles.featuredBadge}>
+                              <FiAward /> Premium
+                            </span>
+                          )}
+                        </div>
+                        
+                        {/* Quick Actions */}
                         <div className={styles.productActions}>
-                          <button
+                          <motion.button
                             className={styles.actionBtn}
                             onClick={(e) => {
                               e.preventDefault();
                               handleAddToCart(product._id);
                             }}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
                             title="Thêm vào giỏ"
                           >
                             <FiShoppingCart />
-                          </button>
-                          <button
+                          </motion.button>
+                          <motion.button
                             className={`${styles.actionBtn} ${wishlistIds.includes(product._id) ? styles.wishlisted : ''}`}
                             onClick={(e) => handleToggleWishlist(product._id, e)}
                             disabled={addingToWishlist === product._id}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
                             title={wishlistIds.includes(product._id) ? 'Xóa khỏi yêu thích' : 'Thêm vào yêu thích'}
                           >
                             <FiHeart />
-                          </button>
+                          </motion.button>
+                          <motion.button
+                            className={styles.actionBtn}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            title="Xem nhanh"
+                          >
+                            <FiEye />
+                          </motion.button>
                         </div>
                       </Link>
 
@@ -475,8 +664,9 @@ const ProductList: React.FC = () => {
                         <span className={styles.productCategory}>
                           {typeof product.category === 'object'
                             ? product.category.name
-                            : 'Bánh'}
+                            : 'Bánh Cao Cấp'}
                         </span>
+                        
                         <h3>
                           <Link to={`/products/${product.slug}`}>{product.name}</Link>
                         </h3>
@@ -498,7 +688,9 @@ const ProductList: React.FC = () => {
                               />
                             ))}
                           </div>
-                          <span>({product.numReviews || product.reviewCount || 0})</span>
+                          <span className={styles.reviewCount}>
+                            ({product.numReviews || product.reviewCount || 0} đánh giá)
+                          </span>
                         </div>
 
                         <div className={styles.productPricing}>
@@ -511,15 +703,23 @@ const ProductList: React.FC = () => {
                         </div>
 
                         {viewMode === 'list' && (
-                          <button
+                          <motion.button
                             className={styles.addToCartBtn}
                             onClick={() => handleAddToCart(product._id)}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                           >
                             <FiShoppingCart />
-                            Thêm vào giỏ
-                          </button>
+                            <span>Thêm vào giỏ hàng</span>
+                          </motion.button>
                         )}
                       </div>
+                      
+                      {/* Shimmer Effect */}
+                      <motion.div 
+                        className={styles.shimmer}
+                        variants={shimmer}
+                      />
                     </motion.article>
                   ))}
                 </AnimatePresence>
@@ -528,46 +728,63 @@ const ProductList: React.FC = () => {
 
             {/* Pagination */}
             {paginationData.totalPages > 1 && (
-              <div className={styles.pagination}>
-                <button
+              <motion.div 
+                className={styles.pagination}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <motion.button
                   disabled={currentPage === 1}
                   onClick={() => handlePageChange(currentPage - 1)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={styles.pageNav}
                 >
-                  Trước
-                </button>
+                  <FiArrowRight style={{ transform: 'rotate(180deg)' }} />
+                  <span>Trước</span>
+                </motion.button>
 
-                {[...Array(paginationData.totalPages)].map((_, index) => {
-                  const page = index + 1;
-                  const showPage =
-                    page === 1 ||
-                    page === paginationData.totalPages ||
-                    Math.abs(page - currentPage) <= 1;
+                <div className={styles.pageNumbers}>
+                  {[...Array(paginationData.totalPages)].map((_, index) => {
+                    const page = index + 1;
+                    const showPage =
+                      page === 1 ||
+                      page === paginationData.totalPages ||
+                      Math.abs(page - currentPage) <= 1;
 
-                  if (!showPage) {
-                    if (page === 2 || page === paginationData.totalPages - 1) {
-                      return <span key={page} className={styles.ellipsis}>...</span>;
+                    if (!showPage) {
+                      if (page === 2 || page === paginationData.totalPages - 1) {
+                        return <span key={page} className={styles.ellipsis}>···</span>;
+                      }
+                      return null;
                     }
-                    return null;
-                  }
 
-                  return (
-                    <button
-                      key={page}
-                      className={page === currentPage ? styles.active : ''}
-                      onClick={() => handlePageChange(page)}
-                    >
-                      {page}
-                    </button>
-                  );
-                })}
+                    return (
+                      <motion.button
+                        key={page}
+                        className={page === currentPage ? styles.active : ''}
+                        onClick={() => handlePageChange(page)}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        {page}
+                      </motion.button>
+                    );
+                  })}
+                </div>
 
-                <button
+                <motion.button
                   disabled={currentPage === paginationData.totalPages}
                   onClick={() => handlePageChange(currentPage + 1)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={styles.pageNav}
                 >
-                  Sau
-                </button>
-              </div>
+                  <span>Sau</span>
+                  <FiArrowRight />
+                </motion.button>
+              </motion.div>
             )}
           </main>
         </div>
@@ -588,11 +805,14 @@ const ProductList: React.FC = () => {
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
-              transition={{ type: 'tween' }}
+              transition={{ type: 'tween', duration: 0.3 }}
               onClick={(e) => e.stopPropagation()}
             >
               <div className={styles.mobileFilterHeader}>
-                <h3>Bộ lọc</h3>
+                <h3>
+                  <FiSliders />
+                  <span>Bộ Lọc Tinh Tế</span>
+                </h3>
                 <button onClick={() => setShowMobileFilter(false)}>
                   <FiX />
                 </button>
@@ -600,7 +820,10 @@ const ProductList: React.FC = () => {
 
               <div className={styles.mobileFilterContent}>
                 <div className={styles.filterSection}>
-                  <h4>Danh Mục</h4>
+                  <h4>
+                    <span className={styles.filterIcon}>✦</span>
+                    Danh Mục
+                  </h4>
                   <ul className={styles.categoryList}>
                     <li>
                       <button
@@ -624,18 +847,23 @@ const ProductList: React.FC = () => {
                 </div>
 
                 <div className={styles.filterSection}>
-                  <h4>Khoảng Giá</h4>
+                  <h4>
+                    <span className={styles.filterIcon}>◆</span>
+                    Khoảng Giá
+                  </h4>
                   <ul className={styles.priceRanges}>
                     {priceRanges.map((range) => (
                       <li key={range.id}>
-                        <label className={styles.checkboxLabel}>
+                        <label className={styles.luxuryCheckbox}>
                           <input 
                             type="checkbox" 
                             checked={selectedPriceRange === range.id}
                             onChange={() => handlePriceRangeChange(range.id)}
                           />
-                          <span className={styles.checkmark}></span>
-                          <span>{range.label}</span>
+                          <span className={styles.checkmark}>
+                            <FiCheckCircle />
+                          </span>
+                          <span className={styles.labelText}>{range.label}</span>
                         </label>
                       </li>
                     ))}
@@ -643,17 +871,22 @@ const ProductList: React.FC = () => {
                 </div>
 
                 <div className={styles.filterSection}>
-                  <h4>Đánh Giá</h4>
+                  <h4>
+                    <span className={styles.filterIcon}>★</span>
+                    Đánh Giá
+                  </h4>
                   <ul className={styles.ratingFilter}>
                     {[5, 4, 3, 2, 1].map((ratingValue) => (
                       <li key={ratingValue}>
-                        <label className={styles.checkboxLabel}>
+                        <label className={styles.luxuryCheckbox}>
                           <input 
                             type="checkbox" 
                             checked={selectedRating === ratingValue}
                             onChange={() => handleRatingChange(ratingValue)}
                           />
-                          <span className={styles.checkmark}></span>
+                          <span className={styles.checkmark}>
+                            <FiCheckCircle />
+                          </span>
                           <span className={styles.stars}>
                             {[...Array(5)].map((_, i) => (
                               <FiStar
@@ -669,9 +902,14 @@ const ProductList: React.FC = () => {
                 </div>
 
                 {hasActiveFilters && (
-                  <button className={styles.clearFiltersBtnMobile} onClick={handleClearFilters}>
-                    Xóa bộ lọc
-                  </button>
+                  <motion.button 
+                    className={styles.clearFiltersBtnMobile} 
+                    onClick={handleClearFilters}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <FiX />
+                    Xóa tất cả bộ lọc
+                  </motion.button>
                 )}
               </div>
             </motion.div>
