@@ -1317,6 +1317,7 @@
 .testimonialGrid {
   display: grid;
   gap: $spacing-lg;
+  overflow: hidden;
   
   @media (min-width: 768px) {
     grid-template-columns: repeat(3, 1fr);
@@ -1331,6 +1332,7 @@
   border-radius: $radius-xl;
   transition: all 0.4s $ease-out;
   cursor: pointer;
+  overflow: hidden;
   
   &:hover {
     transform: translateY(-8px);
@@ -1365,6 +1367,11 @@
   color: rgba($light-text, 0.85);
   line-height: 1.8;
   margin-bottom: $spacing-lg;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
 }
 
 .testimonialStars {
