@@ -41,7 +41,13 @@ app.use('/api', limiter);
 // CORS
 app.use(
   cors({
-    origin: [config.frontendUrl, 'http://localhost:3000'],
+    origin: [
+      config.frontendUrl, 
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'https://k-lelite-web-a5fc.vercel.app',
+      /\.vercel\.app$/
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
