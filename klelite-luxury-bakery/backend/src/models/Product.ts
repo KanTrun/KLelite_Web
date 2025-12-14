@@ -1,5 +1,7 @@
 import mongoose, { Document, Schema, Model, HydratedDocument } from 'mongoose';
 import slugify from 'slugify';
+import Cart from './Cart';
+import User from './User';
 
 // Interfaces
 export interface IProductImage {
@@ -279,6 +281,8 @@ ProductSchema.index({ sold: -1 });
 ProductSchema.index({ createdAt: -1 });
 ProductSchema.index({ isFeatured: 1, isAvailable: 1 });
 ProductSchema.index({ tags: 1 });
+// Compound index for tag + availability filter
+ProductSchema.index({ tags: 1, isAvailable: 1 });
 
 // Generate slug before saving
 ProductSchema.pre('save', function (next: () => void) {
@@ -287,6 +291,29 @@ ProductSchema.pre('save', function (next: () => void) {
     doc.slug = slugify(doc.name, { lower: true, strict: true, locale: 'vi' });
   }
   next();
+});
+
+// Cascade delete - clean cart items and wishlist references
+ProductSchema.pre('deleteOne', { document: false, query: true }, async function(next) {
+  const productId = this.getQuery()._id;
+
+  try {
+    // Remove from all carts
+    await Cart.updateMany(
+      { 'items.product': productId },
+      { $pull: { items: { product: productId } } }
+    );
+
+    // Remove from all wishlists
+    await User.updateMany(
+      { wishlist: productId },
+      { $pull: { wishlist: productId } }
+    );
+
+    next();
+  } catch (error) {
+    next(error as Error);
+  }
 });
 
 // Update rating when reviews change

@@ -208,10 +208,16 @@ curl http://localhost:5000/api/categories
 
 ### Backend
 - Node.js + Express + TypeScript
-- MongoDB + Mongoose
+- MongoDB + Mongoose (with atomic operations & cascade hooks)
 - JWT Authentication
 - Cloudinary (Image upload)
 - Nodemailer (Emails)
+
+#### Database Optimizations (v1.1 - 2025-12-15)
+- ✅ Atomic counter for race-free order numbering
+- ✅ Cascade delete hooks (User→Cart, Product→Cart/Wishlist)
+- ✅ Compound indexes (5) for faster queries
+- ✅ N+1 query elimination in order creation
 
 ## 📄 License
 

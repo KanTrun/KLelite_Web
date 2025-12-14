@@ -101,6 +101,8 @@ const VoucherSchema = new Schema<IVoucher>(
 // Indexes (unique fields already have indexes via unique: true)
 VoucherSchema.index({ startDate: 1, endDate: 1 });
 VoucherSchema.index({ isActive: 1 });
+// Compound index for active voucher queries
+VoucherSchema.index({ isActive: 1, startDate: 1, endDate: 1 });
 
 // Validate end date is after start date
 VoucherSchema.pre('save', function (next) {

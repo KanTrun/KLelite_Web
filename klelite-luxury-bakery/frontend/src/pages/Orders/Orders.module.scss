@@ -1,127 +1,145 @@
 // ============================================
-// Orders Page - Royal Luxury Style
+// Orders Page - Royal Luxury Design
 // KL'élite Luxury Bakery
+// Elegant Gold & Dark Theme
 // ============================================
 
 @import '@/styles/variables';
 
+// Color palette
+$gold-primary: #C9A962;
+$gold-light: #D4B978;
+$gold-dark: #A08040;
+$dark-bg: #1A1614;
+$cream-bg: #FDFCFA;
+$warm-gray: #F8F5F0;
+
 // ============================================
-// Page Layout
+// Page Layout with Hero Background
 // ============================================
 .ordersPage {
   min-height: 100vh;
-  background: linear-gradient(180deg, #FDFCFA 0%, #F8F5F0 100%);
-  padding: 120px 0 80px;
+  background: $cream-bg;
+  position: relative;
+  overflow: hidden;
+
+  // Decorative background pattern
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 350px;
+    background: linear-gradient(135deg, $dark-bg 0%, #2A2420 100%);
+    clip-path: ellipse(80% 100% at 50% 0%);
+    z-index: 0;
+  }
+
+  // Gold accent lines
+  &::after {
+    content: '';
+    position: absolute;
+    top: 340px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, $gold-primary, transparent);
+    z-index: 1;
+  }
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 $spacing-lg;
+  position: relative;
+  z-index: 2;
 }
 
 // ============================================
-// Page Header
+// Page Header - Royal Style
 // ============================================
 .pageHeader {
   text-align: center;
-  margin-bottom: $spacing-3xl;
+  padding: 140px 0 80px;
+  color: #fff;
 
   h1 {
     font-family: $font-heading;
-    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
     font-weight: 600;
-    color: $text-primary;
-    margin-bottom: $spacing-sm;
-    letter-spacing: -0.02em;
+    color: #fff;
+    margin-bottom: $spacing-md;
+    letter-spacing: 0.02em;
+    
+    svg {
+      color: $gold-primary;
+      margin-right: 12px;
+      vertical-align: middle;
+    }
   }
 
   p {
-    color: $text-secondary;
-    font-size: 1.05rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1rem;
+    font-family: $font-accent;
+    font-style: italic;
   }
 }
 
 // ============================================
-// Filters Section
+// Status Tabs - Elegant Pills
 // ============================================
-.filtersSection {
-  display: flex;
-  flex-wrap: wrap;
-  gap: $spacing-md;
-  margin-bottom: $spacing-xl;
-  align-items: center;
-  justify-content: space-between;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
-  }
-}
-
 .statusTabs {
   display: flex;
   gap: $spacing-xs;
   flex-wrap: wrap;
+  justify-content: center;
+  padding: $spacing-lg;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+  margin-bottom: $spacing-2xl;
+  border: 1px solid rgba($gold-primary, 0.1);
 
   button {
-    padding: 10px 20px;
+    padding: 12px 24px;
     background: transparent;
-    border: 1px solid rgba($primary-color, 0.2);
-    border-radius: 25px;
+    border: 1px solid rgba($gold-primary, 0.2);
+    border-radius: 30px;
     color: $text-secondary;
     font-weight: 500;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, $gold-primary 0%, $gold-dark 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
 
     &:hover {
-      border-color: $primary-color;
-      color: $primary-color;
+      border-color: $gold-primary;
+      color: $gold-primary;
+      transform: translateY(-2px);
     }
 
     &.active {
-      background: linear-gradient(135deg, $primary-color 0%, #A08040 100%);
-      border-color: $primary-color;
+      border-color: $gold-primary;
       color: #fff;
-    }
-  }
-}
-
-.searchBox {
-  position: relative;
-  width: 280px;
-
-  @media (max-width: 768px) {
-    width: 100%;
-  }
-
-  svg {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: $text-secondary;
-  }
-
-  input {
-    width: 100%;
-    padding: 12px 16px 12px 44px;
-    background: #fff;
-    border: 1px solid rgba($primary-color, 0.15);
-    border-radius: 12px;
-    font-size: 0.9rem;
-    color: $text-primary;
-    transition: all 0.25s ease;
-
-    &:focus {
-      outline: none;
-      border-color: $primary-color;
-      box-shadow: 0 0 0 4px rgba($primary-color, 0.1);
-    }
-
-    &::placeholder {
-      color: $text-secondary;
+      
+      &::before {
+        opacity: 1;
+      }
     }
   }
 }
@@ -133,19 +151,24 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-lg;
+  padding-bottom: $spacing-3xl;
 }
 
+// ============================================
+// Order Card - Luxury Glass Effect
+// ============================================
 .orderCard {
   background: #fff;
-  border-radius: 20px;
+  border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba($primary-color, 0.08);
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba($gold-primary, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    transform: translateY(-2px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    border-color: rgba($gold-primary, 0.25);
   }
 }
 
@@ -154,10 +177,16 @@
   justify-content: space-between;
   align-items: center;
   padding: $spacing-lg $spacing-xl;
-  background: linear-gradient(135deg, rgba($primary-color, 0.03) 0%, rgba($primary-color, 0.08) 100%);
-  border-bottom: 1px solid rgba($primary-color, 0.08);
+  background: linear-gradient(135deg, rgba($gold-primary, 0.03) 0%, rgba($gold-primary, 0.08) 100%);
+  border-bottom: 1px solid rgba($gold-primary, 0.1);
+  cursor: pointer;
+  transition: background 0.3s ease;
 
-  @media (max-width: 576px) {
+  &:hover {
+    background: linear-gradient(135deg, rgba($gold-primary, 0.05) 0%, rgba($gold-primary, 0.12) 100%);
+  }
+
+  @media (max-width: 640px) {
     flex-direction: column;
     align-items: flex-start;
     gap: $spacing-md;
@@ -165,211 +194,420 @@
 }
 
 .orderInfo {
-  h3 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: $text-primary;
-    margin-bottom: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 
-    span {
-      color: $primary-color;
-    }
+.orderNumber {
+  font-family: $font-heading;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $text-primary;
+  
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: $gold-primary;
+    border-radius: 50%;
+    margin-right: 10px;
+    vertical-align: middle;
   }
+}
 
-  p {
-    font-size: 0.85rem;
-    color: $text-secondary;
-  }
+.orderDate {
+  font-size: 0.85rem;
+  color: $text-secondary;
+  margin-left: 18px;
 }
 
 .orderStatus {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
+  gap: $spacing-md;
+
+  @media (max-width: 640px) {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 
 .statusBadge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: 20px;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 25px;
   font-size: 0.85rem;
   font-weight: 600;
+  transition: all 0.3s ease;
 
   svg {
     font-size: 1rem;
   }
+}
 
-  &.pending {
-    background: rgba(#ffc107, 0.15);
-    color: #d9a000;
+.orderTotal {
+  font-family: $font-heading;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: $gold-primary;
+}
+
+.expandButton {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba($gold-primary, 0.1);
+  border: none;
+  border-radius: 50%;
+  color: $gold-primary;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: $gold-primary;
+    color: #fff;
   }
 
-  &.confirmed {
-    background: rgba(#17a2b8, 0.15);
-    color: #0e7f8f;
-  }
-
-  &.preparing {
-    background: rgba(#6f42c1, 0.15);
-    color: #5a34a3;
-  }
-
-  &.shipping {
-    background: rgba(#007bff, 0.15);
-    color: #0062cc;
-  }
-
-  &.delivered {
-    background: rgba(#28a745, 0.15);
-    color: #1e7e34;
-  }
-
-  &.cancelled {
-    background: rgba(#dc3545, 0.15);
-    color: #bd2130;
+  svg {
+    font-size: 1.1rem;
   }
 }
 
-.orderBody {
-  padding: $spacing-lg $spacing-xl;
+// ============================================
+// Order Progress Bar
+// ============================================
+.orderProgress {
+  height: 4px;
+  background: rgba($gold-primary, 0.1);
+  position: relative;
+  overflow: hidden;
 }
 
+.progressBar {
+  height: 100%;
+  background: linear-gradient(90deg, $gold-primary, $gold-light);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    background: $gold-primary;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba($gold-primary, 0.5);
+  }
+}
+
+// ============================================
+// Order Items
+// ============================================
 .orderItems {
+  padding: $spacing-lg $spacing-xl;
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
-  margin-bottom: $spacing-lg;
 }
 
 .orderItem {
   display: flex;
-  gap: $spacing-md;
   align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-sm;
+  border-radius: 12px;
+  transition: background 0.2s ease;
 
-  .itemImage {
-    width: 70px;
-    height: 70px;
-    border-radius: 12px;
-    overflow: hidden;
-    flex-shrink: 0;
-    background: $gray-100;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+  &:hover {
+    background: rgba($gold-primary, 0.03);
   }
+}
 
-  .itemInfo {
-    flex: 1;
+.itemImage {
+  width: 70px;
+  height: 70px;
+  border-radius: 14px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: $warm-gray;
+  border: 2px solid rgba($gold-primary, 0.15);
+  object-fit: cover;
+}
 
-    h4 {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: $text-primary;
-      margin-bottom: 4px;
-    }
+.itemInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 
-    p {
-      font-size: 0.85rem;
-      color: $text-secondary;
-    }
+.itemName {
+  font-weight: 600;
+  color: $text-primary;
+  font-size: 0.95rem;
+}
+
+.itemQuantity {
+  font-size: 0.85rem;
+  color: $text-secondary;
+  
+  &::before {
+    content: 'Số lượng: ';
   }
+}
 
-  .itemPrice {
-    text-align: right;
-
-    .price {
-      font-size: 1rem;
-      font-weight: 600;
-      color: $primary-color;
-    }
-
-    .quantity {
-      font-size: 0.85rem;
-      color: $text-secondary;
-    }
-  }
+.itemPrice {
+  font-family: $font-heading;
+  font-weight: 600;
+  color: $gold-primary;
+  font-size: 1rem;
 }
 
 .moreItems {
   text-align: center;
   padding: $spacing-sm;
-  color: $text-secondary;
+  color: $gold-primary;
   font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
+  transition: color 0.2s ease;
 
   &:hover {
-    color: $primary-color;
+    color: $gold-dark;
   }
 }
 
-.orderFooter {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: $spacing-lg;
-  border-top: 1px solid rgba($primary-color, 0.08);
-
-  @media (max-width: 576px) {
-    flex-direction: column;
-    gap: $spacing-md;
-    align-items: stretch;
-  }
+// ============================================
+// Expanded Content
+// ============================================
+.expandedContent {
+  background: linear-gradient(180deg, rgba($gold-primary, 0.02) 0%, transparent 100%);
+  border-top: 1px solid rgba($gold-primary, 0.1);
+  overflow: hidden;
 }
 
-.orderTotal {
-  .label {
-    font-size: 0.9rem;
-    color: $text-secondary;
-  }
-
-  .amount {
-    font-family: $font-heading;
-    font-size: 1.5rem;
+.allItems {
+  padding: $spacing-lg $spacing-xl;
+  
+  h4 {
+    font-size: 1rem;
     font-weight: 600;
-    color: $primary-color;
+    color: $text-primary;
+    margin-bottom: $spacing-md;
+    padding-bottom: $spacing-sm;
+    border-bottom: 1px solid rgba($gold-primary, 0.1);
   }
 }
 
-.orderActions {
-  display: flex;
-  gap: $spacing-sm;
-
-  @media (max-width: 576px) {
-    justify-content: stretch;
+.shippingInfo {
+  padding: $spacing-lg $spacing-xl;
+  background: rgba($gold-primary, 0.03);
+  
+  h4 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: $spacing-md;
     
-    button {
-      flex: 1;
+    svg {
+      color: $gold-primary;
     }
   }
 }
 
-.viewBtn {
+.addressName {
+  font-weight: 600;
+  color: $text-primary;
+  margin-bottom: 4px;
+}
+
+.addressDetail {
+  color: $text-secondary;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.addressPhone {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: $text-secondary;
+  font-size: 0.9rem;
+  
+  svg {
+    color: $gold-primary;
+  }
+}
+
+.orderSummary {
+  padding: $spacing-lg $spacing-xl;
+  background: #fff;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-xs 0;
+  font-size: 0.95rem;
+  
+  span:first-child {
+    color: $text-secondary;
+  }
+  
+  span:last-child {
+    font-weight: 500;
+    color: $text-primary;
+  }
+
+  &.discount {
+    span:last-child {
+      color: #28a745;
+    }
+  }
+
+  &.total {
+    border-top: 2px solid rgba($gold-primary, 0.15);
+    padding-top: $spacing-md;
+    margin-top: $spacing-sm;
+    
+    span:first-child {
+      font-weight: 600;
+      color: $text-primary;
+    }
+    
+    span:last-child {
+      font-family: $font-heading;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: $gold-primary;
+    }
+  }
+}
+
+.paymentInfo {
+  padding: $spacing-lg $spacing-xl;
+  border-top: 1px solid rgba($gold-primary, 0.1);
+  
+  h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: $spacing-md;
+  }
+}
+
+.paymentDetail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  span:first-child {
+    color: $text-secondary;
+  }
+}
+
+.paymentStatus {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  
+  &.pending {
+    background: rgba(#ffc107, 0.15);
+    color: #d9a000;
+  }
+  
+  &.paid {
+    background: rgba(#28a745, 0.15);
+    color: #1e7e34;
+  }
+  
+  &.failed {
+    background: rgba(#dc3545, 0.15);
+    color: #bd2130;
+  }
+  
+  &.refunded {
+    background: rgba(#6c757d, 0.15);
+    color: #545b62;
+  }
+}
+
+.orderNote {
+  padding: $spacing-lg $spacing-xl;
+  background: rgba($gold-primary, 0.03);
+  border-top: 1px solid rgba($gold-primary, 0.1);
+  
+  h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: $spacing-sm;
+  }
+  
+  p {
+    color: $text-secondary;
+    font-style: italic;
+    font-size: 0.95rem;
+  }
+}
+
+// ============================================
+// Order Actions
+// ============================================
+.orderActions {
+  display: flex;
+  gap: $spacing-sm;
+  padding: $spacing-lg $spacing-xl;
+  background: linear-gradient(180deg, transparent 0%, rgba($gold-primary, 0.03) 100%);
+  border-top: 1px solid rgba($gold-primary, 0.08);
+
+  @media (max-width: 576px) {
+    flex-wrap: wrap;
+    
+    a, button {
+      flex: 1;
+      min-width: calc(50% - 8px);
+    }
+  }
+}
+
+.viewButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   padding: 12px 24px;
-  background: linear-gradient(135deg, $primary-color 0%, #A08040 100%);
+  background: linear-gradient(135deg, $gold-primary 0%, $gold-dark 100%);
   color: #fff;
   border: none;
   border-radius: 12px;
   font-weight: 600;
   font-size: 0.9rem;
+  text-decoration: none;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.3s ease;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba($primary-color, 0.3);
+    box-shadow: 0 10px 30px rgba($gold-primary, 0.3);
   }
 }
 
-.cancelBtn {
+.cancelButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -382,64 +620,63 @@
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.3s ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: rgba(#dc3545, 0.1);
     border-color: #dc3545;
   }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 }
 
-.reorderBtn {
+.reorderButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   padding: 12px 24px;
   background: transparent;
-  color: $primary-color;
-  border: 1px solid rgba($primary-color, 0.3);
+  color: $gold-primary;
+  border: 1px solid rgba($gold-primary, 0.3);
   border-radius: 12px;
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.3s ease;
 
   &:hover {
-    background: rgba($primary-color, 0.1);
-    border-color: $primary-color;
+    background: rgba($gold-primary, 0.1);
+    border-color: $gold-primary;
   }
 }
 
+.buttonSpinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
 // ============================================
-// Empty State
+// Empty State - Elegant Design
 // ============================================
 .emptyState {
   text-align: center;
   padding: $spacing-4xl $spacing-xl;
   background: #fff;
-  border-radius: 24px;
-  border: 1px solid rgba($primary-color, 0.08);
-
-  .emptyIcon {
-    width: 100px;
-    height: 100px;
-    margin: 0 auto $spacing-xl;
-    background: linear-gradient(135deg, rgba($primary-color, 0.1) 0%, rgba($primary-color, 0.05) 100%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    svg {
-      font-size: 3rem;
-      color: $primary-color;
-      opacity: 0.6;
-    }
-  }
+  border-radius: 28px;
+  border: 1px solid rgba($gold-primary, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
 
   h3 {
-    font-size: 1.3rem;
+    font-family: $font-heading;
+    font-size: 1.5rem;
     font-weight: 600;
     color: $text-primary;
     margin-bottom: $spacing-sm;
@@ -448,26 +685,27 @@
   p {
     color: $text-secondary;
     margin-bottom: $spacing-xl;
-  }
-
-  .shopBtn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 32px;
-    background: linear-gradient(135deg, $primary-color 0%, #A08040 100%);
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
     font-size: 1rem;
-    text-decoration: none;
-    transition: all 0.25s ease;
+  }
+}
 
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba($primary-color, 0.3);
-    }
+.shopBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 36px;
+  background: linear-gradient(135deg, $gold-primary 0%, $gold-dark 100%);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba($gold-primary, 0.35);
   }
 }
 
@@ -477,12 +715,14 @@
 .loadingState {
   text-align: center;
   padding: $spacing-4xl;
+  background: #fff;
+  border-radius: 28px;
 
   .spinner {
-    width: 50px;
-    height: 50px;
-    border: 3px solid rgba($primary-color, 0.1);
-    border-top-color: $primary-color;
+    width: 60px;
+    height: 60px;
+    border: 3px solid rgba($gold-primary, 0.15);
+    border-top-color: $gold-primary;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto $spacing-lg;
@@ -498,19 +738,19 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 24px;
+  padding: 12px 28px;
   background: transparent;
-  color: $primary-color;
-  border: 2px solid $primary-color;
+  color: $gold-primary;
+  border: 2px solid $gold-primary;
   border-radius: 12px;
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.3s ease;
   margin-top: $spacing-lg;
 
   &:hover {
-    background: $primary-color;
+    background: $gold-primary;
     color: #fff;
   }
 }
@@ -522,412 +762,78 @@
 }
 
 // ============================================
-// Pagination
+// Pagination - Elegant Style
 // ============================================
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: $spacing-sm;
+  gap: $spacing-md;
   margin-top: $spacing-2xl;
+  padding: $spacing-lg;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 
   button {
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #fff;
-    border: 1px solid rgba($primary-color, 0.15);
-    border-radius: 12px;
+    padding: 12px 24px;
+    background: transparent;
+    border: 1px solid rgba($gold-primary, 0.2);
+    border-radius: 10px;
     color: $text-primary;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: all 0.3s ease;
 
     &:hover:not(:disabled) {
-      border-color: $primary-color;
-      color: $primary-color;
+      border-color: $gold-primary;
+      color: $gold-primary;
+      background: rgba($gold-primary, 0.05);
     }
 
     &:disabled {
       opacity: 0.4;
       cursor: not-allowed;
     }
-
-    &.active {
-      background: linear-gradient(135deg, $primary-color 0%, #A08040 100%);
-      border-color: $primary-color;
-      color: #fff;
-    }
   }
 
   span {
     padding: 0 $spacing-md;
     color: $text-secondary;
-    font-size: 0.9rem;
-  }
-}
-
-// ============================================
-// Order Detail Modal
-// ============================================
-.modalOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: $spacing-lg;
-}
-
-.modal {
-  background: #fff;
-  border-radius: 24px;
-  width: 100%;
-  max-width: 700px;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.modalHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: $spacing-xl;
-  border-bottom: 1px solid rgba($primary-color, 0.1);
-  position: sticky;
-  top: 0;
-  background: #fff;
-  z-index: 1;
-
-  h2 {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: $text-primary;
-  }
-
-  .closeBtn {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba($primary-color, 0.05);
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.25s ease;
-
-    svg {
-      font-size: 1.2rem;
-      color: $text-primary;
-    }
-
-    &:hover {
-      background: rgba($primary-color, 0.1);
-    }
-  }
-}
-
-.modalBody {
-  padding: $spacing-xl;
-}
-
-.detailSection {
-  margin-bottom: $spacing-xl;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-
-  h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: $text-primary;
-    margin-bottom: $spacing-md;
-    padding-bottom: $spacing-sm;
-    border-bottom: 1px solid rgba($primary-color, 0.1);
-  }
-}
-
-.detailGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: $spacing-md;
-
-  @media (max-width: 576px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.detailItem {
-  .label {
-    font-size: 0.85rem;
-    color: $text-secondary;
-    margin-bottom: 4px;
-  }
-
-  .value {
-    font-size: 0.95rem;
-    color: $text-primary;
-    font-weight: 500;
-  }
-}
-
-.orderTimeline {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
-  padding-left: $spacing-lg;
-  border-left: 2px solid rgba($primary-color, 0.2);
-}
-
-.timelineItem {
-  position: relative;
-  padding-left: $spacing-lg;
-
-  &::before {
-    content: '';
-    position: absolute;
-    left: -27px;
-    top: 4px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: rgba($primary-color, 0.2);
-    border: 2px solid #fff;
-  }
-
-  &.active::before {
-    background: $primary-color;
-  }
-
-  &.completed::before {
-    background: #28a745;
-  }
-
-  .timelineTitle {
-    font-weight: 600;
-    color: $text-primary;
     font-size: 0.95rem;
   }
-
-  .timelineDate {
-    font-size: 0.85rem;
-    color: $text-secondary;
-  }
-}
-
-.summaryRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: $spacing-sm 0;
-
-  &.total {
-    border-top: 2px solid rgba($primary-color, 0.1);
-    padding-top: $spacing-md;
-    margin-top: $spacing-sm;
-
-    span:first-child {
-      font-weight: 600;
-      color: $text-primary;
-    }
-
-    span:last-child {
-      font-family: $font-heading;
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: $primary-color;
-    }
-  }
-
-  span:first-child {
-    color: $text-secondary;
-  }
-
-  span:last-child {
-    font-weight: 500;
-    color: $text-primary;
-  }
 }
 
 // ============================================
-// Cancel Modal
+// Responsive Adjustments
 // ============================================
-.cancelModal {
-  .cancelContent {
-    text-align: center;
-    padding: $spacing-xl;
-  }
-
-  .cancelIcon {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto $spacing-lg;
-    background: rgba(#dc3545, 0.1);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+@media (max-width: 768px) {
+  .pageHeader {
+    padding: 120px 0 60px;
     
-    svg {
-      font-size: 2.5rem;
-      color: #dc3545;
+    h1 {
+      font-size: 1.8rem;
     }
   }
-
-  h3 {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: $text-primary;
-    margin-bottom: $spacing-sm;
-  }
-
-  p {
-    color: $text-secondary;
-    margin-bottom: $spacing-lg;
-  }
-
-  textarea {
-    width: 100%;
+  
+  .statusTabs {
     padding: $spacing-md;
-    border: 1px solid rgba($primary-color, 0.2);
-    border-radius: 12px;
-    resize: vertical;
-    min-height: 100px;
-    margin-bottom: $spacing-lg;
-    font-family: inherit;
-    font-size: 0.95rem;
-
-    &:focus {
-      outline: none;
-      border-color: $primary-color;
-    }
-  }
-
-  .cancelActions {
-    display: flex;
-    gap: $spacing-md;
-    justify-content: center;
-  }
-
-  .keepBtn {
-    padding: 12px 28px;
-    background: rgba($primary-color, 0.1);
-    border: none;
-    border-radius: 12px;
-    color: $text-primary;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.25s ease;
-
-    &:hover {
-      background: rgba($primary-color, 0.2);
-    }
-  }
-
-  .confirmCancelBtn {
-    padding: 12px 28px;
-    background: #dc3545;
-    border: none;
-    border-radius: 12px;
-    color: #fff;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.25s ease;
-
-    &:hover {
-      background: #c82333;
-    }
-  }
-}
-
-// ============================================
-// Review Modal
-// ============================================
-.reviewModal {
-  .reviewContent {
-    padding: $spacing-xl;
-  }
-
-  h3 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: $text-primary;
-    margin-bottom: $spacing-lg;
-    text-align: center;
-  }
-
-  .ratingStars {
-    display: flex;
-    justify-content: center;
-    gap: $spacing-sm;
-    margin-bottom: $spacing-lg;
-
+    
     button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px;
-      transition: transform 0.2s ease;
-
-      svg {
-        font-size: 2rem;
-        color: #ddd;
-        transition: color 0.2s ease;
-      }
-
-      &.filled svg {
-        color: #ffc107;
-      }
-
-      &:hover {
-        transform: scale(1.1);
-      }
+      padding: 10px 16px;
+      font-size: 0.85rem;
     }
   }
-
-  textarea {
-    width: 100%;
-    padding: $spacing-md;
-    border: 1px solid rgba($primary-color, 0.2);
-    border-radius: 12px;
-    resize: vertical;
-    min-height: 120px;
-    margin-bottom: $spacing-lg;
-    font-family: inherit;
-    font-size: 0.95rem;
-
-    &:focus {
-      outline: none;
-      border-color: $primary-color;
-    }
+  
+  .orderHeader {
+    padding: $spacing-md $spacing-lg;
   }
-
-  .submitReviewBtn {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, $primary-color 0%, #A08040 100%);
-    border: none;
-    border-radius: 12px;
-    color: #fff;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.25s ease;
-
-    &:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba($primary-color, 0.3);
-    }
-
-    &:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
+  
+  .orderItems {
+    padding: $spacing-md $spacing-lg;
+  }
+  
+  .orderActions {
+    padding: $spacing-md $spacing-lg;
   }
 }

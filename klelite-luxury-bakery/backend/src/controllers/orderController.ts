@@ -30,28 +30,33 @@ export const createOrder = asyncHandler(async (req: AuthRequest, res: Response, 
   if (!cart || cart.items.length === 0) {
     throw BadRequestError('Giỏ hàng trống');
   }
-  
+
   // Validate items and calculate subtotal
   let subtotal = 0;
   const orderItems = [];
-  
+
+  // Batch fetch all products at once
+  const productIds = cart.items.map(item => item.product);
+  const products = await Product.find({ _id: { $in: productIds } });
+  const productMap = new Map(products.map(p => [p._id.toString(), p]));
+
   for (const item of cart.items) {
-    const product = await Product.findById(item.product);
+    const product = productMap.get(item.product.toString());
     if (!product) {
       throw BadRequestError(`Sản phẩm không tồn tại`);
     }
-    
+
     if (!product.isAvailable) {
       throw BadRequestError(`Sản phẩm "${product.name}" hiện không khả dụng`);
     }
-    
+
     if (product.stock < item.quantity) {
       throw BadRequestError(`Sản phẩm "${product.name}" chỉ còn ${product.stock} trong kho`);
     }
-    
+
     const itemTotal = item.price * item.quantity;
     subtotal += itemTotal;
-    
+
     orderItems.push({
       product: product._id,
       name: product.name,

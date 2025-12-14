@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import { getNextSequence } from '../utils';
 
 // Interfaces
 export interface IOrderItem {
@@ -207,6 +208,10 @@ OrderSchema.index({ user: 1 });
 OrderSchema.index({ status: 1 });
 OrderSchema.index({ 'payment.status': 1 });
 OrderSchema.index({ createdAt: -1 });
+// Compound indexes for common queries
+OrderSchema.index({ status: 1, createdAt: -1 });
+OrderSchema.index({ 'payment.status': 1, createdAt: -1 });
+OrderSchema.index({ user: 1, status: 1 });
 
 // Generate order number before validation
 OrderSchema.pre('validate', async function (next) {
@@ -215,19 +220,9 @@ OrderSchema.pre('validate', async function (next) {
     const year = date.getFullYear().toString().slice(-2);
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
-    
-    // Get count of orders today
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59, 999);
-    
-    const count = await mongoose.model('Order').countDocuments({
-      createdAt: { $gte: startOfDay, $lte: endOfDay },
-    });
-    
-    const sequence = (count + 1).toString().padStart(4, '0');
-    this.orderNumber = `KL${year}${month}${day}${sequence}`;
+
+    const seq = await getNextSequence(`order-${year}${month}${day}`);
+    this.orderNumber = `KL${year}${month}${day}${seq.toString().padStart(4, '0')}`;
   }
   next();
 });

@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { config } from '../config';
+import Cart from './Cart';
 
 // Interfaces
 export interface IAddress {
@@ -185,6 +186,26 @@ UserSchema.pre('save', async function (next) {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
+});
+
+// Cascade delete cart and clean wishlist references
+UserSchema.pre('deleteOne', { document: false, query: true }, async function(next) {
+  const userId = this.getQuery()._id;
+
+  try {
+    // Delete user's cart
+    await Cart.deleteOne({ user: userId });
+
+    // Clean wishlist references
+    await mongoose.model('User').updateMany(
+      { wishlist: userId },
+      { $pull: { wishlist: userId } }
+    );
+
+    next();
+  } catch (error) {
+    next(error as Error);
+  }
 });
 
 // Compare password method

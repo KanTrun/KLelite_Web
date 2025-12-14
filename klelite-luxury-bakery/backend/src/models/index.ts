@@ -4,3 +4,4 @@ export { default as Product, IProduct, IProductImage, IProductSize, INutrition, 
 export { default as Cart, ICart, ICartItem } from './Cart';
 export { default as Order, IOrder, IOrderItem, IShippingAddress, IPaymentInfo } from './Order';
 export { default as Voucher, IVoucher } from './Voucher';
+export { default as Counter, ICounter } from './Counter';

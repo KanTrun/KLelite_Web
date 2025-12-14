@@ -15,3 +15,4 @@ export {
   sanitizeUser,
   deepClone,
 } from './helpers';
+export { getNextSequence } from './counter';
