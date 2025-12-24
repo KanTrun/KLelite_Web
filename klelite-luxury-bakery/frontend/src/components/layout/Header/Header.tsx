@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiSearch, FiShoppingCart, FiUser, FiMenu, FiX, FiHeart, FiChevronDown } from 'react-icons/fi';
 import { useAuth, useCart } from '@/hooks';
+import { ThemeToggle } from '@/components/common/ThemeToggle';
 import styles from './Header.module.scss';
 
 export const Header: React.FC = () => {
@@ -68,50 +69,65 @@ export const Header: React.FC = () => {
 
         {/* Actions */}
         <div className={styles.actions}>
+          {/* Theme Toggle */}
+          <ThemeToggle />
+
           {/* Search */}
-          <button 
+          <button
             className={styles.iconButton}
             onClick={() => setIsSearchOpen(!isSearchOpen)}
-            aria-label="Tìm kiếm"
+            aria-label="Tìm kiếm sản phẩm"
+            aria-expanded={isSearchOpen}
+            aria-controls="search-panel"
           >
-            <FiSearch />
+            <FiSearch aria-hidden="true" />
           </button>
 
           {/* Wishlist */}
           {isAuthenticated && (
-            <Link to="/wishlist" className={styles.iconButton} aria-label="Yêu thích">
-              <FiHeart />
+            <Link to="/wishlist" className={styles.iconButton} aria-label="Danh sách yêu thích">
+              <FiHeart aria-hidden="true" />
             </Link>
           )}
 
           {/* Cart */}
-          <Link to="/cart" className={styles.iconButton} aria-label="Giỏ hàng">
-            <FiShoppingCart />
+          <Link to="/cart" className={styles.iconButton} aria-label={`Giỏ hàng: ${cartItemsCount} sản phẩm`}>
+            <FiShoppingCart aria-hidden="true" />
             {cartItemsCount > 0 && (
-              <span className={styles.badge}>{cartItemsCount}</span>
+              <span className={styles.badge} aria-hidden="true">{cartItemsCount}</span>
             )}
           </Link>
 
           {/* User */}
           {isAuthenticated ? (
             <div className={styles.userMenu} ref={dropdownRef}>
-              <button 
+              <button
                 className={styles.userButton}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 aria-expanded={isDropdownOpen}
+                aria-haspopup="true"
+                aria-label="Menu tài khoản"
               >
-                <FiUser />
+                <FiUser aria-hidden="true" />
                 <span>{user?.firstName}</span>
-                <FiChevronDown className={isDropdownOpen ? styles.rotated : ''} />
+                <FiChevronDown className={isDropdownOpen ? styles.rotated : ''} aria-hidden="true" />
               </button>
-              <div className={`${styles.dropdown} ${isDropdownOpen ? styles.open : ''}`}>
-                <Link to="/profile" className={styles.dropdownItem} onClick={() => setIsDropdownOpen(false)}>Tài khoản</Link>
-                <Link to="/orders" className={styles.dropdownItem} onClick={() => setIsDropdownOpen(false)}>Đơn hàng</Link>
+              <div
+                className={`${styles.dropdown} ${isDropdownOpen ? styles.open : ''}`}
+                role="menu"
+                aria-orientation="vertical"
+              >
+                <Link to="/profile" className={styles.dropdownItem} onClick={() => setIsDropdownOpen(false)} role="menuitem">Tài khoản</Link>
+                <Link to="/orders" className={styles.dropdownItem} onClick={() => setIsDropdownOpen(false)} role="menuitem">Đơn hàng</Link>
                 {user?.role === 'admin' && (
-                  <Link to="/admin" className={styles.dropdownItem} onClick={() => setIsDropdownOpen(false)}>Quản trị</Link>
+                  <Link to="/admin" className={styles.dropdownItem} onClick={() => setIsDropdownOpen(false)} role="menuitem">Quản trị</Link>
                 )}
-                <div className={styles.dropdownDivider} />
-                <button onClick={() => { handleLogout(); setIsDropdownOpen(false); }} className={`${styles.dropdownItem} ${styles.danger}`}>
+                <div className={styles.dropdownDivider} role="separator" />
+                <button
+                  onClick={() => { handleLogout(); setIsDropdownOpen(false); }}
+                  className={`${styles.dropdownItem} ${styles.danger}`}
+                  role="menuitem"
+                >
                   Đăng xuất
                 </button>
               </div>

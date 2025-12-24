@@ -2,8 +2,8 @@ import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { useSearchParams, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import { 
-  FiGrid, FiList, FiFilter, FiX, FiStar, 
+import {
+  FiGrid, FiList, FiFilter, FiX, FiStar,
   FiShoppingCart, FiHeart, FiChevronDown,
   FiSearch, FiSliders, FiEye, FiArrowRight,
   FiAward, FiCheckCircle
@@ -14,31 +14,16 @@ import { userService } from '@/services/userService';
 import { AppDispatch, RootState } from '@/store';
 import { formatCurrency } from '@/utils/formatters';
 import { ProductListSkeleton } from '@/components/common/ProductListSkeleton';
+import { ScrollReveal } from '@/components/common/ScrollReveal/ScrollReveal';
+import { fadeInUp, staggerContainer, buttonTap, buttonHover } from '@/utils/animations';
 import styles from './Products.module.scss';
 
 // Animation variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 60 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }
-  }
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.1 }
-  }
-};
-
 const cardVariant = {
   hidden: { opacity: 0, y: 40, scale: 0.95 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
+  visible: {
+    opacity: 1,
+    y: 0,
     scale: 1,
     transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }
   }
@@ -46,7 +31,7 @@ const cardVariant = {
 
 const shimmer = {
   hidden: { x: '-100%' },
-  visible: { 
+  visible: {
     x: '100%',
     transition: { duration: 2, repeat: Infinity, repeatDelay: 3 }
   }
@@ -75,7 +60,7 @@ const ProductList: React.FC = () => {
     (state: RootState) => state.product
   );
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  
+
   // Hero parallax
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -136,7 +121,7 @@ const ProductList: React.FC = () => {
     } else {
       setSelectedPriceRange(null);
     }
-    
+
     // Set selected rating from URL
     setSelectedRating(rating ? Number(rating) : null);
   }, [priceMin, priceMax, rating]);
@@ -184,7 +169,7 @@ const ProductList: React.FC = () => {
 
   const handlePriceRangeChange = (rangeId: string) => {
     const range = priceRanges.find(r => r.id === rangeId);
-    
+
     setSearchParams((prev) => {
       if (selectedPriceRange === rangeId) {
         // Deselect
@@ -244,9 +229,9 @@ const ProductList: React.FC = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const [sortBy, sortOrder] = currentSort.split('-');
-    dispatch(fetchProducts({ 
-      ...filters, 
-      search: searchTerm, 
+    dispatch(fetchProducts({
+      ...filters,
+      search: searchTerm,
       page: 1,
       sortBy: sortBy as any,
       sortOrder: sortOrder as any,
@@ -264,7 +249,7 @@ const ProductList: React.FC = () => {
       window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
       return;
     }
-    
+
     try {
       setAddingToWishlist(productId);
       if (wishlistIds.includes(productId)) {
@@ -289,17 +274,17 @@ const ProductList: React.FC = () => {
     <div className={styles.productsPage}>
       {/* Hero Banner - Royal Luxury Style */}
       <section className={styles.heroBanner} ref={heroRef}>
-        <motion.div 
+        <motion.div
           className={styles.heroBackground}
           style={{ y: heroY }}
         />
         <div className={styles.heroOverlay} />
         <div className={styles.heroPattern} />
-        
+
         {/* Floating Elements */}
-        <motion.div 
+        <motion.div
           className={styles.floatingCrown}
-          animate={{ 
+          animate={{
             y: [0, -15, 0],
             rotate: [0, 5, -5, 0]
           }}
@@ -307,7 +292,7 @@ const ProductList: React.FC = () => {
         >
           <FiAward />
         </motion.div>
-        
+
         <div className={styles.container}>
           <motion.div
             className={styles.heroContent}
@@ -321,19 +306,19 @@ const ProductList: React.FC = () => {
               <span>Bộ Sưu Tập Hoàng Gia</span>
               <span className={styles.badgeIcon}>✦</span>
             </motion.div>
-            
+
             <motion.h1 variants={fadeInUp}>
               <span className={styles.titleAccent}>
                 {activeCategory?.name || 'Nghệ Thuật'}
               </span>
               <span className={styles.titleMain}>Bánh Thượng Lưu</span>
             </motion.h1>
-            
+
             <motion.p variants={fadeInUp}>
               {activeCategory?.description ||
                 'Khám phá những tuyệt phẩm bánh được chế tác bởi nghệ nhân hàng đầu, từ nguyên liệu quý hiếm nhập khẩu từ Pháp, Bỉ và Thụy Sĩ'}
             </motion.p>
-            
+
             <motion.div className={styles.heroStats} variants={fadeInUp}>
               <div className={styles.statItem}>
                 <span className={styles.statNumber}>{paginationData.total}+</span>
@@ -352,9 +337,9 @@ const ProductList: React.FC = () => {
             </motion.div>
           </motion.div>
         </div>
-        
+
         {/* Scroll Indicator */}
-        <motion.div 
+        <motion.div
           className={styles.scrollIndicator}
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
@@ -368,11 +353,7 @@ const ProductList: React.FC = () => {
         <div className={styles.productsLayout}>
           {/* Sidebar Filters - Desktop */}
           <aside className={styles.sidebar}>
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            >
+            <ScrollReveal variant="fadeInLeft" delay={0.2} threshold={0.1}>
               <div className={styles.sidebarHeader}>
                 <h3>
                   <FiSliders />
@@ -381,11 +362,11 @@ const ProductList: React.FC = () => {
               </div>
 
               {hasActiveFilters && (
-                <motion.button 
-                  className={styles.clearFiltersBtn} 
+                <motion.button
+                  className={styles.clearFiltersBtn}
                   onClick={handleClearFilters}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={buttonHover}
+                  whileTap={buttonTap}
                 >
                   <FiX /> Xóa tất cả bộ lọc
                 </motion.button>
@@ -428,8 +409,8 @@ const ProductList: React.FC = () => {
                   {priceRanges.map((range) => (
                     <li key={range.id}>
                       <label className={styles.luxuryCheckbox}>
-                        <input 
-                          type="checkbox" 
+                        <input
+                          type="checkbox"
                           checked={selectedPriceRange === range.id}
                           onChange={() => handlePriceRangeChange(range.id)}
                         />
@@ -452,8 +433,8 @@ const ProductList: React.FC = () => {
                   {[5, 4, 3, 2, 1].map((ratingValue) => (
                     <li key={ratingValue}>
                       <label className={styles.luxuryCheckbox}>
-                        <input 
-                          type="checkbox" 
+                        <input
+                          type="checkbox"
                           checked={selectedRating === ratingValue}
                           onChange={() => handleRatingChange(ratingValue)}
                         />
@@ -474,7 +455,7 @@ const ProductList: React.FC = () => {
                   ))}
                 </ul>
               </div>
-              
+
               {/* Sidebar CTA */}
               <div className={styles.sidebarCta}>
                 <div className={styles.ctaIcon}>
@@ -486,13 +467,13 @@ const ProductList: React.FC = () => {
                   Liên hệ ngay
                 </Link>
               </div>
-            </motion.div>
+            </ScrollReveal>
           </aside>
 
           {/* Main Content */}
           <main className={styles.mainContent}>
             {/* Toolbar */}
-            <motion.div 
+            <motion.div
               className={styles.toolbar}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -506,7 +487,7 @@ const ProductList: React.FC = () => {
                   <FiSliders />
                   <span>Bộ lọc</span>
                 </button>
-                
+
                 <form onSubmit={handleSearch} className={styles.searchForm}>
                   <FiSearch />
                   <input
@@ -557,7 +538,7 @@ const ProductList: React.FC = () => {
             {isLoading ? (
               <ProductListSkeleton count={12} viewMode={viewMode} />
             ) : productList.length === 0 ? (
-              <motion.div 
+              <motion.div
                 className={styles.emptyState}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -567,7 +548,7 @@ const ProductList: React.FC = () => {
                 </div>
                 <h3>Không tìm thấy tuyệt phẩm</h3>
                 <p>Hãy thử thay đổi bộ lọc hoặc tìm kiếm với từ khóa khác</p>
-                <motion.button 
+                <motion.button
                   onClick={() => handleCategoryChange(null)}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -594,7 +575,7 @@ const ProductList: React.FC = () => {
                     >
                       {/* Card Glow Effect */}
                       <div className={styles.cardGlow} />
-                      
+
                       <Link
                         to={`/products/${product.slug}`}
                         className={styles.productImage}
@@ -607,7 +588,7 @@ const ProductList: React.FC = () => {
                           />
                           <div className={styles.imageOverlay} />
                         </div>
-                        
+
                         {/* Badges */}
                         <div className={styles.badgeContainer}>
                           {product.discount && product.discount > 0 && (
@@ -619,7 +600,7 @@ const ProductList: React.FC = () => {
                             </span>
                           )}
                         </div>
-                        
+
                         {/* Quick Actions */}
                         <div className={styles.productActions}>
                           <motion.button
@@ -661,7 +642,7 @@ const ProductList: React.FC = () => {
                             ? product.category.name
                             : 'Bánh Cao Cấp'}
                         </span>
-                        
+
                         <h3>
                           <Link to={`/products/${product.slug}`}>{product.name}</Link>
                         </h3>
@@ -701,17 +682,17 @@ const ProductList: React.FC = () => {
                           <motion.button
                             className={styles.addToCartBtn}
                             onClick={() => handleAddToCart(product._id)}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
+                            whileHover={buttonHover}
+                            whileTap={buttonTap}
                           >
                             <FiShoppingCart />
                             <span>Thêm vào giỏ hàng</span>
                           </motion.button>
                         )}
                       </div>
-                      
+
                       {/* Shimmer Effect */}
-                      <motion.div 
+                      <motion.div
                         className={styles.shimmer}
                         variants={shimmer}
                       />
@@ -723,7 +704,7 @@ const ProductList: React.FC = () => {
 
             {/* Pagination */}
             {paginationData.totalPages > 1 && (
-              <motion.div 
+              <motion.div
                 className={styles.pagination}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -850,8 +831,8 @@ const ProductList: React.FC = () => {
                     {priceRanges.map((range) => (
                       <li key={range.id}>
                         <label className={styles.luxuryCheckbox}>
-                          <input 
-                            type="checkbox" 
+                          <input
+                            type="checkbox"
                             checked={selectedPriceRange === range.id}
                             onChange={() => handlePriceRangeChange(range.id)}
                           />
@@ -874,8 +855,8 @@ const ProductList: React.FC = () => {
                     {[5, 4, 3, 2, 1].map((ratingValue) => (
                       <li key={ratingValue}>
                         <label className={styles.luxuryCheckbox}>
-                          <input 
-                            type="checkbox" 
+                          <input
+                            type="checkbox"
                             checked={selectedRating === ratingValue}
                             onChange={() => handleRatingChange(ratingValue)}
                           />
@@ -897,8 +878,8 @@ const ProductList: React.FC = () => {
                 </div>
 
                 {hasActiveFilters && (
-                  <motion.button 
-                    className={styles.clearFiltersBtnMobile} 
+                  <motion.button
+                    className={styles.clearFiltersBtnMobile}
                     onClick={handleClearFilters}
                     whileTap={{ scale: 0.98 }}
                   >

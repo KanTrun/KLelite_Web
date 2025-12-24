@@ -4,9 +4,12 @@ import { Provider } from 'react-redux';
 import { Toaster } from 'react-hot-toast';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { store } from '@/store';
+import { ThemeProvider } from '@/contexts';
 import AppRoutes from '@/routes';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { SkipLink } from '@/components/common/SkipLink/SkipLink';
+import { AriaLiveRegion } from '@/components/common/AriaLiveRegion/AriaLiveRegion';
 import '@/styles/global.scss';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
@@ -26,8 +29,10 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Normal pages with header and footer
   return (
     <div className="app">
+      <SkipLink />
+      <AriaLiveRegion />
       <Header />
-      <main>
+      <main id="main-content">
         {children}
       </main>
       <Footer />
@@ -39,31 +44,35 @@ const App: React.FC = () => {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <Provider store={store}>
-        <BrowserRouter>
-          <AppLayout>
-            <AppRoutes />
-          </AppLayout>
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: '#333',
-                color: '#fff',
-              },
-              success: {
+        <ThemeProvider>
+          <BrowserRouter>
+            <AppLayout>
+              <AppRoutes />
+            </AppLayout>
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
                 style: {
-                  background: '#28a745',
+                  background: 'var(--color-surface)',
+                  color: 'var(--color-text)',
                 },
-              },
-              error: {
-                style: {
-                  background: '#dc3545',
+                success: {
+                  style: {
+                    background: '#28a745',
+                    color: '#fff',
+                  },
                 },
-              },
-            }}
-          />
-        </BrowserRouter>
+                error: {
+                  style: {
+                    background: '#dc3545',
+                    color: '#fff',
+                  },
+                },
+              }}
+            />
+          </BrowserRouter>
+        </ThemeProvider>
       </Provider>
     </GoogleOAuthProvider>
   );

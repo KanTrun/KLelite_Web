@@ -6,13 +6,14 @@
 
 .card {
   position: relative;
-  background: white;
+  background: var(--card-bg);
   border-radius: $radius-xl;
   overflow: hidden;
-  box-shadow: $shadow-sm;
-  transition: 
+  box-shadow: var(--card-shadow);
+  transition:
     transform $transition-fast $ease-out,
-    box-shadow $transition-fast $ease-out;
+    box-shadow $transition-fast $ease-out,
+    background-color $duration-normal $ease-out;
   
   &:hover {
     transform: translateY(-8px);
@@ -29,6 +30,14 @@
     
     .overlay {
       opacity: 1;
+    }
+  }
+
+  // Accessibility Focus Styles
+  &:focus-within {
+    .quickActions {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 }
@@ -492,47 +501,82 @@
 }
 
 // ============================================
-// Skeleton Loading State
+// Skeleton Loading State (with Dark Mode Support)
 // ============================================
 .skeleton {
   .imageWrapper {
-    background: linear-gradient(
-      90deg,
-      $background-muted 25%,
-      #FAFAFA 50%, // lighten($background-muted, 5%)
-      $background-muted 75%
-    );
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
+    position: relative;
+    overflow: hidden;
+    background: var(--skeleton-bg, #{$background-muted});
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--skeleton-shimmer, rgba(255, 255, 255, 0.4)) 50%,
+        transparent 100%
+      );
+      animation: shimmerMove 1.5s ease-in-out infinite;
+    }
   }
-  
+
   .skeletonText {
     height: 1em;
-    background: $background-muted;
+    position: relative;
+    overflow: hidden;
+    background: var(--skeleton-bg, #{$background-muted});
     border-radius: $radius-sm;
-    animation: shimmer 1.5s infinite;
-    
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--skeleton-shimmer, rgba(255, 255, 255, 0.4)) 50%,
+        transparent 100%
+      );
+      animation: shimmerMove 1.5s ease-in-out infinite;
+    }
+
     &.short {
       width: 40%;
     }
-    
+
     &.medium {
       width: 70%;
     }
-    
+
     &.long {
       width: 100%;
     }
   }
 }
 
-@keyframes shimmer {
+@keyframes shimmerMove {
   0% {
-    background-position: 200% 0;
+    transform: translateX(-100%);
   }
   100% {
-    background-position: -200% 0;
+    transform: translateX(100%);
   }
+}
+
+// Skeleton CSS variables
+:root {
+  --skeleton-bg: #{$gray-200};
+  --skeleton-shimmer: rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="dark"] {
+  --skeleton-bg: #{rgba($gray-600, 0.3)};
+  --skeleton-shimmer: rgba(255, 255, 255, 0.1);
 }
 
 // ============================================

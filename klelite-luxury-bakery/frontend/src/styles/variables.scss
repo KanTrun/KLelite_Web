@@ -370,3 +370,125 @@ $input-border-width: 1px;
 // Product Card
 $product-card-image-ratio: 4/3;
 $product-card-radius: $radius-lg;
+
+// --------------------------------------------------------------------------
+// CSS Custom Properties for Theme Switching (Runtime)
+// --------------------------------------------------------------------------
+
+:root {
+  // Core colors
+  --color-bg: #{$white};
+  --color-bg-secondary: #{$gray-50};
+  --color-bg-tertiary: #{$gray-100};
+  --color-surface: #{$white};
+  --color-surface-elevated: #{$white};
+
+  // Text colors
+  --color-text: #{$gray-900};
+  --color-text-secondary: #{$gray-600};
+  --color-text-muted: #{$gray-500};
+  --color-text-inverse: #{$white};
+
+  // Primary/Brand
+  --color-primary: #{$primary-color};
+  --color-primary-light: #{$primary-light};
+  --color-primary-dark: #{$primary-dark};
+
+  // Border
+  --color-border: #{$gray-200};
+  --color-border-light: #{$gray-100};
+  --color-border-strong: #{$gray-400};
+
+  // Semantic
+  --color-success: #{$success-color};
+  --color-warning: #{$warning-color};
+  --color-error: #{$error-color};
+  --color-info: #{$info-color};
+
+  // Shadows
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+  --shadow-xl: #{$shadow-xl};
+  --shadow-gold: #{$shadow-gold};
+
+  // Overlay
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  --color-backdrop: rgba(0, 0, 0, 0.4);
+
+  // Scrollbar
+  --scrollbar-bg: #{$gray-100};
+  --scrollbar-thumb: #{$gray-400};
+  --scrollbar-thumb-hover: #{$gray-500};
+
+  // Header
+  --header-bg: #{$white};
+  --header-border: #{$gray-200};
+
+  // Card
+  --card-bg: #{$white};
+  --card-border: #{$gray-200};
+  --card-shadow: #{$shadow-md};
+
+  // Input
+  --input-bg: #{$white};
+  --input-border: #{$gray-300};
+  --input-border-focus: #{$primary-color};
+  --input-placeholder: #{$gray-500};
+}
+
+[data-theme="dark"] {
+  // Core colors
+  --color-bg: #{$dark-primary};
+  --color-bg-secondary: #{$dark-secondary};
+  --color-bg-tertiary: #{$dark-surface};
+  --color-surface: #{$dark-secondary};
+  --color-surface-elevated: #{$dark-surface};
+
+  // Text colors
+  --color-text: #{$gray-100};
+  --color-text-secondary: #{$gray-400};
+  --color-text-muted: #{$gray-500};
+  --color-text-inverse: #{$gray-900};
+
+  // Primary stays the same for brand consistency
+  --color-primary: #{$primary-color};
+  --color-primary-light: #{$primary-light};
+  --color-primary-dark: #{$gold-muted};
+
+  // Border - darker borders
+  --color-border: #{rgba($gray-600, 0.3)};
+  --color-border-light: #{rgba($gray-700, 0.3)};
+  --color-border-strong: #{$gray-600};
+
+  // Shadows - adjusted for dark mode
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  --shadow-gold: 0 4px 20px 0 rgba(201, 169, 98, 0.2);
+
+  // Overlay
+  --color-overlay: rgba(0, 0, 0, 0.7);
+  --color-backdrop: rgba(0, 0, 0, 0.6);
+
+  // Scrollbar
+  --scrollbar-bg: #{$dark-secondary};
+  --scrollbar-thumb: #{$gray-600};
+  --scrollbar-thumb-hover: #{$gray-500};
+
+  // Header
+  --header-bg: #{$dark-secondary};
+  --header-border: #{rgba($gray-600, 0.3)};
+
+  // Card
+  --card-bg: #{$dark-secondary};
+  --card-border: #{rgba($gray-600, 0.2)};
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+
+  // Input
+  --input-bg: #{$dark-surface};
+  --input-border: #{rgba($gray-600, 0.4)};
+  --input-border-focus: #{$primary-color};
+  --input-placeholder: #{$gray-500};
+}

@@ -117,18 +117,19 @@
 .navLink {
   font-family: $font-body;
   font-size: $text-sm;
-  font-weight: $font-medium;
-  color: $text-secondary;
+  font-weight: 500; // Slightly bolder for better visibility
+  color: $text-primary; // Darker color for contrast
   text-decoration: none;
   position: relative;
   padding: $spacing-xs 0;
   transition: color $transition-micro $ease-out;
+  letter-spacing: 0.02em; // Modern tracking
 
   // Animated underline
   &::after {
     content: '';
     position: absolute;
-    bottom: 0;
+    bottom: -4px; // More space
     left: 50%;
     width: 0;
     height: 2px;
@@ -136,6 +137,7 @@
     border-radius: 1px;
     transition: all $transition-fast $ease-out;
     transform: translateX(-50%);
+    opacity: 0.8;
   }
 
   &:hover {
@@ -145,11 +147,11 @@
       width: 100%;
     }
   }
-  
+
   &.active {
     color: $gold-primary;
-    font-weight: $font-semibold;
-    
+    font-weight: 600;
+
     &::after {
       width: 100%;
     }
@@ -310,7 +312,8 @@
   display: flex;
   align-items: center;
   gap: $spacing-xs;
-  padding: $spacing-xs $spacing-sm;
+  padding: $spacing-sm $spacing-md; // Increased padding for touch target
+  min-height: 44px; // Ensure minimum height
   background: transparent;
   border: 1px solid $border-light;
   border-radius: $radius-md;
@@ -324,7 +327,7 @@
     width: 20px;
     height: 20px;
     transition: transform $transition-micro $ease-out;
-    
+
     &.rotated {
       transform: rotate(180deg);
     }
@@ -386,6 +389,7 @@
   gap: $spacing-sm;
   width: 100%;
   padding: $spacing-sm $spacing-md;
+  min-height: 44px; // Ensure minimum height for touch
   font-family: $font-body;
   font-size: $text-sm;
   color: $text-secondary;

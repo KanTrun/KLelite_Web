@@ -1,6 +1,8 @@
 import React, { Suspense, lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Loading } from '@/components/common/Loading';
+import { pageVariants } from '@/utils/animations';
 import PrivateRoute from './PrivateRoute';
 import AdminRoute from './AdminRoute';
 import ManagerRoute from './ManagerRoute';
@@ -32,85 +34,102 @@ const AdminCategories = lazy(() => import('@/pages/Admin/Categories'));
 // Manager pages
 const ManagerDashboard = lazy(() => import('@/pages/Manager'));
 
+const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <motion.div
+    variants={pageVariants}
+    initial="initial"
+    animate="animate"
+    exit="exit"
+    className="page-wrapper"
+  >
+    {children}
+  </motion.div>
+);
+
 const AppRoutes: React.FC = () => {
+  const location = useLocation();
+
   return (
     <Suspense fallback={<Loading fullScreen text="Đang tải..." />}>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/products" element={<ProductList />} />
-        <Route path="/products/:slug" element={<ProductDetail />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        
-        {/* Auth Routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/payment/callback" element={<PaymentCallback />} />
-        
-        {/* Protected Routes */}
-        <Route path="/checkout" element={
-          <PrivateRoute>
-            <Checkout />
-          </PrivateRoute>
-        } />
-        <Route path="/profile" element={
-          <PrivateRoute>
-            <Profile />
-          </PrivateRoute>
-        } />
-        <Route path="/orders" element={
-          <PrivateRoute>
-            <Orders />
-          </PrivateRoute>
-        } />
-        <Route path="/wishlist" element={
-          <PrivateRoute>
-            <Wishlist />
-          </PrivateRoute>
-        } />
-        
-        {/* Admin Routes */}
-        <Route path="/admin" element={
-          <AdminRoute>
-            <AdminDashboard />
-          </AdminRoute>
-        } />
-        <Route path="/admin/products" element={
-          <AdminRoute>
-            <AdminProducts />
-          </AdminRoute>
-        } />
-        <Route path="/admin/orders" element={
-          <AdminRoute>
-            <AdminOrders />
-          </AdminRoute>
-        } />
-        <Route path="/admin/users" element={
-          <AdminRoute>
-            <AdminUsers />
-          </AdminRoute>
-        } />
-        <Route path="/admin/categories" element={
-          <AdminRoute>
-            <AdminCategories />
-          </AdminRoute>
-        } />
-        
-        {/* Manager Routes */}
-        <Route path="/manager" element={
-          <ManagerRoute>
-            <ManagerDashboard />
-          </ManagerRoute>
-        } />
-        
-        {/* 404 */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          {/* Public Routes */}
+          <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
+          <Route path="/products" element={<PageWrapper><ProductList /></PageWrapper>} />
+          <Route path="/products/:slug" element={<PageWrapper><ProductDetail /></PageWrapper>} />
+          <Route path="/cart" element={<PageWrapper><Cart /></PageWrapper>} />
+          <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
+          <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
+
+          {/* Auth Routes */}
+          <Route path="/login" element={<PageWrapper><Login /></PageWrapper>} />
+          <Route path="/register" element={<PageWrapper><Register /></PageWrapper>} />
+          <Route path="/forgot-password" element={<PageWrapper><ForgotPassword /></PageWrapper>} />
+          <Route path="/payment/callback" element={<PageWrapper><PaymentCallback /></PageWrapper>} />
+
+          {/* Protected Routes */}
+          <Route path="/checkout" element={
+            <PrivateRoute>
+              <PageWrapper><Checkout /></PageWrapper>
+            </PrivateRoute>
+          } />
+          <Route path="/profile" element={
+            <PrivateRoute>
+              <PageWrapper><Profile /></PageWrapper>
+            </PrivateRoute>
+          } />
+          <Route path="/orders" element={
+            <PrivateRoute>
+              <PageWrapper><Orders /></PageWrapper>
+            </PrivateRoute>
+          } />
+          <Route path="/wishlist" element={
+            <PrivateRoute>
+              <PageWrapper><Wishlist /></PageWrapper>
+            </PrivateRoute>
+          } />
+
+          {/* Admin Routes */}
+          <Route path="/admin" element={
+            <AdminRoute>
+              <PageWrapper><AdminDashboard /></PageWrapper>
+            </AdminRoute>
+          } />
+          <Route path="/admin/products" element={
+            <AdminRoute>
+              <PageWrapper><AdminProducts /></PageWrapper>
+            </AdminRoute>
+          } />
+          <Route path="/admin/orders" element={
+            <AdminRoute>
+              <PageWrapper><AdminOrders /></PageWrapper>
+            </AdminRoute>
+          } />
+          <Route path="/admin/users" element={
+            <AdminRoute>
+              <PageWrapper><AdminUsers /></PageWrapper>
+            </AdminRoute>
+          } />
+          <Route path="/admin/categories" element={
+            <AdminRoute>
+              <PageWrapper><AdminCategories /></PageWrapper>
+            </AdminRoute>
+          } />
+
+          {/* Manager Routes */}
+          <Route path="/manager" element={
+            <ManagerRoute>
+              <PageWrapper><ManagerDashboard /></PageWrapper>
+            </ManagerRoute>
+          } />
+
+          {/* 404 */}
+          <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
+        </Routes>
+      </AnimatePresence>
     </Suspense>
   );
 };
+
 
 export default AppRoutes;

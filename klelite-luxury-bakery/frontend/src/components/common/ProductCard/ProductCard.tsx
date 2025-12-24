@@ -1,4 +1,7 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { cardHover, imageZoom } from '@/utils/animations';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import styles from './ProductCard.module.scss';
 
 // Icons (using inline SVGs for independence)
@@ -88,6 +91,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onToggleWishlist,
   onQuickView,
 }) => {
+  const shouldReduceMotion = useReducedMotion();
+
   const cardClasses = [
     styles.card,
     size === 'small' && styles.cardSmall,
@@ -152,12 +157,21 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   return (
-    <article className={cardClasses}>
+    <motion.article
+      className={cardClasses}
+      whileHover={shouldReduceMotion ? {} : cardHover}
+    >
       {/* Image Section */}
       <div className={styles.imageWrapper}>
         <Link to={`/products/${slug}`} className={styles.image}>
-          <img src={image} alt={name} loading="lazy" />
+          <motion.img
+            src={image}
+            alt={name}
+            loading="lazy"
+            whileHover={shouldReduceMotion ? {} : imageZoom}
+          />
         </Link>
+
 
         {/* Overlay */}
         <div className={styles.overlay} />

@@ -28,6 +28,16 @@ html {
   
   @media (prefers-reduced-motion: reduce) {
     scroll-behavior: auto;
+
+    // Disable all animations and transitions
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
@@ -36,14 +46,15 @@ body {
   font-size: $font-size-base;
   font-weight: $font-weight-normal;
   line-height: $line-height-relaxed;
-  color: $text-primary;
-  background-color: $bg-primary;
+  color: var(--color-text);
+  background-color: var(--color-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
   overflow-y: auto;
   max-width: 100vw;
+  transition: background-color $duration-normal $ease-out, color $duration-normal $ease-out;
   @include custom-scrollbar;
 }
 
@@ -74,7 +85,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: $font-heading;
   font-weight: $font-weight-semibold;
   line-height: $line-height-tight;
-  color: $text-primary;
+  color: var(--color-text);
   margin-bottom: $spacing-4;
   letter-spacing: $letter-spacing-tight;
 }
@@ -141,7 +152,7 @@ h6 {
 
 p {
   margin-bottom: $spacing-4;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   line-height: $line-height-relaxed;
 }
 
@@ -315,7 +326,7 @@ select {
   p {
     max-width: 600px;
     margin: $spacing-6 auto 0;
-    color: $text-secondary;
+    color: var(--color-text-secondary);
     font-size: $font-size-md;
   }
 }
@@ -327,7 +338,7 @@ select {
 .divider {
   width: 100%;
   height: 1px;
-  background-color: $border-color;
+  background-color: var(--color-border);
   margin: $spacing-8 0;
 }
 
@@ -359,7 +370,7 @@ select {
 }
 
 .text-muted {
-  color: $text-muted;
+  color: var(--color-text-muted);
 }
 
 .text-white {
@@ -395,6 +406,16 @@ select {
   @include visually-hidden;
 }
 
+.sr-only {
+  @include visually-hidden;
+}
+
+:focus-visible {
+  outline: 2px solid $gold-primary; // Use brand gold
+  outline-offset: 2px;
+  border-radius: 2px; // Slight rounding for elegance
+}
+
 .skip-link {
   position: absolute;
   top: -40px;
@@ -404,7 +425,7 @@ select {
   padding: $spacing-2 $spacing-4;
   z-index: $z-toast;
   transition: top $duration-fast $ease-out;
-  
+
   &:focus {
     top: 0;
   }

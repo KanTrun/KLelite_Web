@@ -1,4 +1,7 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+import { buttonTap, buttonHover } from '@/utils/animations';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import styles from './Button.module.scss';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -23,6 +26,8 @@ export const Button: React.FC<ButtonProps> = ({
   className = '',
   ...props
 }) => {
+  const shouldReduceMotion = useReducedMotion();
+
   const buttonClasses = [
     styles.button,
     styles[variant],
@@ -33,10 +38,12 @@ export const Button: React.FC<ButtonProps> = ({
   ].filter(Boolean).join(' ');
 
   return (
-    <button
+    <motion.button
       className={buttonClasses}
       disabled={disabled || isLoading}
-      {...props}
+      whileHover={shouldReduceMotion || disabled || isLoading ? {} : buttonHover}
+      whileTap={shouldReduceMotion || disabled || isLoading ? {} : buttonTap}
+      {...props as any}
     >
       {isLoading && (
         <span className={styles.spinner}>
@@ -48,8 +55,9 @@ export const Button: React.FC<ButtonProps> = ({
       {!isLoading && leftIcon && <span className={styles.icon}>{leftIcon}</span>}
       <span className={styles.text}>{children}</span>
       {!isLoading && rightIcon && <span className={styles.icon}>{rightIcon}</span>}
-    </button>
+    </motion.button>
   );
 };
 
 export default Button;
+

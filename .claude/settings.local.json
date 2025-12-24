@@ -1,21 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "WebSearch",
-      "Bash(python .claude/scripts/generate_catalogs.py --skills)",
-      "Skill(planning)",
-      "SlashCommand(/plan:fast:*)",
-      "Bash(if [ -d \"plans/20251214-database-schema-analysis\" ])",
-      "Bash(then echo \"EXISTS\")",
-      "Bash(else mkdir -p \"plans/20251214-database-schema-analysis/reports\")",
-      "Bash(fi)",
-      "Bash(node .claude/scripts/set-active-plan.cjs plans/20251214-database-schema-analysis)",
-      "SlashCommand(/code plans/20251214-database-schema-analysis/phase-01-critical-fixes.md)",
+      "Bash(dir \"C:\\\\Users\\\\HP\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\D--DuAnCaNhan\\\\tasks\"\" && type \"klelite-luxury-bakery/frontend/package.json \")",
+      "Skill(repomix)",
+      "Bash(repomix:*)",
+      "Bash(npx repomix:*)",
+      "Bash(dir:*)",
+      "Bash(npm install:*)",
+      "Bash(find:*)",
       "Bash(npm run build)",
-      "Bash(npm test)",
-      "Bash(git add -A)"
-    ],
-    "deny": [],
-    "ask": []
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
   }
 }
