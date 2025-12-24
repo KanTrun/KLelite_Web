@@ -1,0 +1,88 @@
+// ============================================
+// KL'élite Theme Toggle Component
+// Smooth sun/moon transition with micro-interactions
+// ============================================
+
+.toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: $radius-full;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background-color $transition-fast $ease-out,
+    transform $transition-micro $ease-out;
+
+  &:hover {
+    background: var(--color-bg-secondary);
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba($gold-primary, 0.3);
+  }
+}
+
+.iconWrapper {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sunIcon,
+.moonIcon {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  transition:
+    opacity $duration-normal $ease-out,
+    transform $duration-normal $ease-out;
+}
+
+.sunIcon {
+  color: $gold-primary;
+}
+
+.moonIcon {
+  color: $gold-light;
+}
+
+// Light mode: show sun, hide moon
+.light {
+  .sunIcon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  .moonIcon {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+  }
+}
+
+// Dark mode: show moon, hide sun
+.dark {
+  .sunIcon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+  }
+
+  .moonIcon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}

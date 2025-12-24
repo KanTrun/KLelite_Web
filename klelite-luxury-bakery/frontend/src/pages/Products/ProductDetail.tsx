@@ -26,7 +26,7 @@ import { addToCart } from '@/store/slices/cartSlice';
 import { formatCurrency } from '@/utils/formatters';
 import { userService } from '@/services/userService';
 import { reviewService, Review } from '@/services/reviewService';
-import Loading from '@/components/common/Loading';
+import { ProductDetailSkeleton } from '@/components/common/ProductDetailSkeleton';
 import styles from './ProductDetail.module.scss';
 
 const ProductDetail: React.FC = () => {
@@ -218,11 +218,8 @@ const ProductDetail: React.FC = () => {
   if (isLoading) {
     return (
       <div className={styles.productDetailPage}>
-        <div className={styles.loadingWrapper}>
-          <div className={styles.loadingContent}>
-            <div className={styles.spinner}></div>
-            <p>Đang tải sản phẩm...</p>
-          </div>
+        <div className={styles.container}>
+          <ProductDetailSkeleton />
         </div>
       </div>
     );

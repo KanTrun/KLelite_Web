@@ -235,7 +235,6 @@ const Register: React.FC = () => {
     { icon: FiStar, text: 'Ưu đãi sinh nhật đặc biệt' },
     { icon: FiTrendingUp, text: 'Truy cập sản phẩm độc quyền' },
   ];
-  };
 
   return (
     <div className={styles.authPage}>

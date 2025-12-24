@@ -1,10 +1,71 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.svg', 'pwa-192x192.svg', 'pwa-512x512.svg'],
+      manifest: {
+        name: "KL'elite Luxury Bakery",
+        short_name: "KL'elite",
+        description: 'Premium luxury bakery - Exquisite cakes and pastries',
+        theme_color: '#C9A962',
+        background_color: '#ffffff',
+        display: 'standalone',
+        start_url: '/',
+        icons: [
+          {
+            src: 'pwa-192x192.svg',
+            sizes: '192x192',
+            type: 'image/svg+xml',
+          },
+          {
+            src: 'pwa-512x512.svg',
+            sizes: '512x512',
+            type: 'image/svg+xml',
+          },
+          {
+            src: 'pwa-512x512.svg',
+            sizes: '512x512',
+            type: 'image/svg+xml',
+            purpose: 'any maskable',
+          },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/api\./i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'api-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24, // 1 day
+              },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/res\.cloudinary\.com\//i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'image-cache',
+              expiration: {
+                maxEntries: 200,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+            },
+          },
+        ],
+      },
+    }),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -24,8 +85,8 @@ export default defineConfig({
       scss: {
         // Silence deprecation warnings
         silenceDeprecations: ['legacy-js-api', 'import', 'slash-div'],
-        // Auto-inject variables into every SCSS file using absolute path
-        additionalData: `@import "${path.resolve(__dirname, './src/styles/variables').replace(/\\/g, '/')}";`,
+        // Auto-inject variables and mixins into every SCSS file using absolute path
+        additionalData: `@import "${path.resolve(__dirname, './src/styles/variables').replace(/\\/g, '/')}"; @import "${path.resolve(__dirname, './src/styles/mixins').replace(/\\/g, '/')}";`,
       },
     },
   },

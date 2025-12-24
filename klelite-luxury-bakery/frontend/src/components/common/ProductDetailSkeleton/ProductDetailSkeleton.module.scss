@@ -1,0 +1,166 @@
+// ============================================
+// ProductDetail Skeleton Styles
+// ============================================
+
+.skeletonWrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: $spacing-xl $spacing-md;
+}
+
+.breadcrumbSkeleton {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-xl;
+
+  .separator {
+    color: var(--text-muted, #{$text-muted});
+  }
+}
+
+.productGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-2xl;
+
+  @include md {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @include lg {
+    grid-template-columns: 55% 45%;
+  }
+}
+
+.gallerySection {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.mainImage {
+  aspect-ratio: 1;
+  border-radius: $radius-xl;
+  overflow: hidden;
+  background: var(--skeleton-bg, #{$gray-200});
+}
+
+.thumbnails {
+  display: flex;
+  gap: $spacing-sm;
+  justify-content: center;
+}
+
+.infoSection {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.categoryTag {
+  width: fit-content;
+}
+
+.title {
+  margin-bottom: $spacing-xs;
+}
+
+.ratingRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+
+  .stars {
+    display: flex;
+    gap: 4px;
+  }
+}
+
+.priceSection {
+  display: flex;
+  align-items: baseline;
+  gap: $spacing-sm;
+  margin: $spacing-sm 0;
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  margin: $spacing-sm 0;
+}
+
+.divider {
+  margin: $spacing-md 0;
+  opacity: 0.3;
+}
+
+.optionGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+
+  .label {
+    margin-bottom: $spacing-2xs;
+  }
+}
+
+.sizeOptions {
+  display: flex;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.quantitySelector {
+  display: flex;
+}
+
+.actionButtons {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-sm;
+  margin-top: $spacing-lg;
+  padding: $spacing-md;
+  background: var(--card-bg, #{$background-muted});
+  border-radius: $radius-lg;
+}
+
+.featureCard {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm;
+}
+
+.featureContent {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2xs;
+}
+
+.tabsSection {
+  margin-top: $spacing-2xl;
+}
+
+.tabHeaders {
+  display: flex;
+  gap: $spacing-sm;
+  border-bottom: 1px solid var(--border-color, #{$gray-200});
+  padding-bottom: $spacing-md;
+  margin-bottom: $spacing-lg;
+}
+
+.tabContent {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  padding: $spacing-md;
+}

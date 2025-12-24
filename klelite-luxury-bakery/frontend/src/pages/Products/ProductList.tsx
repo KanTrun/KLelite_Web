@@ -13,7 +13,7 @@ import { addToCart } from '@/store/slices/cartSlice';
 import { userService } from '@/services/userService';
 import { AppDispatch, RootState } from '@/store';
 import { formatCurrency } from '@/utils/formatters';
-import Loading from '@/components/common/Loading';
+import { ProductListSkeleton } from '@/components/common/ProductListSkeleton';
 import styles from './Products.module.scss';
 
 // Animation variants
@@ -555,12 +555,7 @@ const ProductList: React.FC = () => {
 
             {/* Products Grid */}
             {isLoading ? (
-              <div className={styles.loadingWrapper}>
-                <div className={styles.luxuryLoader}>
-                  <div className={styles.loaderInner} />
-                  <span>Đang tải...</span>
-                </div>
-              </div>
+              <ProductListSkeleton count={12} viewMode={viewMode} />
             ) : productList.length === 0 ? (
               <motion.div 
                 className={styles.emptyState}

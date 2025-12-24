@@ -1,0 +1,113 @@
+// ============================================
+// ProductList Skeleton Styles
+// ============================================
+
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: $spacing-lg;
+  width: 100%;
+
+  @include sm {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include lg {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include xl {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  &.listView {
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+
+    .skeletonCard {
+      flex-direction: row;
+      height: 180px;
+
+      .imageWrapper {
+        width: 200px;
+        height: 100%;
+        aspect-ratio: unset;
+        flex-shrink: 0;
+      }
+
+      .content {
+        flex: 1;
+        padding: $spacing-md $spacing-lg;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+.skeletonCard {
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  border-radius: $radius-xl;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+}
+
+.imageWrapper {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: var(--skeleton-bg, #{$gray-200});
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--skeleton-shimmer, rgba(255, 255, 255, 0.4)) 50%,
+      transparent 100%
+    );
+    animation: shimmerMove 1.5s ease-in-out infinite;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  padding: $spacing-md;
+}
+
+.category {
+  margin-bottom: $spacing-2xs;
+}
+
+.title {
+  margin-bottom: $spacing-xs;
+}
+
+.ratingRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-xs;
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: $spacing-sm;
+  margin-top: auto;
+}
+
+@keyframes shimmerMove {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
