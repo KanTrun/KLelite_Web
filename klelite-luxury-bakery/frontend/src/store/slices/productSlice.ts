@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { Product, Category, ProductFilter, ProductsResponse } from '@/types';
 import { productService, categoryService } from '@/services';
+import { getApiError, ErrorType } from '@/services/api';
 
 interface ProductState {
   products: Product[];
@@ -18,6 +19,7 @@ interface ProductState {
   };
   isLoading: boolean;
   error: string | null;
+  errorType: ErrorType | null;
 }
 
 const initialState: ProductState = {
@@ -41,6 +43,7 @@ const initialState: ProductState = {
   },
   isLoading: false,
   error: null,
+  errorType: null,
 };
 
 // Async thunks
@@ -51,10 +54,8 @@ export const fetchProducts = createAsyncThunk<ProductsResponse, ProductFilter | 
       const response = await productService.getProducts(filters);
       return response;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
-      return rejectWithValue('Không thể tải sản phẩm');
+      const apiError = getApiError(error);
+      return rejectWithValue(apiError);
     }
   }
 );
@@ -66,10 +67,8 @@ export const fetchFeaturedProducts = createAsyncThunk<Product[], number | undefi
       const products = await productService.getFeaturedProducts(limit);
       return products;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
-      return rejectWithValue('Không thể tải sản phẩm nổi bật');
+      const apiError = getApiError(error);
+      return rejectWithValue(apiError);
     }
   }
 );
@@ -81,10 +80,8 @@ export const fetchProductBySlug = createAsyncThunk<Product, string>(
       const product = await productService.getProductBySlug(slug);
       return product;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
-      return rejectWithValue('Không tìm thấy sản phẩm');
+      const apiError = getApiError(error);
+      return rejectWithValue(apiError);
     }
   }
 );
@@ -96,10 +93,8 @@ export const fetchRelatedProducts = createAsyncThunk<Product[], string>(
       const products = await productService.getRelatedProducts(productId);
       return products;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
-      return rejectWithValue('Không thể tải sản phẩm liên quan');
+      const apiError = getApiError(error);
+      return rejectWithValue(apiError);
     }
   }
 );
@@ -111,10 +106,8 @@ export const searchProducts = createAsyncThunk<Product[], string>(
       const products = await productService.searchProducts(query);
       return products;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
-      return rejectWithValue('Tìm kiếm thất bại');
+      const apiError = getApiError(error);
+      return rejectWithValue(apiError);
     }
   }
 );
@@ -126,10 +119,8 @@ export const fetchCategories = createAsyncThunk<Category[]>(
       const categories = await categoryService.getCategories();
       return categories;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
-      return rejectWithValue('Không thể tải danh mục');
+      const apiError = getApiError(error);
+      return rejectWithValue(apiError);
     }
   }
 );
@@ -154,6 +145,7 @@ const productSlice = createSlice({
     },
     clearError: (state) => {
       state.error = null;
+      state.errorType = null;
     },
   },
   extraReducers: (builder) => {
@@ -162,6 +154,7 @@ const productSlice = createSlice({
       .addCase(fetchProducts.pending, (state) => {
         state.isLoading = true;
         state.error = null;
+        state.errorType = null;
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -170,7 +163,9 @@ const productSlice = createSlice({
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload as string;
+        const apiError = action.payload as { message: string; type: ErrorType };
+        state.error = apiError.message;
+        state.errorType = apiError.type;
       });
 
     // Fetch featured products
@@ -184,6 +179,7 @@ const productSlice = createSlice({
       .addCase(fetchProductBySlug.pending, (state) => {
         state.isLoading = true;
         state.error = null;
+        state.errorType = null;
       })
       .addCase(fetchProductBySlug.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -191,7 +187,9 @@ const productSlice = createSlice({
       })
       .addCase(fetchProductBySlug.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload as string;
+        const apiError = action.payload as { message: string; type: ErrorType };
+        state.error = apiError.message;
+        state.errorType = apiError.type;
       });
 
     // Fetch related products

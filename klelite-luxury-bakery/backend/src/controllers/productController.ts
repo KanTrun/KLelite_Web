@@ -12,6 +12,9 @@ export const getProducts = asyncHandler(async (req: AuthRequest, res: Response, 
   const { skip, limit, page, sort } = parsePagination(req.query);
   
   // Build filter query
+  // isAvailable: true means the product is "Published".
+  // We do NOT filter by stock here, so out-of-stock items (stock: 0) will still appear
+  // as long as they are published. Frontend should handle "Out of Stock" display.
   const filter: Record<string, unknown> = { isAvailable: true };
   
   // Category filter

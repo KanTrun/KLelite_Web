@@ -1,12 +1,26 @@
 import mongoose from 'mongoose';
 import UserActivity from '../models/UserActivity';
 import Product from '../models/Product';
+import redis, { isRedisAvailable } from '../config/redis';
 
 const { ObjectId } = mongoose.Types;
+const CACHE_TTL = 3600; // 1 hour
 
 export const recommendationService = {
   // Item-based: Products frequently bought together
   async getSimilarProducts(productId: string, limit = 6) {
+    const cacheKey = `rec:similar:${productId}:${limit}`;
+
+    // Check cache only if Redis is available
+    if (isRedisAvailable) {
+      try {
+        const cached = await redis.get(cacheKey);
+        if (cached) return JSON.parse(cached);
+      } catch (error) {
+        console.warn('⚠️  Redis cache read failed, continuing without cache:', error);
+      }
+    }
+
     try {
       const cooccurrences = await UserActivity.aggregate([
         { $match: { productId: new mongoose.Types.ObjectId(productId), activityType: 'purchase' } },
@@ -44,6 +58,15 @@ export const recommendationService = {
         }
       }
 
+      // Cache result only if Redis is available
+      if (isRedisAvailable) {
+        try {
+          await redis.set(cacheKey, JSON.stringify(productIds), 'EX', CACHE_TTL);
+        } catch (error) {
+          console.warn('⚠️  Redis cache write failed, continuing without caching:', error);
+        }
+      }
+
       return productIds;
     } catch (error) {
       console.error('Error in getSimilarProducts:', error);
@@ -53,6 +76,18 @@ export const recommendationService = {
 
   // User-based: Products for this user
   async getPersonalizedRecommendations(userId: string, limit = 10) {
+    const cacheKey = `rec:user:${userId}:${limit}`;
+
+    // Check cache only if Redis is available
+    if (isRedisAvailable) {
+      try {
+        const cached = await redis.get(cacheKey);
+        if (cached) return JSON.parse(cached);
+      } catch (error) {
+        console.warn('⚠️  Redis cache read failed, continuing without cache:', error);
+      }
+    }
+
     try {
       // 1. Get user's last 5 interactions
       const recentActivity = await UserActivity.find({ userId })
@@ -105,6 +140,14 @@ export const recommendationService = {
         recIds.push(...fallback.map(p => p._id));
       }
 
+      // Cache result only if Redis is available
+      if (isRedisAvailable) {
+        try {
+          await redis.set(cacheKey, JSON.stringify(recIds), 'EX', CACHE_TTL);
+        } catch (error) {
+          console.warn('⚠️  Redis cache write failed, continuing without caching:', error);
+        }
+      }
       return recIds;
     } catch (error) {
       console.error('Error in getPersonalizedRecommendations:', error);
@@ -114,6 +157,18 @@ export const recommendationService = {
 
   // Trending: Most purchased recently
   async getTrending(limit = 10) {
+    const cacheKey = `rec:trending:${limit}`;
+
+    // Check cache only if Redis is available
+    if (isRedisAvailable) {
+      try {
+        const cached = await redis.get(cacheKey);
+        if (cached) return JSON.parse(cached);
+      } catch (error) {
+        console.warn('⚠️  Redis cache read failed, continuing without cache:', error);
+      }
+    }
+
     try {
       const trending = await UserActivity.aggregate([
         { $match: {
@@ -136,6 +191,15 @@ export const recommendationService = {
         }).limit(limit - productIds.length).select('_id');
 
         productIds.push(...fallback.map(p => p._id));
+      }
+
+      // Cache result only if Redis is available
+      if (isRedisAvailable) {
+        try {
+          await redis.set(cacheKey, JSON.stringify(productIds), 'EX', CACHE_TTL);
+        } catch (error) {
+          console.warn('⚠️  Redis cache write failed, continuing without caching:', error);
+        }
       }
 
       return productIds;

@@ -3,7 +3,15 @@ import FAQ from '../models/FAQ';
 import Order from '../models/Order';
 import Product from '../models/Product';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+let openai: OpenAI | null = null;
+
+const getOpenAI = () => {
+  if (openai) return openai;
+  if (process.env.OPENAI_API_KEY) {
+    openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  }
+  return openai;
+};
 
 interface Message {
   role: 'system' | 'user' | 'assistant';
@@ -126,7 +134,11 @@ export const chatbotService = {
     }
 
     try {
-      const response = await openai.chat.completions.create({
+      const openaiInstance = getOpenAI();
+      if (!openaiInstance) {
+        return "I'm not sure how to answer that. Please contact our support team at support@klelite.com.";
+      }
+      const response = await openaiInstance.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: 'You are a helpful assistant for KL\'elite Luxury Bakery. Answer questions about our products, policies, and services. Be concise and friendly. If you cannot help, suggest contacting support@klelite.com.' },

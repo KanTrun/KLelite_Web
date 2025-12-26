@@ -28,13 +28,15 @@ import { userService } from '@/services/userService';
 import { reviewService, Review } from '@/services/reviewService';
 import { ProductDetailSkeleton } from '@/components/common/ProductDetailSkeleton';
 import SimilarProducts from '@/components/Recommendations/SimilarProducts';
+import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import styles from './ProductDetail.module.scss';
 
 const ProductDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  
+  const { addToRecent } = useRecentlyViewed();
+
   const { currentProduct: product, isLoading, error } = useSelector(
     (state: RootState) => state.product
   );
@@ -99,6 +101,13 @@ const ProductDetail: React.FC = () => {
     // Scroll to top on mount
     window.scrollTo(0, 0);
   }, [dispatch, slug]);
+
+  // Track product view in recently viewed
+  useEffect(() => {
+    if (product) {
+      addToRecent(product);
+    }
+  }, [product, addToRecent]);
 
   useEffect(() => {
     if (product?.sizes && product.sizes.length > 0 && !selectedSize) {

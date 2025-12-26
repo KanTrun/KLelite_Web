@@ -24,7 +24,8 @@ export const getSimilarProducts = asyncHandler(async (req: AuthRequest, res: Res
 // @access  Private
 export const getForYou = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   if (!req.user) {
-    return successResponse(res, []);
+    successResponse(res, []);
+    return;
   }
 
   const limit = parseInt(req.query.limit as string) || 8;

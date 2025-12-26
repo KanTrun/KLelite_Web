@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Product } from '@/types/product';
+import { Product } from '@/types/product.types';
 
 const STORAGE_KEY = 'recently_viewed_products';
 const MAX_ITEMS = 10;

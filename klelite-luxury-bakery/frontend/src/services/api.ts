@@ -35,28 +35,44 @@ api.interceptors.response.use(
     // Handle 401 Unauthorized - Token expired
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      
+
       try {
         const refreshToken = localStorage.getItem('refreshToken');
         if (refreshToken) {
           const response = await axios.post(`${config.apiUrl}/auth/refresh-token`, {
             refreshToken,
           });
-          
+
           const { accessToken } = response.data.data;
           localStorage.setItem('accessToken', accessToken);
-          
+
           if (originalRequest.headers) {
             originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           }
-          
+
           return api(originalRequest);
         }
       } catch (refreshError) {
-        // Refresh token failed, logout user
+        // Refresh token failed
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        window.location.href = '/login';
+
+        // List of public endpoints that can be retried without auth
+        const publicEndpoints = [
+          '/products',
+          '/categories',
+        ];
+
+        // If the failed request was to a public endpoint, retry without token (downgrade to guest)
+        const isPublicEndpoint = publicEndpoints.some(endpoint => originalRequest.url?.includes(endpoint));
+
+        if (isPublicEndpoint && originalRequest.headers) {
+             delete originalRequest.headers.Authorization;
+             return api(originalRequest);
+        }
+
+        // Only redirect to login if NOT a public endpoint
+        window.location.replace('/login');
         return Promise.reject(refreshError);
       }
     }
@@ -67,14 +83,71 @@ api.interceptors.response.use(
 
 export default api;
 
-// Helper function to handle API errors
-export const getErrorMessage = (error: unknown): string => {
+// Error type enumeration
+export enum ErrorType {
+  NETWORK = 'NETWORK',
+  SERVER = 'SERVER',
+  CLIENT = 'CLIENT',
+  UNKNOWN = 'UNKNOWN',
+}
+
+// Structured error information
+export interface ApiError {
+  message: string;
+  type: ErrorType;
+  code?: string;
+}
+
+// Helper function to get structured error information
+export const getApiError = (error: unknown): ApiError => {
   if (axios.isAxiosError(error)) {
+    // Network Error (e.g. server down, CORS, connection refused)
+    if (error.code === 'ERR_NETWORK' || !error.response) {
+      return {
+        message: 'Lỗi kết nối mạng. Vui lòng kiểm tra kết nối internet của bạn.',
+        type: ErrorType.NETWORK,
+        code: error.code,
+      };
+    }
+
+    // Server Error (5xx)
+    if (error.response && error.response.status >= 500) {
+      return {
+        message: 'Lỗi máy chủ. Vui lòng thử lại sau.',
+        type: ErrorType.SERVER,
+        code: `HTTP_${error.response.status}`,
+      };
+    }
+
+    // Client Error (4xx)
+    if (error.response && error.response.status >= 400) {
+      const axiosError = error as AxiosError<{ message?: string }>;
+      return {
+        message: axiosError.response?.data?.message || axiosError.message || 'Đã có lỗi xảy ra',
+        type: ErrorType.CLIENT,
+        code: `HTTP_${error.response.status}`,
+      };
+    }
+
     const axiosError = error as AxiosError<{ message?: string }>;
-    return axiosError.response?.data?.message || axiosError.message || 'Đã có lỗi xảy ra';
+    return {
+      message: axiosError.response?.data?.message || axiosError.message || 'Đã có lỗi xảy ra',
+      type: ErrorType.UNKNOWN,
+    };
   }
   if (error instanceof Error) {
-    return error.message;
+    return {
+      message: error.message,
+      type: ErrorType.UNKNOWN,
+    };
   }
-  return 'Đã có lỗi xảy ra';
+  return {
+    message: 'Đã có lỗi xảy ra',
+    type: ErrorType.UNKNOWN,
+  };
+};
+
+// Legacy helper for backward compatibility
+export const getErrorMessage = (error: unknown): string => {
+  return getApiError(error).message;
 };

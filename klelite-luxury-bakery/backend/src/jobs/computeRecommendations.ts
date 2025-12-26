@@ -2,6 +2,7 @@ import cron from 'node-cron';
 import Product from '../models/Product';
 import UserActivity from '../models/UserActivity';
 import mongoose from 'mongoose';
+import redis, { isRedisAvailable } from '../config/redis';
 
 // Run daily at 3 AM
 const scheduleRecommendations = () => {
@@ -22,9 +23,18 @@ const scheduleRecommendations = () => {
 
       const trendingIds = trending.map(t => t._id);
 
-      // Update products with trending flag/score if needed
-      // For now, we just log it as this is computed on-the-fly in service
-      console.log(`Computed ${trendingIds.length} trending products`);
+      // Cache trending products only if Redis is available
+      if (isRedisAvailable) {
+        try {
+          await redis.set('rec:trending:20', JSON.stringify(trendingIds), 'EX', 86400); // 24 hours
+          console.log(`Computed and cached ${trendingIds.length} trending products`);
+        } catch (error) {
+          console.warn('⚠️  Failed to cache trending products (Redis unavailable):', error);
+          console.log(`Computed ${trendingIds.length} trending products (not cached)`);
+        }
+      } else {
+        console.log(`Computed ${trendingIds.length} trending products (Redis unavailable, not cached)`);
+      }
 
       // 2. Pre-compute Item-based Similarity (Co-occurrence)
       // This is heavy, so we might want to store it in a dedicated collection

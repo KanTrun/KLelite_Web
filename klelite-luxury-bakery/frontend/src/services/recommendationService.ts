@@ -1,5 +1,5 @@
 import api from './api';
-import { Product } from '../types/product';
+import { Product } from '../types/product.types';
 
 interface RecommendationResponse {
   success: boolean;

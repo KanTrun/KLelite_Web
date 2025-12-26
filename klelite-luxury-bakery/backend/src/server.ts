@@ -10,6 +10,7 @@ import hpp from 'hpp';
 
 import { config } from './config';
 import connectDB from './config/database';
+import { initRedis } from './config/redis';
 import routes from './routes';
 import { errorHandler, notFound } from './middleware';
 import flashSaleCronJobs from './services/flashSaleCronJobs';
@@ -105,8 +106,9 @@ app.use(errorHandler);
 // Start server
 const PORT = config.port;
 
-const server = app.listen(PORT, () => {
-  console.log(`
+const server = app.listen(PORT, async () => {
+  try {
+    console.log(`
 ╔══════════════════════════════════════════════════════════╗
 ║                                                          ║
 ║   🍰 KL'élite Luxury Bakery API                          ║
@@ -116,19 +118,27 @@ const server = app.listen(PORT, () => {
 ║   API: http://localhost:${PORT}/api                        ║
 ║                                                          ║
 ╚══════════════════════════════════════════════════════════╝
-  `);
+    `);
 
-  // Start flash sale cron jobs
-  flashSaleCronJobs.start();
+    // Initialize Redis connection
+    await initRedis();
 
-  // Start recommendation cron jobs
-  scheduleRecommendations();
+    // Start flash sale cron jobs
+    flashSaleCronJobs.start();
+
+    // Start recommendation cron jobs
+    scheduleRecommendations();
+  } catch (error) {
+    console.error('Error during server initialization:', error);
+  }
 });
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err: Error) => {
   console.error('UNHANDLED REJECTION! Shutting down...');
-  console.error(err.name, err.message);
+  console.error('Error name:', err.name);
+  console.error('Error message:', err.message);
+  console.error('Stack trace:', err.stack);
   server.close(() => {
     process.exit(1);
   });

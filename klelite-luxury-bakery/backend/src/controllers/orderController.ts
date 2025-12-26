@@ -4,6 +4,7 @@ import Cart from '../models/Cart';
 import Product from '../models/Product';
 import Voucher from '../models/Voucher';
 import User from '../models/User';
+import UserActivity from '../models/UserActivity';
 import { asyncHandler, successResponse, createdResponse, NotFoundError, BadRequestError, parsePagination, generatePaginationInfo, calculateShippingFee } from '../utils';
 import { sendEmail, emailTemplates } from '../utils/email';
 import { config } from '../config';
@@ -38,12 +39,21 @@ export const createOrder = asyncHandler(async (req: AuthRequest, res: Response, 
   const orderItems = [];
 
   // Batch fetch all products at once
-  const productIds = cart.items.map(item => item.product);
+  // Handle both populated and non-populated product references
+  const productIds = cart.items.map(item => {
+    // If product is already populated (has _id property), use _id, otherwise use the product reference directly
+    return typeof item.product === 'object' && item.product._id ? item.product._id : item.product;
+  });
   const products = await Product.find({ _id: { $in: productIds } });
   const productMap = new Map(products.map(p => [p._id.toString(), p]));
 
   for (const item of cart.items) {
-    const product = productMap.get(item.product.toString());
+    // Extract the product ID correctly whether populated or not
+    const productId = typeof item.product === 'object' && item.product._id
+      ? item.product._id.toString()
+      : item.product.toString();
+
+    const product = productMap.get(productId);
     if (!product) {
       throw BadRequestError(`Sản phẩm không tồn tại`);
     }
@@ -335,6 +345,24 @@ export const updateOrderStatus = asyncHandler(async (req: AuthRequest, res: Resp
     if (order.payment.method === 'cod') {
       order.payment.status = 'paid';
       order.payment.paidAt = new Date();
+    }
+
+    // Track purchase activity for recommendations
+    try {
+      await order.populate('items.product');
+      const purchaseActivities = order.items.map((item: any) => ({
+        userId: order.user,
+        productId: item.product._id,
+        activityType: 'purchase',
+        metadata: {
+          quantity: item.quantity,
+          price: item.price
+        }
+      }));
+      await UserActivity.insertMany(purchaseActivities);
+      console.log(`Tracked ${purchaseActivities.length} purchase activities for order ${order.orderNumber}`);
+    } catch (error) {
+      console.warn('Failed to track purchase activity:', error);
     }
 
     // Award loyalty points

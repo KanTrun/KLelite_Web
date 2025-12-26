@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Product } from '@/types/product';
+import { Product } from '@/types/product.types';
 import ProductCard from '@/components/common/ProductCard';
 import { recommendationService } from '@/services/recommendationService';
 import styles from './Recommendations.module.scss';

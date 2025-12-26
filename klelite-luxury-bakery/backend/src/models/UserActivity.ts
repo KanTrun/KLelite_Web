@@ -29,5 +29,6 @@ const UserActivitySchema: Schema = new Schema({
 UserActivitySchema.index({ userId: 1, productId: 1 });
 UserActivitySchema.index({ productId: 1, activityType: 1 });
 UserActivitySchema.index({ createdAt: -1 });
+UserActivitySchema.index({ activityType: 1, createdAt: -1 }); // For trending products query
 
 export default mongoose.model<IUserActivity>('UserActivity', UserActivitySchema);
