@@ -177,6 +177,8 @@
   justify-content: center;
   width: 44px;
   height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   background: transparent;
   border: none;
   color: $text-secondary;
@@ -184,9 +186,9 @@
   border-radius: $radius-full;
   position: relative;
   text-decoration: none;
-  
+
   // Micro-interaction timing: 150ms
-  transition: 
+  transition:
     color $transition-micro $ease-out,
     background-color $transition-micro $ease-out,
     transform $transition-micro $ease-out;
@@ -200,16 +202,16 @@
   &:hover {
     color: $gold-primary;
     background-color: rgba($gold-primary, 0.08);
-    
+
     svg {
       transform: scale(1.1);
     }
   }
-  
+
   &:active {
     transform: scale(0.92);
   }
-  
+
   // Focus state for accessibility
   &:focus-visible {
     outline: 2px solid $gold-primary;
@@ -254,6 +256,7 @@
 .loginButton {
   display: none;
   padding: $spacing-sm $spacing-lg;
+  min-height: 44px;
   background: $gradient-gold;
   color: $dark-primary;
   font-family: $font-body;
@@ -265,6 +268,7 @@
   position: relative;
   overflow: hidden;
   transition: all 0.3s $ease-out;
+  align-items: center;
 
   // Shimmer effect
   &::before {
@@ -286,18 +290,18 @@
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba($gold-primary, 0.45);
-    
+
     &::before {
       left: 100%;
     }
   }
-  
+
   &:active {
     transform: translateY(0) scale(0.98);
   }
 
   @media (min-width: 768px) {
-    display: block;
+    display: inline-flex;
   }
 }
 
@@ -350,7 +354,7 @@
     color: $gold-primary;
     background: rgba($gold-primary, 0.05);
   }
-  
+
   &[aria-expanded="true"] {
     border-color: $gold-primary;
     color: $gold-primary;
@@ -410,15 +414,15 @@
   &:hover {
     background: rgba($gold-primary, 0.08);
     color: $gold-primary;
-    
+
     svg {
       opacity: 1;
     }
   }
-  
+
   &.danger {
     color: #e53935;
-    
+
     &:hover {
       background: rgba(#e53935, 0.08);
       color: #c62828;
@@ -522,6 +526,7 @@
   align-items: center;
   justify-content: center;
   padding: $spacing-sm $spacing-md;
+  min-height: 44px;
   background: $gradient-gold;
   color: $dark-primary;
   border: none;
@@ -538,7 +543,7 @@
     transform: scale(1.05);
     box-shadow: $shadow-gold;
   }
-  
+
   &:active {
     transform: scale(0.95);
   }

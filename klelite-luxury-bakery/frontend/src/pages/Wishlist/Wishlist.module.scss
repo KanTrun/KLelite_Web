@@ -79,6 +79,8 @@
 .refreshBtn {
   width: 44px;
   height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: 50%;
   background: rgba($light-text, 0.05);
   border: 1px solid rgba($gold-primary, 0.2);
@@ -86,6 +88,9 @@
   font-size: 1.1rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background: rgba($gold-primary, 0.1);
@@ -98,6 +103,7 @@
   align-items: center;
   gap: $spacing-xs;
   padding: $spacing-sm $spacing-lg;
+  min-height: 44px;
   background: rgba(220, 53, 69, 0.1);
   border: 1px solid rgba(220, 53, 69, 0.3);
   color: #dc3545;
@@ -161,6 +167,7 @@
   align-items: center;
   gap: $spacing-sm;
   padding: $spacing-md $spacing-2xl;
+  min-height: 48px;
   background: linear-gradient(135deg, $gold-primary, $gold-secondary);
   color: $dark-primary;
   font-weight: 700;
@@ -242,8 +249,13 @@
   position: absolute;
   top: $spacing-md;
   right: $spacing-md;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
   background: rgba($dark-primary, 0.8);
   border: 1px solid rgba($light-text, 0.2);
@@ -343,6 +355,7 @@
   justify-content: center;
   gap: $spacing-xs;
   padding: $spacing-sm $spacing-md;
+  min-height: 44px;
   background: linear-gradient(135deg, $gold-primary, $gold-secondary);
   border: none;
   color: $dark-primary;
@@ -368,8 +381,13 @@
 }
 
 .shareBtn {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: $radius-md;
   background: rgba($light-text, 0.05);
   border: 1px solid rgba($gold-primary, 0.2);

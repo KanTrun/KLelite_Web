@@ -5,3 +5,8 @@ export { default as Cart, ICart, ICartItem } from './Cart';
 export { default as Order, IOrder, IOrderItem, IShippingAddress, IPaymentInfo } from './Order';
 export { default as Voucher, IVoucher } from './Voucher';
 export { default as Counter, ICounter } from './Counter';
+export { default as LoyaltyAccount, ILoyaltyAccount, IPointTransaction } from './LoyaltyAccount';
+export { default as FlashSale, IFlashSale, IFlashSaleProduct } from './FlashSale';
+export { default as StockReservation, IStockReservation } from './StockReservation';
+export { default as UserActivity, IUserActivity } from './UserActivity';
+export { default as FAQ, IFAQ } from './FAQ';

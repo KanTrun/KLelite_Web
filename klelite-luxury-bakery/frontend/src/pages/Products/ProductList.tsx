@@ -90,6 +90,7 @@ const ProductList: React.FC = () => {
   const priceMin = searchParams.get('priceMin');
   const priceMax = searchParams.get('priceMax');
   const rating = searchParams.get('rating');
+  const queryParam = searchParams.get('q'); // Atlas Search query param
 
   // Load wishlist IDs
   const fetchWishlistIds = useCallback(async () => {
@@ -112,6 +113,11 @@ const ProductList: React.FC = () => {
 
   // Sync URL params with filter state
   useEffect(() => {
+    // Sync search query from URL to state
+    if (queryParam !== searchTerm) {
+      setSearchTerm(queryParam || '');
+    }
+
     // Set selected price range from URL
     if (priceMin || priceMax) {
       const matchedRange = priceRanges.find(
@@ -124,7 +130,7 @@ const ProductList: React.FC = () => {
 
     // Set selected rating from URL
     setSelectedRating(rating ? Number(rating) : null);
-  }, [priceMin, priceMax, rating]);
+  }, [queryParam, priceMin, priceMax, rating]);
 
   useEffect(() => {
     const [sortBy, sortOrder] = currentSort.split('-');

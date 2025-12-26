@@ -1,114 +1,129 @@
-# Codebase Summary
+# Codebase Summary - KLeLite Luxury Bakery E-commerce Platform
 
-## Directory Structure
+This document provides an overview of the project's codebase, generated from the `repomix` tool. It aims to give a high-level understanding of the project's structure, key components, and their relationships.
 
-```
-klelite-luxury-bakery/
-├── backend/                 # Node.js + Express API
-│   └── src/
-│       ├── config/          # Environment and DB configuration
-│       ├── controllers/     # Request handlers
-│       ├── middleware/      # Auth, error handling, async wrapper
-│       ├── models/          # Mongoose schemas
-│       ├── routes/          # API endpoint definitions
-│       ├── scripts/         # Database seeding
-│       ├── types/           # TypeScript interfaces
-│       ├── utils/           # Helpers and error classes
-│       └── server.ts        # Application entry point
-│
-├── frontend/                # React + TypeScript SPA
-│   └── src/
-│       ├── components/      # Reusable UI components
-│       │   ├── common/      # Button, Input, Loading, ProductCard
-│       │   └── layout/      # Header, Footer
-│       ├── hooks/           # Custom React hooks
-│       ├── pages/           # View components by feature
-│       │   ├── Home/
-│       │   ├── Products/
-│       │   ├── Auth/
-│       │   ├── Admin/
-│       │   └── Manager/
-│       ├── routes/          # Route definitions and guards
-│       ├── services/        # API client and service layer
-│       ├── store/           # Redux store and slices
-│       ├── styles/          # Global SCSS (variables, mixins)
-│       ├── types/           # TypeScript interfaces
-│       ├── utils/           # Formatters, validators, constants
-│       └── App.tsx          # Root component
-│
-└── docker-compose.yml       # Container orchestration
-```
+## Table of Contents
+- [Project Overview](#project-overview)
+- [Backend Structure](#backend-structure)
+- [Frontend Structure](#frontend-structure)
+- [Key Features Implemented](#key-features-implemented)
+- [Technology Stack Highlights](#technology-stack-highlights)
+- [Configuration and Environment](#configuration-and-environment)
+- [Testing Strategy](#testing-strategy)
+- [Documentation and Workflows](#documentation-and-workflows)
 
-## Backend Key Files
+---
 
-| File | Purpose |
-|------|---------|
-| `src/server.ts` | Express app setup, middleware, DB connection |
-| `src/config/index.ts` | Environment variables and settings |
-| `src/config/database.ts` | MongoDB connection logic |
-| `src/routes/index.ts` | Route aggregator |
-| `src/middleware/auth.ts` | JWT verification, role authorization |
-| `src/middleware/errorHandler.ts` | Global error catching |
-| `src/utils/asyncHandler.ts` | Async/await wrapper |
-| `src/utils/AppError.ts` | Custom error class |
+## Project Overview
+The KLeLite Luxury Bakery E-commerce Platform is a full-stack application designed to provide a seamless online shopping experience for luxury baked goods. It leverages a Node.js/Express.js/TypeScript backend and a React.js/Next.js/TypeScript frontend, with Docker for containerization. The platform includes features such as user authentication, product catalog, shopping cart, order management, and administrative functionalities. Recent developments include the integration of **Flash Sales** and **Stock Reservation** mechanisms to handle limited-time offers.
 
-## Backend Models
+## Backend Structure
+The `backend/` directory contains the Node.js/Express.js application.
+-   `src/config/`: Contains configuration files for database connections, JWT secrets, Redis, and other environment-dependent settings. **`redis.ts` has been added for Redis client setup and helper functions.**
+-   `src/controllers/`: Houses the request handlers for various API endpoints. **`flashSaleController.ts` has been added to manage flash sale creation, retrieval, updates, deletions, and user-facing actions like stock reservation.**
+-   `src/middleware/`: Custom Express middleware (authentication, error handling, request logging).
+-   `src/models/`: Defines Mongoose schemas and models for interacting with the MongoDB database. **`FlashSale.ts` and `StockReservation.ts` have been added to define the schemas for flash sales and their associated stock reservations.**
+-   `src/routes/`: Groups API endpoints logically. **`flashSaleRoutes.ts` has been added and integrated into `index.ts` to expose flash sale related endpoints.**
+-   `src/services/`: Encapsulates business logic, database operations, and external API integrations. **`flashSaleService.ts` handles the core logic for flash sales, including stock management with Redis, and `flashSaleCronJobs.ts` manages scheduled tasks for updating flash sale statuses.**
+-   `src/utils/`: Generic utility functions used across the backend.
+-   `tests/`: Unit and integration tests for backend components.
+-   `.env.example`: Template for environment variables.
 
-| Model | Description |
-|-------|-------------|
-| User | Authentication, roles, wishlist, addresses |
-| Product | Catalog items, sizes, nutrition, reviews, stock |
-| Order | Order lifecycle, shipping, payment status |
-| Cart | User shopping cart items |
-| Category | Product classification hierarchy |
-| Voucher | Discount codes and rules |
-| Counter | Sequential ID generation (order numbers) |
+**Current Models:**
+-   User
+-   Product
+-   Category
+-   Order
+-   Review
+-   Address
+-   Wishlist
+-   **FlashSale**
+-   **StockReservation**
 
-## Frontend Key Files
+**Key Controllers:**
+-   `authController`
+-   `userController`
+-   `productController`
+-   `categoryController`
+-   `orderController`
+-   `reviewController`
+-   `addressController`
+-   `wishlistController`
+-   `loyaltyController`
+-   `searchController`
+-   **`flashSaleController`**
 
-| File | Purpose |
-|------|---------|
-| `src/App.tsx` | Provider hierarchy, layout wrapper |
-| `src/routes/index.tsx` | Route definitions with lazy loading |
-| `src/routes/PrivateRoute.tsx` | Auth-required route guard |
-| `src/routes/AdminRoute.tsx` | Admin role route guard |
-| `src/services/api.ts` | Axios instance with interceptors |
-| `src/store/index.ts` | Redux store configuration |
+## Frontend Structure
+The `frontend/` directory contains the React.js/Next.js application.
+-   `public/`: Static assets.
+-   `src/api/`: Centralized location for defining API service calls.
+-   `src/assets/`: Stores images, fonts, and icons.
+-   `src/components/`: Reusable UI components. **`FlashSale` directory has been added, containing `Countdown.tsx`, `FlashSaleCard.tsx`, and `StockIndicator.tsx` to display flash sale information.**
+-   `src/contexts/`: React Context API providers.
+-   `src/hooks/`: Custom React hooks.
+-   `src/layouts/`: Defines main page layouts.
+-   `src/pages/`: Page-level components that map to routes in Next.js. **`FlashSale` directory has been added with `index.tsx` (listing) and `FlashSaleDetail.tsx` (individual sale page).**
+-   `src/store/`: Redux Toolkit setup.
+-   `src/styles/`: Global CSS, variables, and utility classes.
+-   `src/types/`: TypeScript type definitions and interfaces. **`flashSale.ts` has been added to define `IFlashSale` and `IStockReservation` interfaces.**
+-   `src/utils/`: Frontend utility functions.
+-   `tests/`: Unit and integration tests for frontend components.
+-   `.env.example`: Template for environment variables.
 
-## Frontend State (Redux Slices)
+**Key Pages/Features:**
+-   Home Page (`/`)
+-   Product Listing (`/products`)
+-   Product Detail Page (`/products/:id`)
+-   Shopping Cart (`/cart`)
+-   User Authentication (Login `/login`, Register `/register`)
+-   User Profile (`/profile`)
+-   Admin Product Management (`/admin/products`)
+-   Wishlist (`/wishlist`)
+-   **Flash Sale Listing (`/flash-sale`)**
+-   **Flash Sale Detail (`/flash-sale/:id`)**
 
-| Slice | Purpose |
-|-------|---------|
-| authSlice | User authentication state |
-| cartSlice | Shopping cart items |
-| productSlice | Product catalog state |
-| uiSlice | UI state (modals, loading) |
+## Key Features Implemented (from `README.md` and recent changes)
+-   User Authentication & Authorization
+-   Product Catalog
+-   Shopping Cart
+-   Wishlist
+-   Order Management
+-   Admin Panel
+-   Responsive Design
+-   Accessibility (A11y)
+-   Animations
+-   Skeleton Loading
+-   **Flash Sales & Promotions** (Implemented with stock reservation, countdowns, and status management)
 
-## Component Pattern
+**Planned Features:**
+-   Payment Integration
+-   Search Functionality
+-   Loyalty Program
 
-Each component follows this structure:
-```
-ComponentName/
-├── ComponentName.tsx        # Logic and JSX
-├── ComponentName.module.scss # Scoped styles
-└── index.ts                 # Export
-```
+## Technology Stack Highlights
+-   **Backend:** Node.js, Express.js, TypeScript, MongoDB (Mongoose), JWT, Bcrypt, Multer, **Redis (for caching and flash sale stock management)**.
+-   **Frontend:** React.js, Next.js, TypeScript, SCSS Modules, Redux Toolkit, Axios, Framer Motion, React-Helmet-Async, **TanStack Query (for data fetching and caching on flash sales)**.
+-   **Containerization:** Docker & Docker Compose.
+-   **Linting & Formatting:** ESLint & Prettier.
+-   **Scheduling:** `node-cron` for backend tasks.
 
-## Dependencies
+## Configuration and Environment
+-   Environment variables are managed using `.env` files.
+-   Docker Compose (`docker-compose.yml`) orchestrates services (backend, frontend, MongoDB, Redis).
+-   `backend/src/config/index.ts` now includes Redis configuration.
 
-### Backend
-- express, cors, helmet, express-rate-limit
-- mongoose, mongodb
-- jsonwebtoken, bcryptjs
-- cloudinary, multer
-- stripe
-- nodemailer
+## Testing Strategy
+-   Backend and Frontend both have dedicated `tests/` directories.
+-   Uses Jest and React Testing Library for testing.
+-   Aims for high test coverage for critical paths.
 
-### Frontend
-- react, react-dom, react-router-dom
-- @reduxjs/toolkit, react-redux
-- axios
-- formik, yup
-- framer-motion
-- swiper
-- recharts (admin charts)
+## Documentation and Workflows
+-   `README.md`: Project overview, setup, and general information.
+-   `CLAUDE.md`: Guidelines for Claude Code.
+-   `.claude/workflows/`: Detailed workflow definitions.
+-   `docs/`: Directory for project documentation, including this codebase summary, code standards, project overview, and system architecture.
+-   `repomix`: Tool used for generating comprehensive codebase compaction.
+
+---
+
+This summary will be updated as the project evolves.

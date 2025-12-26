@@ -69,6 +69,21 @@ services:
     networks:
       - klelite-network
 
+  # MeiliSearch - Typo-tolerant search engine
+  meilisearch:
+    image: getmeili/meilisearch:v1.6
+    container_name: klelite-meilisearch
+    restart: unless-stopped
+    environment:
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY:-masterKey123}
+      - MEILI_NO_ANALYTICS=true
+    ports:
+      - "7700:7700"
+    volumes:
+      - meili_data:/meili_data
+    networks:
+      - klelite-network
+
 networks:
   klelite-network:
     driver: bridge
@@ -76,3 +91,4 @@ networks:
 volumes:
   mongodb_data:
   redis_data:
+  meili_data:

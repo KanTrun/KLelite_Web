@@ -27,6 +27,7 @@ import { formatCurrency } from '@/utils/formatters';
 import { userService } from '@/services/userService';
 import { reviewService, Review } from '@/services/reviewService';
 import { ProductDetailSkeleton } from '@/components/common/ProductDetailSkeleton';
+import SimilarProducts from '@/components/Recommendations/SimilarProducts';
 import styles from './ProductDetail.module.scss';
 
 const ProductDetail: React.FC = () => {
@@ -943,6 +944,10 @@ const ProductDetail: React.FC = () => {
             </motion.div>
           </AnimatePresence>
         </motion.div>
+
+        {/* Similar Products */}
+        {product && <SimilarProducts productId={product._id} />}
+
       </div>
     </div>
   );

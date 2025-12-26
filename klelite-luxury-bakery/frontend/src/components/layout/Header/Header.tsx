@@ -3,16 +3,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FiSearch, FiShoppingCart, FiUser, FiMenu, FiX, FiHeart, FiChevronDown } from 'react-icons/fi';
 import { useAuth, useCart } from '@/hooks';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
+import { SearchBar } from '@/components/common/SearchBar';
 import styles from './Header.module.scss';
 
 export const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  
+
   const { user, isAuthenticated, logout } = useAuth();
   const { cartItemsCount } = useCart();
 
@@ -27,15 +27,6 @@ export const Header: React.FC = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery('');
-      setIsSearchOpen(false);
-    }
-  };
 
   const handleLogout = async () => {
     await logout();
@@ -149,22 +140,14 @@ export const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Search Bar */}
+      {/* Search Bar with Auto-suggestions */}
       {isSearchOpen && (
-        <div className={styles.searchBar}>
-          <form onSubmit={handleSearch} className={styles.searchForm}>
-            <input
-              type="text"
-              placeholder="Tìm kiếm sản phẩm..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className={styles.searchInput}
-              autoFocus
-            />
-            <button type="submit" className={styles.searchButton}>
-              <FiSearch />
-            </button>
-          </form>
+        <div className={styles.searchPanel} id="search-panel">
+          <SearchBar
+            onClose={() => setIsSearchOpen(false)}
+            autoFocus
+            className={styles.searchBarComponent}
+          />
         </div>
       )}
 

@@ -64,6 +64,8 @@ export const getProducts = asyncHandler(async (req: AuthRequest, res: Response, 
   successResponse(res, products, undefined, 200, pagination);
 });
 
+import UserActivity from '../models/UserActivity';
+
 // @desc    Get single product
 // @route   GET /api/products/:slug
 // @access  Public
@@ -71,11 +73,20 @@ export const getProduct = asyncHandler(async (req: AuthRequest, res: Response, _
   const product = await Product.findOne({ slug: req.params.slug })
     .populate('category', 'name slug')
     .populate('relatedProducts', 'name slug price images rating');
-  
+
   if (!product) {
     throw NotFoundError('Không tìm thấy sản phẩm');
   }
-  
+
+  // Track user activity
+  if (req.user) {
+    await UserActivity.create({
+      userId: req.user._id,
+      productId: product._id,
+      activityType: 'view'
+    }).catch(err => console.error('Error tracking user activity:', err));
+  }
+
   successResponse(res, product);
 });
 

@@ -8,6 +8,11 @@ import userRoutes from './userRoutes';
 import voucherRoutes from './voucherRoutes';
 import uploadRoutes from './uploadRoutes';
 import paymentRoutes from './paymentRoutes';
+import searchRoutes from './search-routes';
+import loyaltyRoutes from './loyaltyRoutes';
+import flashSaleRoutes from './flashSaleRoutes';
+import recommendationRoutes from './recommendationRoutes';
+import chatbotRoutes from './chatbotRoutes';
 
 const router = Router();
 
@@ -30,5 +35,10 @@ router.use('/users', userRoutes);
 router.use('/vouchers', voucherRoutes);
 router.use('/upload', uploadRoutes);
 router.use('/payments', paymentRoutes);
+router.use('/search', searchRoutes);
+router.use('/loyalty', loyaltyRoutes);
+router.use('/flash-sales', flashSaleRoutes);
+router.use('/recommendations', recommendationRoutes);
+router.use('/chat', chatbotRoutes);
 
 export default router;

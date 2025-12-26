@@ -21,26 +21,38 @@ export const getCart = asyncHandler(async (req: AuthRequest, res: Response, _nex
   successResponse(res, cart);
 });
 
+import UserActivity from '../models/UserActivity';
+
 // @desc    Add item to cart
 // @route   POST /api/cart/items
 // @access  Private
 export const addToCart = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   const { productId, quantity, size, customization } = req.body as CartItemInput;
-  
+
   // Get product
   const product = await Product.findById(productId);
   if (!product) {
     throw NotFoundError('Không tìm thấy sản phẩm');
   }
-  
+
   if (!product.isAvailable) {
     throw BadRequestError('Sản phẩm hiện không khả dụng');
   }
-  
+
   if (product.stock < quantity) {
     throw BadRequestError(`Chỉ còn ${product.stock} sản phẩm trong kho`);
   }
-  
+
+  // Track cart add activity
+  if (req.user) {
+    UserActivity.create({
+      userId: req.user._id,
+      productId: product._id,
+      activityType: 'cart_add',
+      metadata: { quantity, size }
+    }).catch(err => console.error('Error tracking cart add:', err));
+  }
+
   // Get price based on size
   let price = product.price;
   if (size && product.sizes.length > 0) {

@@ -8,6 +8,7 @@ import { ThemeProvider } from '@/contexts';
 import AppRoutes from '@/routes';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import ChatWidget from '@/components/Chat/ChatWidget';
 import { SkipLink } from '@/components/common/SkipLink/SkipLink';
 import { AriaLiveRegion } from '@/components/common/AriaLiveRegion/AriaLiveRegion';
 import '@/styles/global.scss';
@@ -35,6 +36,7 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <main id="main-content">
         {children}
       </main>
+      <ChatWidget />
       <Footer />
     </div>
   );

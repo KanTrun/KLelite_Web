@@ -12,6 +12,8 @@ import { config } from './config';
 import connectDB from './config/database';
 import routes from './routes';
 import { errorHandler, notFound } from './middleware';
+import flashSaleCronJobs from './services/flashSaleCronJobs';
+import scheduleRecommendations from './jobs/computeRecommendations';
 
 // Create Express app
 const app: Application = express();
@@ -115,6 +117,12 @@ const server = app.listen(PORT, () => {
 ║                                                          ║
 ╚══════════════════════════════════════════════════════════╝
   `);
+
+  // Start flash sale cron jobs
+  flashSaleCronJobs.start();
+
+  // Start recommendation cron jobs
+  scheduleRecommendations();
 });
 
 // Handle unhandled promise rejections

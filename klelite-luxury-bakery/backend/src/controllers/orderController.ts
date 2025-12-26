@@ -8,6 +8,7 @@ import { asyncHandler, successResponse, createdResponse, NotFoundError, BadReque
 import { sendEmail, emailTemplates } from '../utils/email';
 import { config } from '../config';
 import { AuthRequest } from '../types';
+import { loyaltyService } from '../services/loyalty-service';
 
 // @desc    Create order
 // @route   POST /api/orders
@@ -22,6 +23,7 @@ export const createOrder = asyncHandler(async (req: AuthRequest, res: Response, 
     isGift,
     giftMessage,
     voucherCode,
+    redeemPoints,
   } = req.body;
   
   // Get user cart
@@ -87,10 +89,22 @@ export const createOrder = asyncHandler(async (req: AuthRequest, res: Response, 
       }
     }
   }
-  
+
+  // Calculate preliminary total (points redemption will happen after order creation)
+  let pointsDiscount = 0;
+  if (redeemPoints && redeemPoints > 0) {
+    // Validate points before order creation
+    const account = await loyaltyService.getOrCreateAccount(req.user!._id.toString());
+    if (account.currentPoints < redeemPoints) {
+      throw BadRequestError('Insufficient loyalty points');
+    }
+    pointsDiscount = redeemPoints * 10; // 1 point = 10 VND
+    discount += pointsDiscount;
+  }
+
   // Calculate total
   const total = subtotal + shippingFee - discount;
-  
+
   // Create order
   const order = await Order.create({
     user: req.user?._id,
@@ -111,6 +125,20 @@ export const createOrder = asyncHandler(async (req: AuthRequest, res: Response, 
     isGift,
     giftMessage,
   });
+
+  // Redeem loyalty points AFTER order creation (atomic with real orderId)
+  if (redeemPoints && redeemPoints > 0) {
+    try {
+      await loyaltyService.redeemPoints(
+        req.user!._id.toString(),
+        order._id.toString(),
+        redeemPoints
+      );
+    } catch (error) {
+      // If redemption fails, log but don't fail order (payment already processed)
+      console.error('Failed to redeem loyalty points:', error);
+    }
+  }
   
   // Update product stock and sold count
   for (const item of cart.items) {
@@ -299,7 +327,7 @@ export const updateOrderStatus = asyncHandler(async (req: AuthRequest, res: Resp
   
   // Update status
   order.status = status;
-  
+
   // Set delivered date
   if (status === 'delivered') {
     order.deliveredAt = new Date();
@@ -308,8 +336,20 @@ export const updateOrderStatus = asyncHandler(async (req: AuthRequest, res: Resp
       order.payment.status = 'paid';
       order.payment.paidAt = new Date();
     }
+
+    // Award loyalty points
+    try {
+      const pointsEarned = await loyaltyService.earnPoints(
+        order.user.toString(),
+        order._id.toString(),
+        order.total
+      );
+      console.log(`User ${order.user} earned ${pointsEarned} loyalty points from order ${order.orderNumber}`);
+    } catch (error) {
+      console.warn('Failed to award loyalty points:', error);
+    }
   }
-  
+
   await order.save();
   
   successResponse(res, order, 'Cập nhật trạng thái đơn hàng thành công');

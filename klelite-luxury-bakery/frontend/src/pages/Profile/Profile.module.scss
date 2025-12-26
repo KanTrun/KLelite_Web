@@ -107,6 +107,7 @@
   gap: $spacing-sm;
   width: 100%;
   padding: $spacing-sm $spacing-md;
+  min-height: 48px;
   background: transparent;
   border: none;
   color: rgba($light-text, 0.7);
@@ -152,6 +153,7 @@
   gap: $spacing-sm;
   width: 100%;
   padding: $spacing-sm $spacing-md;
+  min-height: 48px;
   background: transparent;
   border: none;
   color: #dc3545;
@@ -223,6 +225,7 @@
   align-items: center;
   gap: $spacing-xs;
   padding: $spacing-sm $spacing-md;
+  min-height: 44px;
   background: rgba($gold-primary, 0.1);
   border: 1px solid rgba($gold-primary, 0.3);
   color: $gold-primary;
@@ -247,6 +250,7 @@
   align-items: center;
   gap: $spacing-xs;
   padding: $spacing-sm $spacing-md;
+  min-height: 44px;
   background: transparent;
   border: 1px solid rgba($light-text, 0.2);
   color: rgba($light-text, 0.7);
@@ -266,6 +270,7 @@
   align-items: center;
   gap: $spacing-xs;
   padding: $spacing-sm $spacing-md;
+  min-height: 44px;
   background: linear-gradient(135deg, $gold-primary, $gold-secondary);
   border: none;
   color: $dark-primary;
@@ -323,6 +328,7 @@
   input {
     width: 100%;
     padding: $spacing-sm $spacing-md;
+    min-height: 48px;
     background: rgba($light-text, 0.03);
     border: 1px solid rgba($gold-primary, 0.2);
     border-radius: $radius-md;
@@ -364,6 +370,7 @@
 
 .changePasswordBtn {
   padding: $spacing-md $spacing-2xl;
+  min-height: 48px;
   background: linear-gradient(135deg, $gold-primary, $gold-secondary);
   border: none;
   color: $dark-primary;
@@ -443,8 +450,13 @@
 
 .editAddressBtn,
 .deleteAddressBtn {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: $radius-sm;
   background: transparent;
   border: 1px solid rgba($gold-primary, 0.2);
@@ -499,6 +511,7 @@
   align-items: center;
   gap: $spacing-xs;
   padding: $spacing-sm $spacing-xl;
+  min-height: 44px;
   background: linear-gradient(135deg, $gold-primary, $gold-secondary);
   color: $dark-primary;
   font-weight: 700;
@@ -707,6 +720,7 @@
   align-items: center;
   gap: $spacing-xs;
   padding: $spacing-sm $spacing-md;
+  min-height: 44px;
   background: transparent;
   border: 1px solid rgba($gold-primary, 0.3);
   color: $gold-primary;

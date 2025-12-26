@@ -11,6 +11,9 @@ import {
   FiShield,
   FiGift,
 } from 'react-icons/fi';
+import ForYou from '@/components/Recommendations/ForYou';
+import Trending from '@/components/Recommendations/Trending';
+import { RecentlyViewed } from '@/components/Recommendations/RecentlyViewed';
 import styles from './Home.module.scss';
 
 // ============================================
@@ -620,6 +623,15 @@ const Home: React.FC = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* ============================================ */}
+      {/* Recommendations Section */}
+      {/* ============================================ */}
+      <div className={styles.container}>
+        <Trending />
+        <ForYou />
+        <RecentlyViewed />
+      </div>
 
       {/* ============================================ */}
       {/* Testimonials Section - Social Proof */}

@@ -10,7 +10,15 @@
       "Bash(find:*)",
       "Bash(npm run build)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(mkdir -p:*)",
+      "Bash(printf:*)",
+      "Bash(python:*)",
+      "Bash(findstr:*)",
+      "Bash(npx tsc:*)",
+      "Bash(git log:*)",
+      "Bash(npm install)",
+      "Bash(npm test)"
     ]
   }
 }
