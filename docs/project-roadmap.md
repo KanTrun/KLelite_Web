@@ -79,7 +79,12 @@ This document outlines the strategic plan and progression for the Klelite Luxury
 
 ### 2025-12-26
 - **Completed**: Phase 05 - Flash Sale Infrastructure.
-- Implemented: Real-time stock reservation, flash sale creation, frontend countdown, and anti-overselling mechanisms.
+- **Implemented**:
+    - Race condition fix (reserved/confirmed Redis keys).
+    - Rate limiting (5 req/min per user).
+    - Redis atomic pipelines for stock reservation.
+    - Real-time stock reservation, flash sale creation, frontend countdown.
+    - All tests passing (16/16).
 
 ### 2025-12-20
 - **Completed**: Phase 04 - Loyalty Points System.

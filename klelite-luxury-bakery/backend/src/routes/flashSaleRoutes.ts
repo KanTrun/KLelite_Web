@@ -2,6 +2,7 @@ import express from 'express';
 import * as flashSaleController from '../controllers/flashSaleController';
 import { protect, authorize } from '../middleware/auth';
 import { validateFlashSaleReservation } from '../middleware/validation/flashSaleValidation';
+import { rateLimit } from '../middleware/rate-limit';
 
 const router = express.Router();
 
@@ -38,10 +39,12 @@ router.get(
 
 /**
  * Reserve stock for flash sale product
+ * Rate limited to prevent abuse: 5 requests per minute per user
  */
 router.post(
   '/:saleId/reserve',
   protect,
+  rateLimit({ windowMs: 60 * 1000, max: 5, message: 'Too many reservation attempts, please try again in a minute' }),
   validateFlashSaleReservation,
   flashSaleController.reserveStock
 );

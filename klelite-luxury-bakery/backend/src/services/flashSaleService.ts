@@ -89,11 +89,17 @@ class FlashSaleService {
         throw new AppError('Product not found in this flash sale', 404);
       }
 
-      // Check user purchase limit
-      const userKey = `flash:${saleId}:product:${productId}:user:${userId}`;
-      const userPurchased = Number((await redis.get(userKey)) || '0');
+      // Check user purchase limit with atomic read to prevent race condition
+      const userConfirmedKey = `flash:${saleId}:product:${productId}:user:${userId}:confirmed`;
+      const userReservedKey = `flash:${saleId}:product:${productId}:user:${userId}:reserved`;
 
-      if (userPurchased + quantity > product.perUserLimit) {
+      // Atomic multi-get
+      const [confirmedStr, reservedStr] = await redis.mget(userConfirmedKey, userReservedKey);
+      const userConfirmed = Number(confirmedStr || '0');
+      const userReserved = Number(reservedStr || '0');
+      const userTotal = userConfirmed + userReserved;
+
+      if (userTotal + quantity > product.perUserLimit) {
         throw new AppError(
           `Purchase limit exceeded. Maximum ${product.perUserLimit} per user`,
           400
@@ -108,6 +114,15 @@ class FlashSaleService {
         // Rollback if oversold
         await redis.incrby(stockKey, quantity);
         throw new AppError('Product sold out', 400);
+      }
+
+      // Atomically increment reserved count
+      await redis.incrby(userReservedKey, quantity);
+
+      // Set TTL on reserved key
+      const ttl = Math.ceil((sale.endTime.getTime() - Date.now()) / 1000);
+      if (ttl > 0) {
+        await redis.expire(userReservedKey, ttl);
       }
 
       // Create reservation (5 minutes expiry)
@@ -161,18 +176,22 @@ class FlashSaleService {
         }
       );
 
-      // Increment user purchase count in Redis
-      const userKey = `flash:${reservation.flashSaleId}:product:${reservation.productId}:user:${reservation.userId}`;
-      await redis.incrby(userKey, reservation.quantity);
+      // Move from reserved to confirmed in Redis (atomic pipeline)
+      const userReservedKey = `flash:${reservation.flashSaleId}:product:${reservation.productId}:user:${reservation.userId}:reserved`;
+      const userConfirmedKey = `flash:${reservation.flashSaleId}:product:${reservation.productId}:user:${reservation.userId}:confirmed`;
 
-      // Set TTL on user key (same as flash sale duration)
+      // Get sale for TTL
       const sale = await FlashSale.findById(reservation.flashSaleId);
-      if (sale) {
-        const ttl = Math.ceil((sale.endTime.getTime() - Date.now()) / 1000);
-        if (ttl > 0) {
-          await redis.expire(userKey, ttl);
-        }
+      const ttl = sale ? Math.ceil((sale.endTime.getTime() - Date.now()) / 1000) : 0;
+
+      // Atomic pipeline for moving stock from reserved to confirmed
+      const pipeline = redis.pipeline();
+      pipeline.decrby(userReservedKey, reservation.quantity);
+      pipeline.incrby(userConfirmedKey, reservation.quantity);
+      if (ttl > 0) {
+        pipeline.expire(userConfirmedKey, ttl);
       }
+      await pipeline.exec();
 
       console.log(`✅ Reservation confirmed: ${reservationId}`);
     } catch (error) {
@@ -198,6 +217,10 @@ class FlashSaleService {
       // Return stock to Redis
       const stockKey = `flash:${reservation.flashSaleId}:product:${reservation.productId}:stock`;
       await redis.incrby(stockKey, reservation.quantity);
+
+      // Decrement reserved count
+      const userReservedKey = `flash:${reservation.flashSaleId}:product:${reservation.productId}:user:${reservation.userId}:reserved`;
+      await redis.decrby(userReservedKey, reservation.quantity);
 
       // Update reservation status
       reservation.status = 'expired';

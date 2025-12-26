@@ -3,11 +3,14 @@ jest.mock('../utils/asyncHandler', () => (fn: any) => fn);
 jest.mock('../config/redis', () => ({
   get: jest.fn(),
   set: jest.fn(),
+  mget: jest.fn(),
   decrby: jest.fn(),
   incrby: jest.fn(),
   expire: jest.fn(),
   pipeline: jest.fn(() => ({
     set: jest.fn().mockReturnThis(),
+    decrby: jest.fn().mockReturnThis(),
+    incrby: jest.fn().mockReturnThis(),
     expire: jest.fn().mockReturnThis(),
     exec: jest.fn().mockResolvedValue([]),
   })),
@@ -66,7 +69,7 @@ describe('Flash Sale System', () => {
   describe('reserveStock', () => {
     test('should successfully reserve stock', async () => {
       (FlashSale.findById as jest.Mock).mockResolvedValue(mockFlashSale);
-      (redis.get as jest.Mock).mockResolvedValue('0'); // User purchased
+      (redis.mget as jest.Mock).mockResolvedValue(['0', '0']); // User confirmed, reserved
       (redis.decrby as jest.Mock).mockResolvedValue(9); // Remaining stock
       (StockReservation.create as jest.Mock).mockResolvedValue(mockReservation);
 
@@ -79,7 +82,7 @@ describe('Flash Sale System', () => {
 
     test('should throw error if product is sold out', async () => {
       (FlashSale.findById as jest.Mock).mockResolvedValue(mockFlashSale);
-      (redis.get as jest.Mock).mockResolvedValue('0');
+      (redis.mget as jest.Mock).mockResolvedValue(['0', '0']);
       (redis.decrby as jest.Mock).mockResolvedValue(-1); // Oversold
 
       await expect(flashSaleService.reserveStock(saleId, productId, userId, 1))
@@ -90,7 +93,7 @@ describe('Flash Sale System', () => {
 
     test('should throw error if user purchase limit exceeded', async () => {
       (FlashSale.findById as jest.Mock).mockResolvedValue(mockFlashSale);
-      (redis.get as jest.Mock).mockResolvedValue('2'); // Already bought 2
+      (redis.mget as jest.Mock).mockResolvedValue(['2', '0']); // Already bought 2
 
       await expect(flashSaleService.reserveStock(saleId, productId, userId, 1))
         .rejects.toThrow('Purchase limit exceeded');
@@ -108,7 +111,7 @@ describe('Flash Sale System', () => {
     test('should allow early access for eligible tiers', async () => {
       mockFlashSale.startTime = new Date(Date.now() + 15 * 60 * 1000);
       (FlashSale.findById as jest.Mock).mockResolvedValue(mockFlashSale);
-      (redis.get as jest.Mock).mockResolvedValue('0');
+      (redis.mget as jest.Mock).mockResolvedValue(['0', '0']);
       (redis.decrby as jest.Mock).mockResolvedValue(5);
       (StockReservation.create as jest.Mock).mockResolvedValue(mockReservation);
 
@@ -128,7 +131,7 @@ describe('Flash Sale System', () => {
       expect(mockReservation.status).toBe('completed');
       expect(mockReservation.save).toHaveBeenCalled();
       expect(FlashSale.updateOne).toHaveBeenCalled();
-      expect(redis.incrby).toHaveBeenCalled(); // User purchase count
+      expect(redis.pipeline).toHaveBeenCalled(); // Pipeline for atomic ops
     });
 
     test('should throw error if reservation already processed', async () => {
