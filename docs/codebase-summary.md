@@ -24,7 +24,7 @@ The `backend/` directory contains the Node.js/Express.js application.
 -   `src/middleware/`: Custom Express middleware (authentication, error handling, request logging).
 -   `src/models/`: Defines Mongoose schemas and models for interacting with the MongoDB database. **`FlashSale.ts` and `StockReservation.ts` have been added to define the schemas for flash sales and their associated stock reservations.**
 -   `src/routes/`: Groups API endpoints logically. **`flashSaleRoutes.ts` has been added and integrated into `index.ts` to expose flash sale related endpoints.**
--   `src/services/`: Encapsulates business logic, database operations, and external API integrations. **`flashSaleService.ts` handles the core logic for flash sales, including stock management with Redis, and `flashSaleCronJobs.ts` manages scheduled tasks for updating flash sale statuses.**
+-   `src/services/`: Encapsulates business logic, database operations, and external API integrations. **`flashSaleService.ts` handles the core logic for flash sales, including atomic stock management with Redis pipelines and multi-get race condition prevention.**
 -   `src/utils/`: Generic utility functions used across the backend.
 -   `tests/`: Unit and integration tests for backend components.
 -   `.env.example`: Template for environment variables.

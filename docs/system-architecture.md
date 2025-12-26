@@ -190,23 +190,25 @@ graph TD
 ### 4.4. Flash Sale Stock Reservation
 
 1.  **Frontend:** User attempts to add a flash sale item to cart.
-2.  **API Gateway:** Routes `POST /api/v1/flash-sales/:id/reserve-stock` to Backend.
+2.  **API Gateway:** Routes `POST /api/v1/flash-sales/:id/reserve` to Backend.
 3.  **Backend (Flash Sale Controller/Service):**
-    -   Validates request (sale active, quantity positive, user authenticated).
-    -   Interacts with **Redis** to decrement available stock (`flashSale:${saleId}:availableStock`). This uses optimistic locking.
-    -   If Redis stock goes negative, rolls back Redis and throws an error (race condition).
-    -   Creates a `StockReservation` document in MongoDB with an `expiresAt` field (TTL index).
-    -   Returns reservation details to Frontend.
+    -   **Rate Limiting:** Checks user quota (5 requests/minute).
+    -   **Validation:** Validates request (sale active, quantity positive, user authenticated).
+    -   **Atomic Check:** Uses Redis `MGET` to fetch `confirmed` and `reserved` counts for the user to prevent race conditions during purchase limit checks.
+    -   **Atomic Stock Decrement:** Interacts with **Redis** to decrement available stock (`flash:saleId:product:productId:stock`).
+    -   **Rollback:** If Redis stock goes negative, increments it back and throws 'sold out' error.
+    -   **Atomic User Update:** Increments `reserved` count in Redis for the user.
+    -   **Persistence:** Creates a `StockReservation` document in MongoDB with an `expiresAt` field (5 minutes expiry).
+    -   **Response:** Returns reservation details to Frontend.
 4.  **Frontend:** User proceeds to checkout with reserved item.
-5.  **Payment Success:**
-    -   Frontend calls `POST /api/v1/flash-sales/:saleId/confirm-reservation/:reservationId`.
-    -   Backend finds pending reservation, updates its status to 'confirmed'.
-    -   Atomically increments `soldStock` in `FlashSale` in MongoDB.
-    -   Decrements actual `Product` stock in MongoDB.
-6.  **Payment Failure/Expiration:**
-    -   Frontend calls `POST /api/v1/flash-sales/:saleId/cancel-reservation/:reservationId` or reservation expires naturally via TTL.
-    -   Backend finds pending/expired reservation, updates status to 'cancelled'/'expired'.
-    -   Increments available stock in **Redis** (`flashSale:${saleId}:availableStock`) to release reserved stock.
+5.  **Payment Success (Confirm Reservation):**
+    -   Frontend calls `POST /api/v1/flash-sales/:id/confirm-reservation/:reservationId`. (Note: Currently handled by `confirmReservation` in service)
+    -   **Atomic Pipeline:** Uses Redis `pipeline` to atomically move stock from `reserved` to `confirmed` status in Redis.
+    -   **Database Sync:** Updates reservation status to 'completed' and increments `soldCount` in `FlashSale` in MongoDB.
+6.  **Payment Failure/Expiration (Release Reservation):**
+    -   Handled via `releaseReservation` API or `cleanupExpiredReservations` cron.
+    -   Increments available stock in **Redis** and decrements user's `reserved` count.
+    -   Updates reservation status to 'expired' or 'cancelled'.
 
 ## 5. Deployment Strategy
 

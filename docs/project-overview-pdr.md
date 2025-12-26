@@ -131,8 +131,12 @@ This document outlines the Project Overview and Product Development Requirements
     -   *Acceptance Criteria:* A cron job runs regularly to synchronize sale statuses.
 -   **REQ-FS-3:** During an active flash sale, customers should see discounted prices, a countdown timer, and a stock indicator.
     -   *Acceptance Criteria:* Frontend displays real-time sale information and remaining stock.
--   **REQ-FS-4:** Implement a stock reservation mechanism for flash sale products using Redis to prevent overselling and manage concurrent purchases.
-    -   *Acceptance Criteria:* When a user attempts to add a flash sale item to their cart, stock is reserved for a limited time. If payment is confirmed, the reservation is confirmed and main product stock is decremented. If payment fails or the reservation expires, stock is released.
+-   **REQ-FS-4:** Implement a robust stock reservation mechanism for flash sale products using Redis to prevent overselling and manage concurrent purchases.
+    -   *Acceptance Criteria:*
+        - Atomic stock decrement in Redis.
+        - Race condition prevention using atomic `MGET` for user limits.
+        - Rate limiting on reservation attempts (5 requests per minute per user).
+        - Redis pipelines for atomic confirmation operations (moving from reserved to confirmed keys).
 -   **REQ-FS-5:** Users must be able to reserve, confirm, and cancel stock for flash sale items.
     -   *Acceptance Criteria:* API endpoints exist for these actions, and frontend integrates them into the checkout flow.
 
