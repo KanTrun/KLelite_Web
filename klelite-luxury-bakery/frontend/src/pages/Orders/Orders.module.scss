@@ -1,52 +1,51 @@
-// ============================================
-// Orders Page - Royal Luxury Design
-// KL'élite Luxury Bakery
-// Elegant Gold & Dark Theme
-// ============================================
-
 @import '@/styles/variables';
 
-// Color palette
+// Color palette - consistent with OrderDetail
 $gold-primary: #C9A962;
 $gold-light: #D4B978;
 $gold-dark: #A08040;
 $dark-bg: #1A1614;
 $cream-bg: #FDFCFA;
 $warm-gray: #F8F5F0;
+$text-primary: #1A1614;
+$text-secondary: #666;
 
-// ============================================
-// Page Layout with Hero Background
-// ============================================
+// Mixins
+@mixin glass-effect {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
 .ordersPage {
   min-height: 100vh;
   background: $cream-bg;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
 
-  // Decorative background pattern
+  // Subtle background pattern
   &::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 350px;
-    background: linear-gradient(135deg, $dark-bg 0%, #2A2420 100%);
-    clip-path: ellipse(80% 100% at 50% 0%);
+    top: -20%;
+    left: -10%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(circle, rgba($gold-primary, 0.08) 0%, transparent 70%);
     z-index: 0;
+    pointer-events: none;
   }
 
-  // Gold accent lines
   &::after {
     content: '';
     position: absolute;
-    top: 340px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, $gold-primary, transparent);
-    z-index: 1;
+    bottom: -10%;
+    right: -10%;
+    width: 50%;
+    height: 50%;
+    background: radial-gradient(circle, rgba($gold-primary, 0.05) 0%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
   }
 }
 
@@ -55,138 +54,124 @@ $warm-gray: #F8F5F0;
   margin: 0 auto;
   padding: 0 $spacing-lg;
   position: relative;
-  z-index: 2;
+  z-index: 1;
 }
 
-// ============================================
-// Page Header - Royal Style
-// ============================================
+// Page Header
 .pageHeader {
   text-align: center;
-  padding: 140px 0 80px;
-  color: #fff;
+  padding: 120px 0 60px;
 
   h1 {
     font-family: $font-heading;
-    font-size: clamp(2.2rem, 5vw, 3.2rem);
-    font-weight: 600;
-    color: #fff;
-    margin-bottom: $spacing-md;
-    letter-spacing: 0.02em;
-    
+    font-size: 3rem;
+    font-weight: 700;
+    color: $text-primary;
+    margin-bottom: $spacing-sm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+
     svg {
       color: $gold-primary;
-      margin-right: 12px;
-      vertical-align: middle;
     }
   }
 
   p {
-    color: rgba(255, 255, 255, 0.7);
     font-size: 1.1rem;
-    font-family: $font-accent;
-    font-style: italic;
+    color: $text-secondary;
+    max-width: 600px;
+    margin: 0 auto;
   }
 }
 
-// ============================================
-// Status Tabs - Elegant Pills
-// ============================================
+// Status Tabs
 .statusTabs {
   display: flex;
-  gap: $spacing-xs;
-  flex-wrap: wrap;
   justify-content: center;
-  padding: $spacing-lg;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: $spacing-3xl;
+  padding: 8px;
   background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
-  margin-bottom: $spacing-2xl;
+  border-radius: 50px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
   border: 1px solid rgba($gold-primary, 0.1);
 
   button {
-    padding: 12px 24px;
+    padding: 10px 24px;
+    border-radius: 25px;
+    border: none;
     background: transparent;
-    border: 1px solid rgba($gold-primary, 0.2);
-    border-radius: 30px;
     color: $text-secondary;
     font-weight: 500;
-    font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, $gold-primary 0%, $gold-dark 100%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: -1;
-    }
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
 
     &:hover {
-      border-color: $gold-primary;
       color: $gold-primary;
-      transform: translateY(-2px);
+      background: rgba($gold-primary, 0.05);
     }
 
     &.active {
-      border-color: $gold-primary;
+      background: linear-gradient(135deg, $gold-primary 0%, $gold-dark 100%);
       color: #fff;
-      
-      &::before {
-        opacity: 1;
-      }
+      box-shadow: 0 4px 15px rgba($gold-primary, 0.3);
+    }
+  }
+
+  @media (max-width: 768px) {
+    border-radius: 20px;
+    width: 100%;
+
+    button {
+      flex: 1 1 auto;
+      text-align: center;
+      padding: 8px 16px;
+      font-size: 0.85rem;
     }
   }
 }
 
-// ============================================
 // Orders List
-// ============================================
 .ordersList {
   display: flex;
   flex-direction: column;
-  gap: $spacing-lg;
-  padding-bottom: $spacing-3xl;
+  gap: $spacing-xl;
+  padding-bottom: 80px;
 }
 
-// ============================================
-// Order Card - Luxury Glass Effect
-// ============================================
+// Order Card
 .orderCard {
   background: #fff;
   border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
   border: 1px solid rgba($gold-primary, 0.1);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
   &:hover {
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-    transform: translateY(-4px);
-    border-color: rgba($gold-primary, 0.25);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+    border-color: rgba($gold-primary, 0.3);
   }
 }
 
 .orderHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: $spacing-lg $spacing-xl;
-  background: linear-gradient(135deg, rgba($gold-primary, 0.03) 0%, rgba($gold-primary, 0.08) 100%);
-  border-bottom: 1px solid rgba($gold-primary, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(to right, rgba($gold-primary, 0.02), transparent);
+  border-bottom: 1px solid rgba($gold-primary, 0.05);
   cursor: pointer;
-  transition: background 0.3s ease;
 
-  &:hover {
-    background: linear-gradient(135deg, rgba($gold-primary, 0.05) 0%, rgba($gold-primary, 0.12) 100%);
-  }
-
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
     gap: $spacing-md;
@@ -196,53 +181,40 @@ $warm-gray: #F8F5F0;
 .orderInfo {
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
 .orderNumber {
   font-family: $font-heading;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1.2rem;
+  font-weight: 700;
   color: $text-primary;
-  
-  &::before {
-    content: '';
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    background: $gold-primary;
-    border-radius: 50%;
-    margin-right: 10px;
-    vertical-align: middle;
-  }
+  margin-bottom: 4px;
 }
 
 .orderDate {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: $text-secondary;
-  margin-left: 18px;
 }
 
 .orderStatus {
   display: flex;
   align-items: center;
-  gap: $spacing-md;
+  gap: $spacing-lg;
 
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
     width: 100%;
     justify-content: space-between;
   }
 }
 
 .statusBadge {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  border-radius: 25px;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 600;
-  transition: all 0.3s ease;
 
   svg {
     font-size: 1rem;
@@ -252,20 +224,20 @@ $warm-gray: #F8F5F0;
 .orderTotal {
   font-family: $font-heading;
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
   color: $gold-primary;
 }
 
 .expandButton {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba($gold-primary, 0.2);
+  background: transparent;
+  color: $gold-primary;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba($gold-primary, 0.1);
-  border: none;
-  border-radius: 50%;
-  color: $gold-primary;
   cursor: pointer;
   transition: all 0.3s ease;
 
@@ -273,26 +245,20 @@ $warm-gray: #F8F5F0;
     background: $gold-primary;
     color: #fff;
   }
-
-  svg {
-    font-size: 1.1rem;
-  }
 }
 
-// ============================================
-// Order Progress Bar
-// ============================================
+// Progress Bar
 .orderProgress {
-  height: 4px;
-  background: rgba($gold-primary, 0.1);
+  height: 3px;
+  background: #f0f0f0;
+  width: 100%;
   position: relative;
-  overflow: hidden;
 }
 
 .progressBar {
   height: 100%;
   background: linear-gradient(90deg, $gold-primary, $gold-light);
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 1s ease;
   position: relative;
 
   &::after {
@@ -301,17 +267,15 @@ $warm-gray: #F8F5F0;
     right: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 12px;
-    height: 12px;
-    background: $gold-primary;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    box-shadow: 0 0 10px rgba($gold-primary, 0.5);
+    background: $gold-primary;
+    box-shadow: 0 0 0 2px rgba($gold-primary, 0.2);
   }
 }
 
-// ============================================
-// Order Items
-// ============================================
+// Order Items Preview
 .orderItems {
   padding: $spacing-lg $spacing-xl;
   display: flex;
@@ -323,264 +287,110 @@ $warm-gray: #F8F5F0;
   display: flex;
   align-items: center;
   gap: $spacing-md;
-  padding: $spacing-sm;
-  border-radius: 12px;
-  transition: background 0.2s ease;
+  padding-bottom: $spacing-md;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.05);
 
-  &:hover {
-    background: rgba($gold-primary, 0.03);
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
   }
 }
 
 .itemImage {
   width: 70px;
   height: 70px;
-  border-radius: 14px;
-  overflow: hidden;
-  flex-shrink: 0;
-  background: $warm-gray;
-  border: 2px solid rgba($gold-primary, 0.15);
+  border-radius: 12px;
   object-fit: cover;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .itemInfo {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
 }
 
 .itemName {
+  display: block;
   font-weight: 600;
   color: $text-primary;
-  font-size: 0.95rem;
+  margin-bottom: 4px;
 }
 
 .itemQuantity {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: $text-secondary;
-  
-  &::before {
-    content: 'Số lượng: ';
-  }
 }
 
 .itemPrice {
-  font-family: $font-heading;
   font-weight: 600;
   color: $gold-primary;
-  font-size: 1rem;
 }
 
 .moreItems {
   text-align: center;
-  padding: $spacing-sm;
-  color: $gold-primary;
+  color: $text-secondary;
   font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: color 0.2s ease;
-
-  &:hover {
-    color: $gold-dark;
-  }
+  padding-top: 8px;
+  font-style: italic;
 }
 
-// ============================================
 // Expanded Content
-// ============================================
 .expandedContent {
-  background: linear-gradient(180deg, rgba($gold-primary, 0.02) 0%, transparent 100%);
-  border-top: 1px solid rgba($gold-primary, 0.1);
-  overflow: hidden;
+  background: rgba($gold-primary, 0.02);
+  border-top: 1px solid rgba($gold-primary, 0.05);
 }
 
-.allItems {
+.allItems, .shippingInfo, .paymentInfo, .orderNote, .orderSummary {
   padding: $spacing-lg $spacing-xl;
-  
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+
   h4 {
     font-size: 1rem;
     font-weight: 600;
     color: $text-primary;
     margin-bottom: $spacing-md;
-    padding-bottom: $spacing-sm;
-    border-bottom: 1px solid rgba($gold-primary, 0.1);
-  }
-}
-
-.shippingInfo {
-  padding: $spacing-lg $spacing-xl;
-  background: rgba($gold-primary, 0.03);
-  
-  h4 {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    color: $text-primary;
-    margin-bottom: $spacing-md;
-    
+
     svg {
       color: $gold-primary;
     }
   }
 }
 
-.addressName {
-  font-weight: 600;
-  color: $text-primary;
-  margin-bottom: 4px;
-}
-
-.addressDetail {
-  color: $text-secondary;
-  font-size: 0.9rem;
-  margin-bottom: 4px;
-}
-
-.addressPhone {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: $text-secondary;
-  font-size: 0.9rem;
-  
-  svg {
-    color: $gold-primary;
-  }
-}
-
-.orderSummary {
-  padding: $spacing-lg $spacing-xl;
-  background: #fff;
-}
-
 .summaryRow {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: $spacing-xs 0;
+  margin-bottom: 8px;
   font-size: 0.95rem;
-  
-  span:first-child {
-    color: $text-secondary;
-  }
-  
-  span:last-child {
-    font-weight: 500;
-    color: $text-primary;
-  }
-
-  &.discount {
-    span:last-child {
-      color: #28a745;
-    }
-  }
 
   &.total {
-    border-top: 2px solid rgba($gold-primary, 0.15);
-    padding-top: $spacing-md;
-    margin-top: $spacing-sm;
-    
-    span:first-child {
-      font-weight: 600;
-      color: $text-primary;
-    }
-    
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 1.1rem;
+
     span:last-child {
-      font-family: $font-heading;
-      font-size: 1.4rem;
-      font-weight: 600;
       color: $gold-primary;
+      font-weight: 700;
     }
   }
 }
 
-.paymentInfo {
-  padding: $spacing-lg $spacing-xl;
-  border-top: 1px solid rgba($gold-primary, 0.1);
-  
-  h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: $text-primary;
-    margin-bottom: $spacing-md;
-  }
-}
-
-.paymentDetail {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  
-  span:first-child {
-    color: $text-secondary;
-  }
-}
-
-.paymentStatus {
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  
-  &.pending {
-    background: rgba(#ffc107, 0.15);
-    color: #d9a000;
-  }
-  
-  &.paid {
-    background: rgba(#28a745, 0.15);
-    color: #1e7e34;
-  }
-  
-  &.failed {
-    background: rgba(#dc3545, 0.15);
-    color: #bd2130;
-  }
-  
-  &.refunded {
-    background: rgba(#6c757d, 0.15);
-    color: #545b62;
-  }
-}
-
-.orderNote {
-  padding: $spacing-lg $spacing-xl;
-  background: rgba($gold-primary, 0.03);
-  border-top: 1px solid rgba($gold-primary, 0.1);
-  
-  h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: $text-primary;
-    margin-bottom: $spacing-sm;
-  }
-  
-  p {
-    color: $text-secondary;
-    font-style: italic;
-    font-size: 0.95rem;
-  }
-}
-
-// ============================================
-// Order Actions
-// ============================================
+// Actions
 .orderActions {
-  display: flex;
-  gap: $spacing-sm;
   padding: $spacing-lg $spacing-xl;
-  background: linear-gradient(180deg, transparent 0%, rgba($gold-primary, 0.03) 100%);
-  border-top: 1px solid rgba($gold-primary, 0.08);
+  display: flex;
+  gap: $spacing-md;
+  justify-content: flex-end;
+  background: #fff;
+  border-top: 1px solid rgba(0, 0, 0, 0.03);
 
   @media (max-width: 576px) {
-    flex-wrap: wrap;
-    
-    a, button {
-      flex: 1;
-      min-width: calc(50% - 8px);
+    flex-direction: column;
+
+    button, a {
+      width: 100%;
     }
   }
 }
@@ -590,20 +400,19 @@ $warm-gray: #F8F5F0;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 24px;
-  background: linear-gradient(135deg, $gold-primary 0%, $gold-dark 100%);
-  color: #fff;
-  border: none;
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid rgba($gold-primary, 0.3);
+  color: $gold-primary;
   border-radius: 12px;
   font-weight: 600;
-  font-size: 0.9rem;
   text-decoration: none;
-  cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba($gold-primary, 0.3);
+    background: $gold-primary;
+    color: #fff;
+    border-color: $gold-primary;
   }
 }
 
@@ -612,23 +421,22 @@ $warm-gray: #F8F5F0;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 24px;
-  background: transparent;
-  color: #dc3545;
-  border: 1px solid rgba(#dc3545, 0.3);
+  padding: 10px 20px;
+  background: rgba(#EF4444, 0.05);
+  border: 1px solid rgba(#EF4444, 0.2);
+  color: #EF4444;
   border-radius: 12px;
   font-weight: 600;
-  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover:not(:disabled) {
-    background: rgba(#dc3545, 0.1);
-    border-color: #dc3545;
+    background: #EF4444;
+    color: #fff;
   }
 
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
   }
 }
@@ -638,202 +446,110 @@ $warm-gray: #F8F5F0;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 24px;
-  background: transparent;
-  color: $gold-primary;
-  border: 1px solid rgba($gold-primary, 0.3);
+  padding: 10px 20px;
+  background: linear-gradient(135deg, $gold-primary 0%, $gold-dark 100%);
+  border: none;
+  color: #fff;
   border-radius: 12px;
   font-weight: 600;
-  font-size: 0.9rem;
   cursor: pointer;
+  box-shadow: 0 4px 15px rgba($gold-primary, 0.3);
   transition: all 0.3s ease;
 
   &:hover {
-    background: rgba($gold-primary, 0.1);
-    border-color: $gold-primary;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba($gold-primary, 0.4);
   }
 }
 
-.buttonSpinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-// ============================================
-// Empty State - Elegant Design
-// ============================================
+// Empty State
 .emptyState {
   text-align: center;
-  padding: $spacing-4xl $spacing-xl;
+  padding: 80px 20px;
   background: #fff;
-  border-radius: 28px;
-  border: 1px solid rgba($gold-primary, 0.1);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+  border-radius: 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.02);
 
   h3 {
-    font-family: $font-heading;
     font-size: 1.5rem;
-    font-weight: 600;
+    font-weight: 700;
+    margin-bottom: 8px;
     color: $text-primary;
-    margin-bottom: $spacing-sm;
   }
 
   p {
     color: $text-secondary;
-    margin-bottom: $spacing-xl;
-    font-size: 1rem;
+    margin-bottom: 24px;
   }
 }
 
 .shopBtn {
   display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 16px 36px;
+  padding: 12px 30px;
   background: linear-gradient(135deg, $gold-primary 0%, $gold-dark 100%);
   color: #fff;
-  border: none;
-  border-radius: 14px;
-  font-weight: 600;
-  font-size: 1rem;
+  border-radius: 30px;
   text-decoration: none;
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 40px rgba($gold-primary, 0.35);
-  }
-}
-
-// ============================================
-// Loading State
-// ============================================
-.loadingState {
-  text-align: center;
-  padding: $spacing-4xl;
-  background: #fff;
-  border-radius: 28px;
-
-  .spinner {
-    width: 60px;
-    height: 60px;
-    border: 3px solid rgba($gold-primary, 0.15);
-    border-top-color: $gold-primary;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto $spacing-lg;
-  }
-
-  p {
-    color: $text-secondary;
-    font-size: 1rem;
-  }
-}
-
-.retryBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 28px;
-  background: transparent;
-  color: $gold-primary;
-  border: 2px solid $gold-primary;
-  border-radius: 12px;
   font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
+  box-shadow: 0 4px 15px rgba($gold-primary, 0.3);
   transition: all 0.3s ease;
-  margin-top: $spacing-lg;
 
   &:hover {
-    background: $gold-primary;
-    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba($gold-primary, 0.4);
   }
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-// ============================================
-// Pagination - Elegant Style
-// ============================================
+// Pagination
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: $spacing-md;
-  margin-top: $spacing-2xl;
-  padding: $spacing-lg;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  gap: 16px;
+  margin-top: $spacing-xl;
 
   button {
-    padding: 12px 24px;
-    background: transparent;
+    padding: 10px 20px;
     border: 1px solid rgba($gold-primary, 0.2);
-    border-radius: 10px;
+    background: #fff;
+    border-radius: 12px;
     color: $text-primary;
-    font-weight: 500;
     cursor: pointer;
+    font-weight: 500;
     transition: all 0.3s ease;
 
     &:hover:not(:disabled) {
       border-color: $gold-primary;
       color: $gold-primary;
-      background: rgba($gold-primary, 0.05);
     }
 
     &:disabled {
-      opacity: 0.4;
+      opacity: 0.5;
       cursor: not-allowed;
+      background: #f9f9f9;
     }
-  }
-
-  span {
-    padding: 0 $spacing-md;
-    color: $text-secondary;
-    font-size: 0.95rem;
   }
 }
 
-// ============================================
-// Responsive Adjustments
-// ============================================
-@media (max-width: 768px) {
-  .pageHeader {
-    padding: 120px 0 60px;
-    
-    h1 {
-      font-size: 1.8rem;
-    }
+// Loading
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba($gold-primary, 0.2);
+    border-top-color: $gold-primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
   }
-  
-  .statusTabs {
-    padding: $spacing-md;
-    
-    button {
-      padding: 10px 16px;
-      font-size: 0.85rem;
-    }
-  }
-  
-  .orderHeader {
-    padding: $spacing-md $spacing-lg;
-  }
-  
-  .orderItems {
-    padding: $spacing-md $spacing-lg;
-  }
-  
-  .orderActions {
-    padding: $spacing-md $spacing-lg;
-  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

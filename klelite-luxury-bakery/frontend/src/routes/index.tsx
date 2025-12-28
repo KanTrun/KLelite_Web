@@ -18,6 +18,7 @@ const Register = lazy(() => import('@/pages/Auth/Register'));
 const ForgotPassword = lazy(() => import('@/pages/Auth/ForgotPassword'));
 const Profile = lazy(() => import('@/pages/Profile'));
 const Orders = lazy(() => import('@/pages/Orders'));
+const OrderDetail = lazy(() => import('@/pages/Orders/OrderDetail'));
 const Wishlist = lazy(() => import('@/pages/Wishlist'));
 const About = lazy(() => import('@/pages/About'));
 const Contact = lazy(() => import('@/pages/Contact'));
@@ -83,6 +84,11 @@ const AppRoutes: React.FC = () => {
               <PageWrapper><Orders /></PageWrapper>
             </PrivateRoute>
           } />
+          <Route path="/orders/:id" element={
+            <PrivateRoute>
+              <PageWrapper><OrderDetail /></PageWrapper>
+            </PrivateRoute>
+          } />
           <Route path="/wishlist" element={
             <PrivateRoute>
               <PageWrapper><Wishlist /></PageWrapper>
@@ -92,34 +98,34 @@ const AppRoutes: React.FC = () => {
           {/* Admin Routes */}
           <Route path="/admin" element={
             <AdminRoute>
-              <PageWrapper><AdminDashboard /></PageWrapper>
+              <AdminDashboard />
             </AdminRoute>
           } />
           <Route path="/admin/products" element={
             <AdminRoute>
-              <PageWrapper><AdminProducts /></PageWrapper>
+              <AdminProducts />
             </AdminRoute>
           } />
           <Route path="/admin/orders" element={
             <AdminRoute>
-              <PageWrapper><AdminOrders /></PageWrapper>
+              <AdminOrders />
             </AdminRoute>
           } />
           <Route path="/admin/users" element={
             <AdminRoute>
-              <PageWrapper><AdminUsers /></PageWrapper>
+              <AdminUsers />
             </AdminRoute>
           } />
           <Route path="/admin/categories" element={
             <AdminRoute>
-              <PageWrapper><AdminCategories /></PageWrapper>
+              <AdminCategories />
             </AdminRoute>
           } />
 
           {/* Manager Routes */}
           <Route path="/manager" element={
             <ManagerRoute>
-              <PageWrapper><ManagerDashboard /></PageWrapper>
+              <ManagerDashboard />
             </ManagerRoute>
           } />
 

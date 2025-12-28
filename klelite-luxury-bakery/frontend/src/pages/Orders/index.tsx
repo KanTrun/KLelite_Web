@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { 
-  FiPackage, 
-  FiClock, 
-  FiTruck, 
-  FiCheck, 
+import {
+  FiPackage,
+  FiClock,
+  FiTruck,
+  FiCheck,
   FiX,
   FiEye,
   FiRefreshCw,
@@ -86,7 +86,7 @@ const Orders: React.FC = () => {
 
   const handleCancelOrder = async (orderId: string) => {
     if (!window.confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')) return;
-    
+
     try {
       setCancellingOrder(orderId);
       await orderService.cancelOrder(orderId);
@@ -144,20 +144,20 @@ const Orders: React.FC = () => {
     <div className={styles.ordersPage}>
       <div className={styles.container}>
         {/* Header */}
-        <motion.div 
+        <motion.div
           className={styles.pageHeader}
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <h1>
-            <FiShoppingBag style={{ marginRight: '12px', verticalAlign: 'middle' }} />
+            <FiShoppingBag />
             Đơn hàng của tôi
           </h1>
           <p>Theo dõi và quản lý {pagination.total} đơn hàng của bạn</p>
         </motion.div>
 
         {/* Status Tabs */}
-        <motion.div 
+        <motion.div
           className={styles.statusTabs}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -189,10 +189,10 @@ const Orders: React.FC = () => {
               <FiAlertCircle style={{ fontSize: '3rem', color: '#EF4444', marginBottom: '1rem' }} />
               <h3>Có lỗi xảy ra</h3>
               <p>{error}</p>
-              <button onClick={fetchOrders} className={styles.retryBtn}>Thử lại</button>
+              <button onClick={fetchOrders} className={styles.retryBtn || styles.shopBtn}>Thử lại</button>
             </div>
           ) : orders.length === 0 ? (
-            <motion.div 
+            <motion.div
               className={styles.emptyState}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -222,18 +222,18 @@ const Orders: React.FC = () => {
                       <span className={styles.orderDate}>{formatDate(order.createdAt)}</span>
                     </div>
                     <div className={styles.orderStatus}>
-                      <span 
+                      <span
                         className={styles.statusBadge}
-                        style={{ 
-                          backgroundColor: `${statusConfig[order.status]?.color}20`,
-                          color: statusConfig[order.status]?.color 
+                        style={{
+                          color: statusConfig[order.status]?.color,
+                          backgroundColor: `${statusConfig[order.status]?.color}15`
                         }}
                       >
                         {statusConfig[order.status]?.icon}
                         {statusConfig[order.status]?.label}
                       </span>
                       <span className={styles.orderTotal}>{formatPrice(order.total)}</span>
-                      <motion.button 
+                      <motion.button
                         className={styles.expandButton}
                         animate={{ rotate: expandedOrder === order._id ? 180 : 0 }}
                       >
@@ -245,7 +245,7 @@ const Orders: React.FC = () => {
                   {/* Order Progress */}
                   {order.status !== 'cancelled' && order.status !== 'returned' && (
                     <div className={styles.orderProgress}>
-                      <div 
+                      <div
                         className={styles.progressBar}
                         style={{ width: `${getStatusProgress(order.status)}%` }}
                       />
@@ -256,8 +256,8 @@ const Orders: React.FC = () => {
                   <div className={styles.orderItems}>
                     {order.items.slice(0, 2).map((item, idx) => (
                       <div key={idx} className={styles.orderItem}>
-                        <img 
-                          src={item.image || '/images/placeholder.jpg'} 
+                        <img
+                          src={item.image || '/images/placeholder.jpg'}
                           alt={item.name}
                           className={styles.itemImage}
                         />
@@ -291,8 +291,8 @@ const Orders: React.FC = () => {
                             <h4>Tất cả sản phẩm</h4>
                             {order.items.slice(2).map((item, idx) => (
                               <div key={idx} className={styles.orderItem}>
-                                <img 
-                                  src={item.image || '/images/placeholder.jpg'} 
+                                <img
+                                  src={item.image || '/images/placeholder.jpg'}
                                   alt={item.name}
                                   className={styles.itemImage}
                                 />
@@ -309,11 +309,11 @@ const Orders: React.FC = () => {
                         {/* Shipping Address */}
                         <div className={styles.shippingInfo}>
                           <h4><FiMapPin /> Địa chỉ giao hàng</h4>
-                          <p className={styles.addressName}>{order.shippingAddress.fullName}</p>
-                          <p className={styles.addressDetail}>
+                          <p style={{ fontWeight: 600, marginBottom: 4 }}>{order.shippingAddress.fullName}</p>
+                          <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: 4 }}>
                             {order.shippingAddress.address}, {order.shippingAddress.district}, {order.shippingAddress.city}
                           </p>
-                          <p className={styles.addressPhone}>
+                          <p style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#666', fontSize: '0.9rem' }}>
                             <FiPhone /> {order.shippingAddress.phone}
                           </p>
                         </div>
@@ -329,12 +329,12 @@ const Orders: React.FC = () => {
                             <span>{formatPrice(order.shippingFee)}</span>
                           </div>
                           {order.discount > 0 && (
-                            <div className={styles.summaryRow + ' ' + styles.discount}>
+                            <div className={styles.summaryRow} style={{ color: '#059669' }}>
                               <span>Giảm giá</span>
                               <span>-{formatPrice(order.discount)}</span>
                             </div>
                           )}
-                          <div className={styles.summaryRow + ' ' + styles.total}>
+                          <div className={`${styles.summaryRow} ${styles.total}`}>
                             <span>Tổng cộng</span>
                             <span>{formatPrice(order.total)}</span>
                           </div>
@@ -343,15 +343,17 @@ const Orders: React.FC = () => {
                         {/* Payment Info */}
                         <div className={styles.paymentInfo}>
                           <h4>Thanh toán</h4>
-                          <div className={styles.paymentDetail}>
-                            <span>Phương thức: {
+                          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
+                            <span style={{ color: '#666' }}>Phương thức: {
                               order.payment.method === 'cod' ? 'Thanh toán khi nhận hàng' :
                               order.payment.method === 'bank_transfer' ? 'Chuyển khoản ngân hàng' :
-                              order.payment.method === 'momo' ? 'Ví MoMo' :
-                              order.payment.method === 'vnpay' ? 'VNPay' :
                               order.payment.method
                             }</span>
-                            <span className={`${styles.paymentStatus} ${styles[order.payment.status]}`}>
+                            <span style={{
+                              fontWeight: 600,
+                              color: order.payment.status === 'paid' ? '#059669' :
+                                     order.payment.status === 'failed' ? '#EF4444' : '#F59E0B'
+                            }}>
                               {order.payment.status === 'pending' && 'Chờ thanh toán'}
                               {order.payment.status === 'paid' && 'Đã thanh toán'}
                               {order.payment.status === 'failed' && 'Thanh toán thất bại'}
@@ -364,7 +366,7 @@ const Orders: React.FC = () => {
                         {(order.note || order.notes) && (
                           <div className={styles.orderNote}>
                             <h4>Ghi chú</h4>
-                            <p>{order.note || order.notes}</p>
+                            <p style={{ fontStyle: 'italic', color: '#666' }}>{order.note || order.notes}</p>
                           </div>
                         )}
                       </motion.div>
@@ -377,7 +379,7 @@ const Orders: React.FC = () => {
                       <FiEye /> Chi tiết
                     </Link>
                     {(order.status === 'pending' || order.status === 'confirmed') && (
-                      <button 
+                      <button
                         className={styles.cancelButton}
                         onClick={(e) => {
                           e.stopPropagation();
@@ -395,14 +397,14 @@ const Orders: React.FC = () => {
                       </button>
                     )}
                     {(order.status === 'delivered' || order.status === 'cancelled') && (
-                      <button 
+                      <button
                         className={styles.reorderButton}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleReorder(order);
                         }}
                       >
-                        <FiRefreshCw /> Đặt lại
+                        <FiRefreshCw /> Mua lại
                       </button>
                     )}
                   </div>
