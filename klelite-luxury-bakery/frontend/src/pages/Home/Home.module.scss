@@ -8,7 +8,8 @@
   overflow: hidden;
   max-width: 100%;
   width: 100%;
-  background: $light-cream;
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 // ============================================
@@ -40,13 +41,8 @@
 .heroOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba($dark-primary, 0.7) 0%,
-    rgba($dark-primary, 0.5) 40%,
-    rgba($dark-primary, 0.8) 100%
-  );
-  
+  background: var(--color-overlay);
+
   &::before {
     content: '';
     position: absolute;
@@ -54,7 +50,7 @@
     background: radial-gradient(
       ellipse at center,
       transparent 0%,
-      rgba($dark-primary, 0.3) 100%
+      var(--color-backdrop) 100%
     );
   }
 }
@@ -75,11 +71,11 @@
   height: 200px;
   background: linear-gradient(
     180deg,
-    $gold-primary 0%,
+    var(--color-primary) 0%,
     transparent 100%
   );
   opacity: 0.5;
-  
+
   @media (min-width: 768px) {
     left: $spacing-3xl;
     height: 300px;
@@ -94,11 +90,11 @@
   height: 200px;
   background: linear-gradient(
     180deg,
-    $gold-primary 0%,
+    var(--color-primary) 0%,
     transparent 100%
   );
   opacity: 0.5;
-  
+
   @media (min-width: 768px) {
     right: $spacing-3xl;
     height: 300px;
@@ -114,21 +110,21 @@
   backdrop-filter: blur(10px);
   border: 1px solid rgba($gold-primary, 0.3);
   border-radius: $radius-full;
-  
+
   span {
     font-family: $font-accent;
     font-size: $text-xs;
     font-weight: $font-medium;
-    color: $gold-primary;
+    color: var(--color-primary);
     letter-spacing: 2px;
     text-transform: uppercase;
   }
-  
+
   @media (min-width: 768px) {
     top: $spacing-4xl;
     right: $spacing-3xl;
     padding: $spacing-sm $spacing-lg;
-    
+
     span {
       font-size: $text-sm;
     }
@@ -142,7 +138,7 @@
   text-align: center;
   padding: 0 $spacing-md;
   max-width: 900px;
-  
+
   @media (min-width: 768px) {
     padding: 0 $spacing-lg;
   }
@@ -160,7 +156,7 @@
   width: 40px;
   height: 1px;
   background: $gradient-gold;
-  
+
   @media (min-width: 768px) {
     width: 80px;
   }
@@ -170,10 +166,10 @@
   font-family: $font-accent;
   font-size: $text-xs;
   font-weight: $font-medium;
-  color: $gold-primary;
+  color: var(--color-primary);
   letter-spacing: 4px;
   text-transform: uppercase;
-  
+
   @media (min-width: 768px) {
     font-size: $text-sm;
     letter-spacing: 6px;
@@ -189,17 +185,17 @@
   font-family: $font-heading;
   font-size: clamp(3rem, 10vw, 7rem);
   font-weight: $font-bold;
-  color: $light-text;
+  color: var(--color-text-inverse); // Keep inverse for hero overlay
   line-height: 1;
   letter-spacing: 2px;
   text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-  
+
   // Gold gradient effect
   background: linear-gradient(
     135deg,
-    $light-text 0%,
+    var(--color-text-inverse) 0%, // Keep inverse
     $gold-champagne 50%,
-    $light-text 100%
+    var(--color-text-inverse) 100% // Keep inverse
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -212,7 +208,7 @@
   font-size: clamp(1rem, 3vw, 1.75rem);
   font-weight: $font-normal;
   font-style: italic;
-  color: rgba($light-text, 0.7);
+  color: rgba($white, 0.7);
   letter-spacing: 8px;
   text-transform: uppercase;
   margin-top: $spacing-sm;
@@ -221,18 +217,18 @@
 .heroDescription {
   font-family: $font-body;
   font-size: $text-base;
-  color: rgba($light-text, 0.8);
+  color: rgba($white, 0.8);
   line-height: 1.8;
   margin-bottom: $spacing-xl;
-  
+
   br {
     display: none;
-    
+
     @media (min-width: 768px) {
       display: block;
     }
   }
-  
+
   @media (min-width: 768px) {
     font-size: $text-lg;
   }
@@ -263,7 +259,7 @@
   overflow: hidden;
   cursor: pointer;
   transition: all 0.4s $ease-out;
-  
+
   // Shimmer effect
   &::before {
     content: '';
@@ -280,30 +276,30 @@
     );
     transition: left 0.6s ease;
   }
-  
+
   svg {
     width: 18px;
     height: 18px;
     transition: transform 0.3s $ease-out;
   }
-  
+
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 20px 50px rgba($gold-primary, 0.5);
-    
+
     &::before {
       left: 100%;
     }
-    
+
     svg {
       transform: translateX(4px);
     }
   }
-  
+
   &:active {
     transform: translateY(-2px) scale(0.98);
   }
-  
+
   @media (min-width: 768px) {
     padding: $spacing-md $spacing-2xl;
     font-size: $text-base;
@@ -316,23 +312,23 @@
   gap: $spacing-sm;
   padding: $spacing-md $spacing-xl;
   background: transparent;
-  color: $light-text;
+  color: var(--color-text-inverse);
   font-family: $font-body;
   font-size: $text-sm;
   font-weight: $font-medium;
   text-decoration: none;
-  border: 1px solid rgba($light-text, 0.3);
+  border: 1px solid rgba($white, 0.3);
   border-radius: $radius-full;
   transition: all 0.3s $ease-out;
   cursor: pointer;
-  
+
   &:hover {
-    border-color: $gold-primary;
-    color: $gold-primary;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
     background: rgba($gold-primary, 0.1);
     transform: translateY(-4px);
   }
-  
+
   @media (min-width: 768px) {
     padding: $spacing-md $spacing-2xl;
     font-size: $text-base;
@@ -349,7 +345,7 @@
   backdrop-filter: blur(20px);
   border: 1px solid rgba($gold-primary, 0.15);
   border-radius: $radius-2xl;
-  
+
   @media (min-width: 768px) {
     gap: $spacing-2xl;
     padding: $spacing-xl $spacing-2xl;
@@ -365,8 +361,8 @@
   font-family: $font-heading;
   font-size: $text-2xl;
   font-weight: $font-bold;
-  color: $gold-primary;
-  
+  color: var(--color-primary);
+
   @media (min-width: 768px) {
     font-size: $text-3xl;
   }
@@ -374,10 +370,10 @@
 
 .heroStatLabel {
   font-size: $text-2xs;
-  color: rgba($light-text, 0.6);
+  color: rgba($white, 0.6);
   text-transform: uppercase;
   letter-spacing: 1px;
-  
+
   @media (min-width: 768px) {
     font-size: $text-xs;
   }
@@ -405,10 +401,10 @@
   align-items: center;
   gap: $spacing-sm;
   z-index: 2;
-  
+
   span {
     font-size: $text-2xs;
-    color: rgba($light-text, 0.5);
+    color: rgba($white, 0.5);
     letter-spacing: 2px;
     text-transform: uppercase;
   }
@@ -425,7 +421,7 @@
 .scrollDot {
   width: 3px;
   height: 10px;
-  background: $gold-primary;
+  background: var(--color-primary);
   border-radius: 2px;
   position: absolute;
   left: -1px;
@@ -439,11 +435,11 @@
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 $spacing-md;
-  
+
   @media (min-width: 768px) {
     padding: 0 $spacing-lg;
   }
-  
+
   @media (min-width: 1200px) {
     padding: 0 $spacing-2xl;
   }
@@ -454,7 +450,7 @@
 // ============================================
 .marquee {
   padding: $spacing-lg 0;
-  background: $dark-primary;
+  background: var(--color-bg-secondary);
   border-top: 1px solid rgba($gold-primary, 0.15);
   border-bottom: 1px solid rgba($gold-primary, 0.15);
   overflow: hidden;
@@ -469,7 +465,7 @@
   gap: $spacing-xl;
   animation: marqueeScroll 30s linear infinite;
   width: max-content;
-  
+
   @media (min-width: 768px) {
     gap: $spacing-2xl;
   }
@@ -488,20 +484,20 @@
   font-family: $font-accent;
   font-size: $text-sm;
   font-weight: $font-normal;
-  color: rgba($light-text, 0.5);
+  color: var(--color-text-secondary);
   letter-spacing: 2px;
   text-transform: uppercase;
   white-space: nowrap;
-  
+
   @media (min-width: 768px) {
     font-size: $text-base;
   }
 }
 
 .marqueeSymbol {
-  color: $gold-primary;
+  color: var(--color-primary);
   font-size: $text-sm;
-  
+
   @media (min-width: 768px) {
     font-size: $text-base;
   }
@@ -512,8 +508,8 @@
 // ============================================
 .aboutBrief {
   padding: $spacing-3xl 0;
-  background: $light-cream;
-  
+  background: var(--color-bg);
+
   @media (min-width: 768px) {
     padding: $spacing-4xl 0;
   }
@@ -523,7 +519,7 @@
   display: grid;
   gap: $spacing-2xl;
   align-items: center;
-  
+
   @media (min-width: 992px) {
     grid-template-columns: 1fr 1fr;
     gap: $spacing-3xl;
@@ -541,12 +537,12 @@
   font-family: $font-accent;
   font-size: $text-xs;
   font-weight: $font-medium;
-  color: $gold-primary;
+  color: var(--color-primary);
   letter-spacing: 3px;
   text-transform: uppercase;
   margin-bottom: $spacing-sm;
   position: relative;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -554,8 +550,8 @@
     top: 50%;
     width: 16px;
     height: 1px;
-    background: $gold-primary;
-    
+    background: var(--color-primary);
+
     @media (max-width: 991px) {
       display: none;
     }
@@ -566,22 +562,22 @@
   font-family: $font-heading;
   font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: $font-bold;
-  color: $text-primary;
+  color: var(--color-text);
   line-height: 1.2;
   margin-bottom: $spacing-lg;
 }
 
 .titleAccent {
-  color: $gold-primary;
+  color: var(--color-primary);
   font-style: italic;
 }
 
 .aboutBriefText {
   font-size: $text-base;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   line-height: 1.9;
   margin-bottom: $spacing-xl;
-  
+
   @media (min-width: 768px) {
     font-size: $text-lg;
   }
@@ -594,11 +590,11 @@
   font-family: $font-body;
   font-size: $text-sm;
   font-weight: $font-semibold;
-  color: $gold-primary;
+  color: var(--color-primary);
   text-decoration: none;
   position: relative;
   transition: all 0.3s $ease-out;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -609,18 +605,18 @@
     background: $gradient-gold;
     transition: width 0.3s $ease-out;
   }
-  
+
   svg {
     width: 18px;
     height: 18px;
     transition: transform 0.3s $ease-out;
   }
-  
+
   &:hover {
     &::after {
       width: 100%;
     }
-    
+
     svg {
       transform: translateX(4px);
     }
@@ -638,14 +634,14 @@
   border-radius: $radius-2xl;
   overflow: hidden;
   aspect-ratio: 4/5;
-  
+
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.6s $ease-out;
   }
-  
+
   &:hover img {
     transform: scale(1.05);
   }
@@ -657,7 +653,7 @@
   background: linear-gradient(
     180deg,
     transparent 50%,
-    rgba($dark-primary, 0.4) 100%
+    rgba(0, 0, 0, 0.4) 100%
   );
   pointer-events: none;
 }
@@ -670,16 +666,17 @@
   align-items: center;
   gap: $spacing-sm;
   padding: $spacing-md $spacing-lg;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--color-surface);
   backdrop-filter: blur(20px);
   border-radius: $radius-lg;
-  box-shadow: $shadow-lg;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border-light);
 }
 
 .floatingCardIcon {
   width: 28px;
   height: 28px;
-  color: $gold-primary;
+  color: var(--color-primary);
 }
 
 .floatingCardTitle {
@@ -687,12 +684,12 @@
   font-family: $font-heading;
   font-size: $text-sm;
   font-weight: $font-semibold;
-  color: $text-primary;
+  color: var(--color-text);
 }
 
 .floatingCardText {
   font-size: $text-xs;
-  color: $text-muted;
+  color: var(--color-text-secondary);
 }
 
 // ============================================
@@ -701,7 +698,7 @@
 .sectionHeader {
   text-align: center;
   margin-bottom: $spacing-2xl;
-  
+
   @media (min-width: 768px) {
     margin-bottom: $spacing-3xl;
   }
@@ -711,11 +708,11 @@
   font-family: $font-heading;
   font-size: clamp(1.75rem, 4vw, 2.75rem);
   font-weight: $font-bold;
-  color: $text-primary;
+  color: var(--color-text);
   margin-bottom: $spacing-sm;
   position: relative;
   display: inline-block;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -731,11 +728,11 @@
 
 .sectionSubtitle {
   font-size: $text-base;
-  color: $text-muted;
+  color: var(--color-text-secondary);
   max-width: 600px;
   margin: $spacing-lg auto 0;
   line-height: 1.7;
-  
+
   @media (min-width: 768px) {
     font-size: $text-lg;
   }
@@ -747,7 +744,7 @@
 .categories {
   position: relative;
   padding: $spacing-3xl 0;
-  
+
   @media (min-width: 768px) {
     padding: $spacing-4xl 0;
   }
@@ -758,9 +755,9 @@
   inset: 0;
   background: linear-gradient(
     180deg,
-    $light-cream 0%,
-    rgba($cream, 0.5) 50%,
-    $light-cream 100%
+    var(--color-bg) 0%,
+    var(--color-bg-secondary) 50%,
+    var(--color-bg) 100%
   );
   z-index: -1;
 }
@@ -768,11 +765,11 @@
 .categoryGrid {
   display: grid;
   gap: $spacing-lg;
-  
+
   @media (min-width: 576px) {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   @media (min-width: 992px) {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -786,12 +783,12 @@
   text-decoration: none;
   aspect-ratio: 3/4;
   cursor: pointer;
-  
+
   &:hover {
     .categoryImageWrapper img {
       transform: scale(1.1);
     }
-    
+
     .categoryOverlay {
       background: linear-gradient(
         180deg,
@@ -799,11 +796,11 @@
         rgba($gold-primary, 0.85) 100%
       );
     }
-    
+
     .categoryShine {
       transform: translateX(100%);
     }
-    
+
     .categoryLink {
       opacity: 1;
       transform: translateY(0);
@@ -814,7 +811,7 @@
 .categoryImageWrapper {
   position: absolute;
   inset: 0;
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -829,7 +826,7 @@
   background: linear-gradient(
     180deg,
     transparent 30%,
-    rgba($dark-primary, 0.85) 100%
+    rgba(0, 0, 0, 0.85) 100%
   );
   transition: background 0.4s $ease-out;
 }
@@ -865,7 +862,7 @@
   border-radius: $radius-sm;
   font-size: $text-2xs;
   font-weight: $font-semibold;
-  color: $gold-primary;
+  color: var(--color-primary);
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: $spacing-sm;
@@ -875,9 +872,9 @@
   font-family: $font-heading;
   font-size: $text-xl;
   font-weight: $font-semibold;
-  color: $light-text;
+  color: var(--color-text-inverse);
   margin-bottom: $spacing-2xs;
-  
+
   @media (min-width: 768px) {
     font-size: $text-2xl;
   }
@@ -885,7 +882,7 @@
 
 .categoryDescription {
   font-size: $text-sm;
-  color: rgba($light-text, 0.7);
+  color: rgba(255, 255, 255, 0.7);
   margin-bottom: $spacing-sm;
 }
 
@@ -897,7 +894,7 @@
 
 .categoryCount {
   font-size: $text-xs;
-  color: rgba($light-text, 0.5);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .categoryLink {
@@ -906,11 +903,11 @@
   gap: $spacing-2xs;
   font-size: $text-sm;
   font-weight: $font-medium;
-  color: $gold-primary;
+  color: var(--color-primary);
   opacity: 0;
   transform: translateY(10px);
   transition: all 0.3s $ease-out;
-  
+
   svg {
     width: 16px;
     height: 16px;
@@ -922,8 +919,8 @@
 // ============================================
 .features {
   padding: $spacing-3xl 0;
-  background: $light-text;
-  
+  background: var(--color-bg);
+
   @media (min-width: 768px) {
     padding: $spacing-4xl 0;
   }
@@ -932,11 +929,11 @@
 .featureGrid {
   display: grid;
   gap: $spacing-lg;
-  
+
   @media (min-width: 576px) {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   @media (min-width: 992px) {
     grid-template-columns: repeat(3, 1fr);
     gap: $spacing-xl;
@@ -945,17 +942,17 @@
 
 .featureCard {
   padding: $spacing-xl;
-  background: $light-cream;
+  background: var(--color-bg-secondary);
   border-radius: $radius-xl;
-  border: 1px solid rgba($gold-primary, 0.1);
+  border: 1px solid var(--color-border-light);
   transition: all 0.4s $ease-out;
   cursor: pointer;
-  
+
   &:hover {
     transform: translateY(-8px);
-    box-shadow: $shadow-royal;
+    box-shadow: var(--shadow-lg);
     border-color: rgba($gold-primary, 0.3);
-    
+
     .featureIcon {
       background: $gradient-gold;
       color: $dark-primary;
@@ -980,18 +977,18 @@
   background: rgba($gold-primary, 0.1);
   border-radius: $radius-lg;
   transition: all 0.4s $ease-out;
-  
+
   svg {
     width: 24px;
     height: 24px;
-    color: $gold-primary;
+    color: var(--color-primary);
   }
 }
 
 .featureHighlight {
   font-size: $text-2xs;
   font-weight: $font-bold;
-  color: $gold-primary;
+  color: var(--color-primary);
   text-transform: uppercase;
   letter-spacing: 1px;
   padding: $spacing-2xs $spacing-xs;
@@ -1003,13 +1000,13 @@
   font-family: $font-heading;
   font-size: $text-lg;
   font-weight: $font-semibold;
-  color: $text-primary;
+  color: var(--color-text);
   margin-bottom: $spacing-sm;
 }
 
 .featureDescription {
   font-size: $text-sm;
-  color: $text-muted;
+  color: var(--color-text-secondary);
   line-height: 1.7;
 }
 
@@ -1019,7 +1016,7 @@
 .featured {
   position: relative;
   padding: $spacing-3xl 0;
-  
+
   @media (min-width: 768px) {
     padding: $spacing-4xl 0;
   }
@@ -1030,9 +1027,9 @@
   inset: 0;
   background: linear-gradient(
     180deg,
-    $light-text 0%,
-    $light-cream 50%,
-    $light-text 100%
+    var(--color-bg) 0%,
+    var(--color-bg-secondary) 50%,
+    var(--color-bg) 100%
   );
   z-index: -1;
 }
@@ -1040,33 +1037,33 @@
 .productGrid {
   display: grid;
   gap: $spacing-lg;
-  
+
   @media (min-width: 576px) {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   @media (min-width: 992px) {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
 .productCard {
-  background: $light-text;
+  background: var(--color-surface);
   border-radius: $radius-xl;
   overflow: hidden;
-  box-shadow: $shadow-sm;
-  border: 1px solid rgba($border-light, 0.5);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border-light);
   transition: all 0.4s $ease-out;
   cursor: pointer;
-  
+
   &:hover {
     transform: translateY(-10px);
-    box-shadow: $shadow-royal;
-    
+    box-shadow: var(--shadow-lg);
+
     .productImageWrapper img {
       transform: scale(1.08);
     }
-    
+
     .productQuickView {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1);
@@ -1079,7 +1076,7 @@
   aspect-ratio: 1;
   overflow: hidden;
   display: block;
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -1094,7 +1091,7 @@
   background: linear-gradient(
     180deg,
     transparent 50%,
-    rgba($dark-primary, 0.3) 100%
+    rgba(0, 0, 0, 0.3) 100%
   );
   pointer-events: none;
 }
@@ -1123,22 +1120,22 @@
   align-items: center;
   gap: $spacing-xs;
   padding: $spacing-sm $spacing-md;
-  background: rgba($dark-primary, 0.9);
+  background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(10px);
   border-radius: $radius-full;
   opacity: 0;
   transition: all 0.3s $ease-out;
-  
+
   svg {
     width: 16px;
     height: 16px;
-    color: $gold-primary;
+    color: var(--color-primary);
   }
-  
+
   span {
     font-size: $text-xs;
     font-weight: $font-medium;
-    color: $light-text;
+    color: $white;
     white-space: nowrap;
   }
 }
@@ -1151,7 +1148,7 @@
   font-family: $font-accent;
   font-size: $text-xs;
   font-weight: $font-medium;
-  color: $gold-primary;
+  color: var(--color-primary);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -1162,14 +1159,14 @@
   font-weight: $font-semibold;
   margin: $spacing-2xs 0 $spacing-xs;
   line-height: 1.3;
-  
+
   a {
-    color: $text-primary;
+    color: var(--color-text);
     text-decoration: none;
     transition: color 0.2s $ease-out;
-    
+
     &:hover {
-      color: $gold-primary;
+      color: var(--color-primary);
     }
   }
 }
@@ -1184,22 +1181,22 @@
 .productStars {
   display: flex;
   gap: 2px;
-  
+
   svg {
     width: 14px;
     height: 14px;
-    color: $border-light;
-    
+    color: var(--color-border);
+
     &.starFilled {
-      color: $gold-primary;
-      fill: $gold-primary;
+      color: var(--color-primary);
+      fill: var(--color-primary);
     }
   }
 }
 
 .productReviews {
   font-size: $text-xs;
-  color: $text-muted;
+  color: var(--color-text-secondary);
 }
 
 .productPricing {
@@ -1212,12 +1209,12 @@
   font-family: $font-heading;
   font-size: $text-xl;
   font-weight: $font-bold;
-  color: $gold-primary;
+  color: var(--color-primary);
 }
 
 .productOriginalPrice {
   font-size: $text-sm;
-  color: $text-muted;
+  color: var(--color-text-muted);
   text-decoration: line-through;
 }
 
@@ -1231,18 +1228,19 @@
   align-items: center;
   gap: $spacing-sm;
   padding: $spacing-md $spacing-2xl;
-  background: $dark-primary;
-  color: $light-text;
+  background: var(--color-bg-secondary);
+  color: var(--color-text);
   font-family: $font-body;
   font-size: $text-base;
   font-weight: $font-semibold;
   text-decoration: none;
   border-radius: $radius-full;
+  border: 1px solid var(--color-border);
   position: relative;
   overflow: hidden;
   transition: all 0.4s $ease-out;
   cursor: pointer;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -1251,13 +1249,13 @@
     opacity: 0;
     transition: opacity 0.4s $ease-out;
   }
-  
+
   span {
     position: relative;
     z-index: 1;
     transition: color 0.4s $ease-out;
   }
-  
+
   svg {
     position: relative;
     z-index: 1;
@@ -1265,19 +1263,20 @@
     height: 20px;
     transition: transform 0.3s $ease-out, color 0.4s $ease-out;
   }
-  
+
   &:hover {
     transform: translateY(-4px);
-    box-shadow: $shadow-gold-lg;
-    
+    box-shadow: var(--shadow-lg);
+    border-color: transparent;
+
     &::before {
       opacity: 1;
     }
-    
+
     span, svg {
       color: $dark-primary;
     }
-    
+
     svg {
       transform: translateX(4px);
     }
@@ -1289,30 +1288,30 @@
 // ============================================
 .testimonials {
   padding: $spacing-3xl 0;
-  background: $dark-primary;
-  
+  background: var(--color-bg-secondary);
+
   @media (min-width: 768px) {
     padding: $spacing-4xl 0;
   }
-  
+
   .sectionLabel {
-    color: $gold-primary;
-    
+    color: var(--color-primary);
+
     &::before {
-      background: $gold-primary;
+      background: var(--color-primary);
     }
   }
-  
+
   .sectionTitle {
-    color: $light-text;
-    
+    color: var(--color-text);
+
     &::after {
       background: $gradient-gold;
     }
   }
-  
+
   .sectionSubtitle {
-    color: rgba($light-text, 0.6);
+    color: var(--color-text-secondary);
   }
 }
 
@@ -1320,7 +1319,7 @@
   display: grid;
   gap: $spacing-lg;
   overflow: hidden;
-  
+
   @media (min-width: 768px) {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -1328,27 +1327,26 @@
 
 .testimonialCard {
   padding: $spacing-xl;
-  background: rgba($light-text, 0.03);
+  background: var(--color-surface);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba($gold-primary, 0.15);
+  border: 1px solid var(--color-border-light);
   border-radius: $radius-xl;
   transition: all 0.4s $ease-out;
   cursor: pointer;
   overflow: hidden;
-  
+
   &:hover {
     transform: translateY(-8px);
-    background: rgba($light-text, 0.06);
     border-color: rgba($gold-primary, 0.3);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-lg);
   }
-  
+
   &.testimonialFeatured {
-    background: rgba($gold-primary, 0.08);
+    background: rgba($gold-primary, 0.05);
     border-color: rgba($gold-primary, 0.25);
-    
+
     .testimonialQuote {
-      color: $gold-primary;
+      color: var(--color-primary);
     }
   }
 }
@@ -1366,7 +1364,7 @@
   font-family: $font-accent;
   font-size: $text-lg;
   font-style: italic;
-  color: rgba($light-text, 0.85);
+  color: var(--color-text-secondary);
   line-height: 1.8;
   margin-bottom: $spacing-lg;
   overflow: hidden;
@@ -1380,15 +1378,15 @@
   display: flex;
   gap: 4px;
   margin-bottom: $spacing-md;
-  
+
   svg {
     width: 16px;
     height: 16px;
     color: rgba($gold-primary, 0.3);
-    
+
     &.starFilled {
-      color: $gold-primary;
-      fill: $gold-primary;
+      color: var(--color-primary);
+      fill: var(--color-primary);
     }
   }
 }
@@ -1397,7 +1395,7 @@
   display: flex;
   align-items: center;
   gap: $spacing-sm;
-  
+
   img {
     width: 48px;
     height: 48px;
@@ -1405,18 +1403,18 @@
     object-fit: cover;
     border: 2px solid rgba($gold-primary, 0.3);
   }
-  
+
   strong {
     display: block;
     font-family: $font-body;
     font-size: $text-base;
     font-weight: $font-semibold;
-    color: $light-text;
+    color: var(--color-text);
   }
-  
+
   span {
     font-size: $text-sm;
-    color: rgba($light-text, 0.5);
+    color: var(--color-text-secondary);
   }
 }
 
@@ -1425,8 +1423,8 @@
 // ============================================
 .instagram {
   padding: $spacing-3xl 0;
-  background: $light-cream;
-  
+  background: var(--color-bg);
+
   @media (min-width: 768px) {
     padding: $spacing-4xl 0;
   }
@@ -1435,22 +1433,22 @@
 .instagramHeader {
   text-align: center;
   margin-bottom: $spacing-2xl;
-  
+
   h2 {
     font-family: $font-heading;
     font-size: $text-2xl;
     font-weight: $font-bold;
-    color: $text-primary;
+    color: var(--color-text);
     margin-bottom: $spacing-xs;
-    
+
     @media (min-width: 768px) {
       font-size: $text-3xl;
     }
   }
-  
+
   p {
     font-size: $text-base;
-    color: $text-muted;
+    color: var(--color-text-secondary);
   }
 }
 
@@ -1458,7 +1456,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: $spacing-sm;
-  
+
   @media (min-width: 768px) {
     grid-template-columns: repeat(6, 1fr);
     gap: $spacing-md;
@@ -1471,19 +1469,19 @@
   border-radius: $radius-md;
   overflow: hidden;
   cursor: pointer;
-  
+
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.4s $ease-out;
   }
-  
+
   &:hover {
     img {
       transform: scale(1.1);
     }
-    
+
     .instagramOverlay {
       opacity: 1;
     }
@@ -1493,7 +1491,7 @@
 .instagramOverlay {
   position: absolute;
   inset: 0;
-  background: rgba($dark-primary, 0.7);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1501,17 +1499,17 @@
   gap: $spacing-xs;
   opacity: 0;
   transition: opacity 0.3s $ease-out;
-  
+
   svg {
     width: 24px;
     height: 24px;
-    color: $gold-primary;
+    color: var(--color-primary);
   }
-  
+
   span {
     font-size: $text-sm;
     font-weight: $font-semibold;
-    color: $light-text;
+    color: $white;
   }
 }
 
@@ -1527,7 +1525,7 @@
 .ctaBackground {
   position: absolute;
   inset: 0;
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -1540,8 +1538,8 @@
   inset: 0;
   background: linear-gradient(
     135deg,
-    rgba($dark-primary, 0.95) 0%,
-    rgba($dark-primary, 0.85) 100%
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.85) 100%
   );
 }
 
@@ -1563,18 +1561,18 @@
   border: 1px solid rgba($gold-primary, 0.3);
   border-radius: $radius-full;
   margin-bottom: $spacing-lg;
-  
+
   svg {
     width: 16px;
     height: 16px;
-    color: $gold-primary;
+    color: var(--color-primary);
   }
-  
+
   span {
     font-family: $font-accent;
     font-size: $text-xs;
     font-weight: $font-medium;
-    color: $gold-primary;
+    color: var(--color-primary);
     letter-spacing: 2px;
     text-transform: uppercase;
   }
@@ -1584,24 +1582,24 @@
   font-family: $font-heading;
   font-size: clamp(2rem, 5vw, 3rem);
   font-weight: $font-bold;
-  color: $light-text;
+  color: var(--color-text-inverse);
   line-height: 1.2;
   margin-bottom: $spacing-md;
 }
 
 .ctaTitleAccent {
-  color: $gold-primary;
+  color: var(--color-primary);
   font-style: italic;
 }
 
 .ctaDescription {
   font-size: $text-lg;
-  color: rgba($light-text, 0.8);
+  color: rgba(255, 255, 255, 0.8);
   line-height: 1.7;
   margin-bottom: $spacing-xl;
-  
+
   strong {
-    color: $gold-primary;
+    color: var(--color-primary);
     font-weight: $font-bold;
   }
 }
@@ -1630,7 +1628,7 @@
   overflow: hidden;
   cursor: pointer;
   transition: all 0.4s $ease-out;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -1646,21 +1644,21 @@
     );
     transition: left 0.6s ease;
   }
-  
+
   svg {
     width: 18px;
     height: 18px;
     transition: transform 0.3s $ease-out;
   }
-  
+
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 20px 50px rgba($gold-primary, 0.5);
-    
+
     &::before {
       left: 100%;
     }
-    
+
     svg {
       transform: translateX(4px);
     }
@@ -1673,19 +1671,19 @@
   gap: $spacing-sm;
   padding: $spacing-md $spacing-xl;
   background: transparent;
-  color: $light-text;
+  color: var(--color-text-inverse);
   font-family: $font-body;
   font-size: $text-base;
   font-weight: $font-medium;
   text-decoration: none;
-  border: 1px solid rgba($light-text, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: $radius-full;
   cursor: pointer;
   transition: all 0.3s $ease-out;
-  
+
   &:hover {
-    border-color: $gold-primary;
-    color: $gold-primary;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
     background: rgba($gold-primary, 0.1);
     transform: translateY(-4px);
   }
@@ -1696,8 +1694,8 @@
 // ============================================
 .newsletter {
   padding: $spacing-2xl 0;
-  background: $light-text;
-  border-top: 1px solid rgba($border-light, 0.5);
+  background: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border-light);
 }
 
 .newsletterContent {
@@ -1706,7 +1704,7 @@
   align-items: center;
   gap: $spacing-lg;
   text-align: center;
-  
+
   @media (min-width: 768px) {
     flex-direction: row;
     justify-content: space-between;
@@ -1719,17 +1717,17 @@
     font-family: $font-heading;
     font-size: $text-xl;
     font-weight: $font-semibold;
-    color: $text-primary;
+    color: var(--color-text);
     margin-bottom: $spacing-2xs;
-    
+
     @media (min-width: 768px) {
       font-size: $text-2xl;
     }
   }
-  
+
   p {
     font-size: $text-base;
-    color: $text-muted;
+    color: var(--color-text-secondary);
   }
 }
 
@@ -1742,25 +1740,25 @@
 
 .newsletterInputWrapper {
   flex: 1;
-  
+
   input {
     width: 100%;
     padding: $spacing-md $spacing-lg;
     font-family: $font-body;
     font-size: $text-base;
-    color: $text-primary;
-    background: $light-cream;
-    border: 1px solid $border-light;
+    color: var(--color-text);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
     border-radius: $radius-full;
     outline: none;
     transition: all 0.2s $ease-out;
-    
+
     &::placeholder {
-      color: $text-muted;
+      color: var(--color-text-muted);
     }
-    
+
     &:focus {
-      border-color: $gold-primary;
+      border-color: var(--color-primary);
       box-shadow: 0 0 0 4px rgba($gold-primary, 0.15);
     }
   }
@@ -1781,22 +1779,22 @@
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.3s $ease-out;
-  
+
   svg {
     width: 18px;
     height: 18px;
     transition: transform 0.3s $ease-out;
   }
-  
+
   &:hover {
     box-shadow: $shadow-gold-lg;
     transform: translateY(-2px);
-    
+
     svg {
       transform: translateX(4px);
     }
   }
-  
+
   &:active {
     transform: scale(0.98);
   }
@@ -1809,7 +1807,7 @@
   .marqueeContent {
     animation: none;
   }
-  
+
   * {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
