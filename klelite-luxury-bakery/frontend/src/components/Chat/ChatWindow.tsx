@@ -133,7 +133,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ onClose }) => {
 
       <div className={styles.messages}>
         {messages.map((msg) => (
-          <div key={msg.id} className={`${styles.message} ${styles[msg.role]}`}>
+          <div key={msg.id} className={`${styles.message} ${msg.role === 'user' ? styles.user : styles.assistant}`}>
             {msg.role === 'assistant' && (
               <div className={styles.avatar}>KL</div>
             )}

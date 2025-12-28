@@ -36,7 +36,7 @@ export const RecentlyViewed: React.FC = () => {
                 name={product.name}
                 slug={product.slug}
                 price={product.price}
-                image={product.images[0]?.url}
+                image={product.images[0]?.url || '/placeholder.png'}
                 rating={product.rating}
                 reviewCount={product.numReviews}
                 category={typeof product.category === 'object' ? product.category.name : undefined}

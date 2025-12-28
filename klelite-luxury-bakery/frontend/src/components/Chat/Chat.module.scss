@@ -153,7 +153,7 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
-  background: var(--background);
+  background: var(--color-bg);
 
   // Custom scrollbar
   &::-webkit-scrollbar {
@@ -182,23 +182,23 @@
   gap: $spacing-sm;
   align-items: flex-start;
   animation: messageSlideIn 0.3s $ease-out;
+}
 
-  &.user {
-    flex-direction: row-reverse;
+.user {
+  flex-direction: row-reverse;
 
-    .bubble {
-      background: $gradient-gold;
-      color: $dark-primary;
-      margin-left: auto;
-    }
+  .bubble {
+    background: $gradient-gold;
+    color: $dark-primary;
+    margin-left: auto;
   }
+}
 
-  &.assistant {
-    .bubble {
-      background: var(--card-bg);
-      color: $text-primary;
-      box-shadow: $shadow-sm;
-    }
+.assistant {
+  .bubble {
+    background: var(--card-bg);
+    color: var(--color-text);
+    box-shadow: $shadow-sm;
   }
 }
 
@@ -314,7 +314,7 @@
     border-radius: $radius-full;
     font-family: $font-body;
     font-size: $text-xs;
-    color: $text-primary;
+    color: var(--color-text);
     cursor: pointer;
     transition: all $transition-micro $ease-out;
 
@@ -349,8 +349,8 @@
     border-radius: $radius-md;
     font-family: $font-body;
     font-size: $text-sm;
-    color: $text-primary;
-    background: var(--background);
+    color: var(--color-text);
+    background: var(--color-bg);
     transition: all $transition-micro $ease-out;
 
     &:focus {
@@ -418,12 +418,12 @@
   }
 
   .messages {
-    background: var(--background);
+    background: var(--color-bg);
   }
 
   .message.assistant .bubble {
     background: var(--card-bg);
-    color: $text-primary;
+    color: var(--color-text);
   }
 
   .inputArea {
@@ -431,9 +431,9 @@
     border-top-color: var(--border-color);
 
     input {
-      background: var(--background);
+      background: var(--color-bg);
       border-color: var(--border-color);
-      color: $text-primary;
+      color: var(--color-text);
 
       &:focus {
         border-color: $gold-primary;
@@ -443,7 +443,7 @@
 
   .quickReplies button {
     background: var(--card-bg);
-    color: $text-primary;
+    color: var(--color-text);
     border-color: rgba($gold-primary, 0.3);
 
     &:hover {
