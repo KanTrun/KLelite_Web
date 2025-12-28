@@ -1,0 +1,454 @@
+// ============================================
+// KL'élite Chat Widget - AI-Powered Customer Support
+// Following claudekit-engineer: BEAUTIFUL + SATISFYING + PEAK
+// Variables auto-injected via Vite
+// ============================================
+
+// ============================================
+// Chat Widget Container (Floating button)
+// ============================================
+.chatWidgetContainer {
+  position: fixed;
+  bottom: $spacing-lg;
+  right: $spacing-lg;
+  z-index: 1000;
+
+  @media (max-width: 768px) {
+    bottom: $spacing-md;
+    right: $spacing-md;
+  }
+}
+
+.chatButton {
+  width: 60px;
+  height: 60px;
+  border-radius: $radius-full;
+  background: $gradient-gold;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: $shadow-xl;
+  transition: all $transition-fast $ease-out;
+
+  svg {
+    width: 28px;
+    height: 28px;
+    color: $dark-primary;
+    transition: transform $transition-micro $ease-out;
+  }
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: $shadow-gold;
+
+    svg {
+      transform: scale(1.1);
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  @media (max-width: 768px) {
+    width: 56px;
+    height: 56px;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
+
+// ============================================
+// Chat Window Wrapper
+// ============================================
+.chatWindowWrapper {
+  position: absolute;
+  bottom: 80px;
+  right: 0;
+  width: 380px;
+  height: 500px; // Compact UX: 400-500px requirement
+  box-shadow: $shadow-xl;
+  border-radius: $radius-xl;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    border-radius: 0;
+  }
+}
+
+// ============================================
+// Chat Window
+// ============================================
+.chatWindow {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--card-bg);
+  transition: background-color $duration-normal $ease-out;
+}
+
+// ============================================
+// Header
+// ============================================
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md $spacing-lg;
+  background: $gradient-gold;
+  color: $dark-primary;
+  border-bottom: 1px solid rgba($dark-primary, 0.1);
+
+  h3 {
+    font-family: $font-heading;
+    font-size: $text-lg;
+    font-weight: $font-bold;
+    margin: 0;
+  }
+
+  button {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba($dark-primary, 0.1);
+    color: $dark-primary;
+    border-radius: $radius-full;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: all $transition-micro $ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: rgba($dark-primary, 0.2);
+      transform: scale(1.1);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}
+
+// ============================================
+// Messages Area
+// ============================================
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: $spacing-md;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  background: var(--background);
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba($gold-primary, 0.3);
+    border-radius: $radius-full;
+
+    &:hover {
+      background: rgba($gold-primary, 0.5);
+    }
+  }
+}
+
+// ============================================
+// Message
+// ============================================
+.message {
+  display: flex;
+  gap: $spacing-sm;
+  align-items: flex-start;
+  animation: messageSlideIn 0.3s $ease-out;
+
+  &.user {
+    flex-direction: row-reverse;
+
+    .bubble {
+      background: $gradient-gold;
+      color: $dark-primary;
+      margin-left: auto;
+    }
+  }
+
+  &.assistant {
+    .bubble {
+      background: var(--card-bg);
+      color: $text-primary;
+      box-shadow: $shadow-sm;
+    }
+  }
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ============================================
+// Avatar
+// ============================================
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-full;
+  background: $gradient-gold;
+  color: $dark-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-heading;
+  font-size: $text-sm;
+  font-weight: $font-bold;
+  flex-shrink: 0;
+}
+
+// ============================================
+// Message Bubble
+// ============================================
+.bubble {
+  max-width: 75%;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-md;
+  font-family: $font-body;
+  font-size: $text-sm;
+  line-height: 1.5;
+  position: relative;
+  word-wrap: break-word;
+
+  .time {
+    display: block;
+    font-size: $text-2xs;
+    opacity: 0.7;
+    margin-top: $spacing-2xs;
+    text-align: right;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 85%;
+  }
+}
+
+// ============================================
+// Typing Indicator
+// ============================================
+.typingIndicator {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: $spacing-xs 0;
+
+  span {
+    width: 8px;
+    height: 8px;
+    border-radius: $radius-full;
+    background: $gold-primary;
+    animation: typing 1.4s infinite;
+
+    &:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    &:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+  }
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  30% {
+    transform: translateY(-10px);
+    opacity: 1;
+  }
+}
+
+// ============================================
+// Quick Replies
+// ============================================
+.quickReplies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+  padding: 0 $spacing-md $spacing-md;
+
+  button {
+    padding: $spacing-xs $spacing-md;
+    background: var(--card-bg);
+    border: 1px solid rgba($gold-primary, 0.3);
+    border-radius: $radius-full;
+    font-family: $font-body;
+    font-size: $text-xs;
+    color: $text-primary;
+    cursor: pointer;
+    transition: all $transition-micro $ease-out;
+
+    &:hover {
+      background: $gradient-gold;
+      color: $dark-primary;
+      border-color: transparent;
+      transform: translateY(-2px);
+      box-shadow: $shadow-sm;
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+// ============================================
+// Input Area
+// ============================================
+.inputArea {
+  display: flex;
+  gap: $spacing-xs;
+  padding: $spacing-md;
+  border-top: 1px solid var(--border-color);
+  background: var(--card-bg);
+
+  input {
+    flex: 1;
+    padding: $spacing-sm $spacing-md;
+    border: 1px solid var(--border-color);
+    border-radius: $radius-md;
+    font-family: $font-body;
+    font-size: $text-sm;
+    color: $text-primary;
+    background: var(--background);
+    transition: all $transition-micro $ease-out;
+
+    &:focus {
+      outline: none;
+      border-color: $gold-primary;
+      box-shadow: 0 0 0 3px rgba($gold-primary, 0.1);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &::placeholder {
+      color: $text-muted;
+    }
+  }
+
+  button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: $gradient-gold;
+    color: $dark-primary;
+    border-radius: $radius-md;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all $transition-micro $ease-out;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover:not(:disabled) {
+      transform: scale(1.05);
+      box-shadow: $shadow-md;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+}
+
+// ============================================
+// Dark Mode Support
+// ============================================
+[data-theme="dark"] {
+  .chatWindow {
+    background: var(--card-bg);
+  }
+
+  .header {
+    background: $gradient-gold;
+    color: $dark-primary;
+  }
+
+  .messages {
+    background: var(--background);
+  }
+
+  .message.assistant .bubble {
+    background: var(--card-bg);
+    color: $text-primary;
+  }
+
+  .inputArea {
+    background: var(--card-bg);
+    border-top-color: var(--border-color);
+
+    input {
+      background: var(--background);
+      border-color: var(--border-color);
+      color: $text-primary;
+
+      &:focus {
+        border-color: $gold-primary;
+      }
+    }
+  }
+
+  .quickReplies button {
+    background: var(--card-bg);
+    color: $text-primary;
+    border-color: rgba($gold-primary, 0.3);
+
+    &:hover {
+      background: $gradient-gold;
+      color: $dark-primary;
+    }
+  }
+}

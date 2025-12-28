@@ -1,16 +1,16 @@
-import OpenAI from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import FAQ from '../models/FAQ';
 import Order from '../models/Order';
 import Product from '../models/Product';
 
-let openai: OpenAI | null = null;
+let genAI: GoogleGenerativeAI | null = null;
 
-const getOpenAI = () => {
-  if (openai) return openai;
-  if (process.env.OPENAI_API_KEY) {
-    openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const getGeminiAI = () => {
+  if (genAI) return genAI;
+  if (process.env.GEMINI_API_KEY) {
+    genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
   }
-  return openai;
+  return genAI;
 };
 
 interface Message {
@@ -32,10 +32,15 @@ export const chatbotService = {
           return this.handleOrderStatus(userId, intent.orderNumber);
         case 'product_search':
           return this.handleProductSearch(intent.query);
+        case 'greeting':
+        case 'gratitude':
+        case 'farewell':
+        case 'help':
+          return intent.message;
         case 'unknown':
-          return this.handleWithOpenAI(message, conversationHistory);
+          return this.handleWithGemini(message, conversationHistory);
         default:
-          return this.handleWithOpenAI(message, conversationHistory);
+          return this.handleWithGemini(message, conversationHistory);
       }
     } catch (error) {
       console.error('Error in chatbotService:', error);
@@ -70,6 +75,38 @@ export const chatbotService = {
 
     if (bestMatch && maxScore >= 1) {
       return { type: 'faq', answer: bestMatch.answer };
+    }
+
+    // Greeting patterns
+    if (/^(hello|hi|hey|chào|xin chào|hola|bonjour)/i.test(lowerMessage)) {
+      return {
+        type: 'greeting',
+        message: 'Xin chào! Tôi là trợ lý ảo của KL\'elite. Tôi có thể giúp bạn về sản phẩm, đơn hàng, hoặc chính sách cửa hàng. Bạn cần gì?'
+      };
+    }
+
+    // Gratitude patterns
+    if (/thank|thanks|cảm ơn|thank you|cám ơn|merci/i.test(lowerMessage)) {
+      return {
+        type: 'gratitude',
+        message: 'Rất vui được giúp bạn! Nếu cần gì thêm, đừng ngần ngại hỏi nhé. 😊'
+      };
+    }
+
+    // Farewell patterns
+    if (/bye|goodbye|tạm biệt|see you|bái bai|hẹn gặp lại/i.test(lowerMessage)) {
+      return {
+        type: 'farewell',
+        message: 'Hẹn gặp lại! Chúc bạn một ngày tuyệt vời. 🌟'
+      };
+    }
+
+    // Help/Capabilities patterns
+    if (/what can you do|help me|giúp gì|làm gì|có thể làm|bạn làm được gì/i.test(lowerMessage)) {
+      return {
+        type: 'help',
+        message: 'Tôi có thể giúp bạn:\n- Tra cứu đơn hàng\n- Tìm kiếm sản phẩm\n- Giải đáp chính sách (đổi trả, giao hàng)\n- Hướng dẫn đặt hàng\n\nBạn muốn biết về điều gì?'
+      };
     }
 
     // Order status patterns
@@ -128,30 +165,53 @@ export const chatbotService = {
     return `Here are some products you might like:\n${productLinks}`;
   },
 
-  async handleWithOpenAI(message: string, history?: Message[]) {
-    if (!process.env.OPENAI_API_KEY) {
-      return "I'm not sure how to answer that. Please contact our support team at support@klelite.com.";
+  async handleWithGemini(message: string, conversationHistory?: Message[]) {
+    if (!process.env.GEMINI_API_KEY) {
+      return "Tôi chưa hiểu rõ câu hỏi của bạn. Bạn có thể:\n" +
+             "- Hỏi về sản phẩm (bánh, giá)\n" +
+             "- Tra cứu đơn hàng\n" +
+             "- Hỏi chính sách (giao hàng, đổi trả)\n" +
+             "Hoặc liên hệ support@klelite.com để được hỗ trợ trực tiếp.";
     }
 
     try {
-      const openaiInstance = getOpenAI();
-      if (!openaiInstance) {
-        return "I'm not sure how to answer that. Please contact our support team at support@klelite.com.";
+      const geminiAI = getGeminiAI();
+      if (!geminiAI) {
+        return "AI service tạm thời không khả dụng. Vui lòng liên hệ support@klelite.com.";
       }
-      const response = await openaiInstance.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: 'You are a helpful assistant for KL\'elite Luxury Bakery. Answer questions about our products, policies, and services. Be concise and friendly. If you cannot help, suggest contacting support@klelite.com.' },
-          ...(history || []).slice(-4), // Keep last 4 messages for context
-          { role: 'user', content: message }
-        ],
-        max_tokens: 200,
-        temperature: 0.7
-      });
-      return response.choices[0].message.content || "I'm sorry, I couldn't generate a response.";
+
+      const model = geminiAI.getGenerativeModel({ model: 'gemini-pro' });
+
+      // Build conversation context
+      const systemPrompt =
+        "You are a helpful assistant for KL'elite Luxury Bakery. " +
+        "Answer questions about our products, policies, and services. " +
+        "Be concise (max 200 words) and friendly. " +
+        "If you cannot help, suggest contacting support@klelite.com. " +
+        "Always respond in Vietnamese.";
+
+      let conversationText = systemPrompt + "\n\n";
+
+      // Add recent history (last 4 messages for context)
+      if (conversationHistory && conversationHistory.length > 0) {
+        const recentHistory = conversationHistory.slice(-4);
+        recentHistory.forEach(msg => {
+          const role = msg.role === 'user' ? 'Khách hàng' : 'Trợ lý';
+          conversationText += `${role}: ${msg.content}\n`;
+        });
+      }
+
+      conversationText += `Khách hàng: ${message}\nTrợ lý:`;
+
+      const result = await model.generateContent(conversationText);
+      const response = await result.response;
+      const text = response.text();
+
+      return text || "Xin lỗi, tôi không thể tạo phản hồi.";
+
     } catch (error) {
-      console.error('OpenAI API Error:', error);
-      return "I'm currently experiencing high traffic. Please try again later.";
+      console.error('Gemini API Error:', error);
+      return "Tôi đang gặp sự cố kỹ thuật. Vui lòng thử lại sau hoặc liên hệ support@klelite.com.";
     }
   }
 };

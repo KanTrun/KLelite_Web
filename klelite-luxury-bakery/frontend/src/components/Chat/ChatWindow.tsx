@@ -80,9 +80,48 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ onClose }) => {
     }
   };
 
-  const handleQuickReply = (text: string) => {
-    setInputValue(text);
-    handleSend(); // Auto send
+  const handleQuickReply = async (text: string) => {
+    // Create and send message directly without relying on state update
+    if (loading) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: text,
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setLoading(true);
+
+    try {
+      const history = messages.map(m => ({
+        role: m.role,
+        content: m.content
+      }));
+
+      const response = await chatService.sendMessage(text, history);
+
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: response,
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, botMessage]);
+    } catch (error) {
+      console.error('Chat error:', error);
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: 'Xin lỗi, tôi đang gặp sự cố. Vui lòng thử lại sau.',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
