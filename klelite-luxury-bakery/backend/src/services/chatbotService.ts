@@ -180,7 +180,8 @@ export const chatbotService = {
         return "AI service tạm thời không khả dụng. Vui lòng liên hệ support@klelite.com.";
       }
 
-      const model = geminiAI.getGenerativeModel({ model: 'gemini-pro' });
+      // Use gemini-2.0-flash (gemini-pro was deprecated in 2024)
+      const model = geminiAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
       // Build conversation context
       const systemPrompt =
@@ -209,8 +210,27 @@ export const chatbotService = {
 
       return text || "Xin lỗi, tôi không thể tạo phản hồi.";
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Gemini API Error:', error);
+
+      // Detailed error logging for debugging
+      if (error?.message) {
+        console.error('Error message:', error.message);
+      }
+      if (error?.status) {
+        console.error('Error status:', error.status);
+      }
+
+      // Handle specific error cases
+      if (error?.message?.includes('quota') || error?.message?.includes('429')) {
+        return "Dịch vụ AI tạm thời quá tải. Vui lòng thử lại sau ít phút hoặc liên hệ support@klelite.com.";
+      }
+
+      if (error?.message?.includes('API key') || error?.message?.includes('401')) {
+        console.error('CRITICAL: Invalid or missing Gemini API key');
+        return "Dịch vụ AI chưa được cấu hình đúng. Vui lòng liên hệ support@klelite.com.";
+      }
+
       return "Tôi đang gặp sự cố kỹ thuật. Vui lòng thử lại sau hoặc liên hệ support@klelite.com.";
     }
   }
