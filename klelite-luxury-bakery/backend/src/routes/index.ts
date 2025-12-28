@@ -13,6 +13,7 @@ import loyaltyRoutes from './loyaltyRoutes';
 import flashSaleRoutes from './flashSaleRoutes';
 import recommendationRoutes from './recommendationRoutes';
 import chatbotRoutes from './chatbotRoutes';
+import notificationRoutes from './notificationRoutes';
 
 const router = Router();
 
@@ -40,5 +41,6 @@ router.use('/loyalty', loyaltyRoutes);
 router.use('/flash-sales', flashSaleRoutes);
 router.use('/recommendations', recommendationRoutes);
 router.use('/chat', chatbotRoutes);
+router.use('/notifications', notificationRoutes);
 
 export default router;

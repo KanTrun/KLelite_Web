@@ -11,6 +11,7 @@ import { Footer } from '@/components/layout/Footer';
 import ChatWidget from '@/components/Chat/ChatWidget';
 import { SkipLink } from '@/components/common/SkipLink/SkipLink';
 import { AriaLiveRegion } from '@/components/common/AriaLiveRegion/AriaLiveRegion';
+import { useNotifications } from '@/hooks/useNotifications';
 import '@/styles/global.scss';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
@@ -21,6 +22,9 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const isAdminPage = location.pathname.startsWith('/admin');
   const isManagerPage = location.pathname.startsWith('/manager');
   const isBackendPage = isAdminPage || isManagerPage;
+
+  // Initialize notifications SSE connection for authenticated users
+  useNotifications();
 
   // Admin/Manager pages have their own layout - no header/footer
   if (isBackendPage) {

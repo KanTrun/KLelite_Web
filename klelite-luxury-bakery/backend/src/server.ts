@@ -15,6 +15,9 @@ import routes from './routes';
 import { errorHandler, notFound } from './middleware';
 import flashSaleCronJobs from './services/flashSaleCronJobs';
 import scheduleRecommendations from './jobs/computeRecommendations';
+import { initSseRedis, cleanup as sseCleanup } from './services/sseService';
+import { initQueues, cleanupQueues } from './queues';
+import { startEmailWorker, stopEmailWorker } from './workers/emailWorker';
 
 // Create Express app
 const app: Application = express();
@@ -123,6 +126,15 @@ const server = app.listen(PORT, async () => {
     // Initialize Redis connection
     await initRedis();
 
+    // Initialize SSE Redis Pub/Sub for notifications
+    await initSseRedis();
+
+    // Initialize BullMQ queues
+    initQueues();
+
+    // Start workers
+    startEmailWorker();
+
     // Start flash sale cron jobs
     flashSaleCronJobs.start();
 
@@ -152,8 +164,11 @@ process.on('uncaughtException', (err: Error) => {
 });
 
 // Graceful shutdown
-process.on('SIGTERM', () => {
+process.on('SIGTERM', async () => {
   console.log('SIGTERM received. Shutting down gracefully...');
+  await sseCleanup();
+  await cleanupQueues();
+  await stopEmailWorker();
   server.close(() => {
     console.log('Process terminated');
   });

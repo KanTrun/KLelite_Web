@@ -4,6 +4,7 @@ import { FiSearch, FiShoppingCart, FiUser, FiMenu, FiX, FiHeart, FiChevronDown }
 import { useAuth, useCart } from '@/hooks';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { SearchBar } from '@/components/common/SearchBar';
+import NotificationBell from '@/components/Notifications/NotificationBell';
 import styles from './Header.module.scss';
 
 export const Header: React.FC = () => {
@@ -80,6 +81,9 @@ export const Header: React.FC = () => {
               <FiHeart aria-hidden="true" />
             </Link>
           )}
+
+          {/* Notifications */}
+          {isAuthenticated && <NotificationBell />}
 
           {/* Cart */}
           <Link to="/cart" className={styles.iconButton} aria-label={`Giỏ hàng: ${cartItemsCount} sản phẩm`}>

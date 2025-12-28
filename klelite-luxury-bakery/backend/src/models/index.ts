@@ -10,3 +10,4 @@ export { default as FlashSale, IFlashSale, IFlashSaleProduct } from './FlashSale
 export { default as StockReservation, IStockReservation } from './StockReservation';
 export { default as UserActivity, IUserActivity } from './UserActivity';
 export { default as FAQ, IFAQ } from './FAQ';
+export { default as Notification, INotification } from './Notification';

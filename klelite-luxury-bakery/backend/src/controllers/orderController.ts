@@ -10,6 +10,8 @@ import { sendEmail, emailTemplates } from '../utils/email';
 import { config } from '../config';
 import { AuthRequest } from '../types';
 import { loyaltyService } from '../services/loyalty-service';
+import * as notificationService from '../services/notificationService';
+import { addEmailJob } from '../queues';
 
 // @desc    Create order
 // @route   POST /api/orders
@@ -379,7 +381,46 @@ export const updateOrderStatus = asyncHandler(async (req: AuthRequest, res: Resp
   }
 
   await order.save();
-  
+
+  // Send notification to user about order status update
+  try {
+    const statusMessages: Record<string, string> = {
+      pending: 'Đơn hàng của bạn đang chờ xác nhận',
+      confirmed: 'Đơn hàng của bạn đã được xác nhận',
+      preparing: 'Đơn hàng của bạn đang được chuẩn bị',
+      shipping: 'Đơn hàng của bạn đang được giao',
+      delivered: 'Đơn hàng của bạn đã được giao thành công',
+      cancelled: 'Đơn hàng của bạn đã bị hủy'
+    };
+
+    await notificationService.create(order.user.toString(), {
+      type: 'order_status',
+      title: 'Cập nhật trạng thái đơn hàng',
+      message: statusMessages[status] || `Trạng thái đơn hàng: ${status}`,
+      data: {
+        orderId: order._id,
+        url: `/orders/${order._id}`
+      }
+    });
+
+    // Queue email notification
+    const user = await User.findById(order.user);
+    if (user) {
+      await addEmailJob({
+        to: user.email,
+        subject: `Đơn hàng #${order.orderNumber} - ${status}`,
+        template: 'orderStatusUpdate',
+        data: {
+          customerName: user.firstName || user.email,
+          orderNumber: order.orderNumber,
+          status: statusMessages[status] || status
+        }
+      });
+    }
+  } catch (error) {
+    console.warn('Failed to send order status notification:', error);
+  }
+
   successResponse(res, order, 'Cập nhật trạng thái đơn hàng thành công');
 });
 
