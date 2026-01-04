@@ -7,8 +7,11 @@ export const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   port: parseInt(process.env.PORT || '5000', 10),
 
-  // MongoDB
+  // MongoDB (legacy - keeping for backward compatibility during migration)
   mongodbUri: process.env.MONGODB_URI || 'mongodb://localhost:27017/klelite_bakery',
+
+  // MySQL/Prisma
+  databaseUrl: process.env.DATABASE_URL || 'mysql://root:@localhost:3306/klelite_bakery',
 
   // JWT
   jwt: {

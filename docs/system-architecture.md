@@ -9,13 +9,15 @@
   - [3.3. Backend Services (Node.js/Express.js)](#33-backend-services-node.jsexpress.js)
   - [3.4. Database Layer](#34-database-layer)
   - [3.5. Caching Layer (Implemented: Redis)](#35-caching-layer-implemented-redis)
-  - [3.6. Background Jobs / Task Queue (Implemented for Flash Sales)](#36-background-jobs--task-queue-implemented-for-flash-sales)
-  - [3.7. Payment Gateway (Planned)](#37-payment-gateway-planned)
+  - [3.6. Background Jobs / Task Queue (Implemented: BullMQ)](#36-background-jobs--task-queue-implemented-bullmq)
+  - [3.7. Notification & Real-time System (Implemented: SSE & Redis Pub/Sub)](#37-notification--real-time-system-implemented-sse--redis-pubsub)
+  - [3.8. Payment Gateway (Planned)](#38-payment-gateway-planned)
 - [4. Data Flow](#4-data-flow)
   - [4.1. User Registration/Login](#41-user-registrationlogin)
   - [4.2. Product Browsing](#42-product-browsing)
   - [4.3. Placing an Order](#43-placing-an-order)
   - [4.4. Flash Sale Stock Reservation](#44-flash-sale-stock-reservation)
+  - [4.5. Real-time Notifications](#45-real-time-notifications)
 - [5. Deployment Strategy](#5-deployment-strategy)
 - [6. Security Considerations](#6-security-considerations)
 - [7. Scalability Considerations](#7-scalability-considerations)
@@ -34,15 +36,19 @@ graph TD
     User(Customer/Admin) --> |HTTP/HTTPS| Frontend[Frontend Application (Next.js/React)]
     Frontend --> |HTTP/HTTPS API Calls| API_Gateway[API Gateway / Reverse Proxy (Nginx)]
     API_Gateway --> Backend[Backend Services (Node.js/Express.js)]
-    Backend --> Database(MongoDB)
+    Backend --> Database(MySQL via Prisma)
+    Backend --> LegacyDB(MongoDB - Migrating)
     Backend --> Caching[Caching Layer (Redis)]
     Backend --> |API Calls| PaymentGateway(External Payment Gateway)
-    Backend --> BackgroundJobs[Background Jobs / Task Queue]
+    Backend --> BackgroundJobs[Background Jobs / Task Queue (BullMQ)]
+    Backend --> RealTime[Real-time Notifications (SSE)]
+    RealTime <--> RedisPubSub[Redis Pub/Sub]
 
     subgraph Infrastructure
         Database
         Caching
         BackgroundJobs
+        RedisPubSub
         PaymentGateway
     end
 
@@ -67,10 +73,10 @@ graph TD
     -   Handling user interactions.
     -   Making API requests to the backend.
     -   Client-side routing.
-    -   State management (Redux Toolkit, **TanStack Query for server state caching like flash sales**).
-    -   Authentication token management (e.g., storing JWTs in HTTP-only cookies).
-    -   Ensuring responsive design and accessibility.
-    -   Displaying real-time information for flash sales (countdowns, stock indicators).
+    - State management (Redux Toolkit, **TanStack Query for server state**, **Redux Slices for UI/Notification state**).
+    - Authentication token management (e.g., storing JWTs in HTTP-only cookies).
+    - Ensuring responsive design and accessibility.
+    - Displaying real-time information for flash sales (countdowns, stock indicators) and **instant notifications (NotificationBell, Toast)**.
 
 ### 3.2. API Gateway / Reverse Proxy (Planned: Nginx)
 
@@ -87,33 +93,36 @@ graph TD
 ### 3.3. Backend Services (Node.js/Express.js)
 
 -   **Description:** The core business logic and data manipulation layer.
--   **Technology:** Node.js, Express.js, TypeScript, Mongoose (ODM).
+-   **Technology:** Node.js, Express.js, TypeScript, **Prisma (ORM for MySQL)**, Mongoose (Legacy).
 -   **Responsibilities:**
     -   Handling API requests from the frontend.
-    -   Implementing business logic (e.g., order processing, product management, **flash sale management and stock reservation**).
-    -   Interacting with the database (MongoDB).
+    -   Implementing business logic (e.g., order processing, product management, **flash sale management, stock reservation, and real-time notifications**).
+    -   Interacting with the primary database (MySQL).
     -   User authentication and authorization (JWT).
     -   Input validation.
     -   Error handling and logging.
-    -   Interfacing with external services (e.g., payment gateways).
-    -   **Managing flash sales and loyalty programs.**
+    -   Interfacing with external services (e.g., payment gateways, **email providers via BullMQ workers**).
+    -   **Managing flash sales, loyalty programs, and notification delivery.**
 -   **Key Modules:**
-    -   `controllers`: Handle incoming requests and delegate to services. **Includes `flashSaleController` for flash sale CRUD and user interactions.**
-    -   `services`: Contain core business logic, interact with models. **Includes `flashSaleService` for all flash sale related business logic, including Redis interactions for stock.**
-    -   `models`: Mongoose schemas defining database document structure. **New models: `FlashSale` and `StockReservation`.**
+    -   `controllers`: Handle incoming requests and delegate to services. **Includes `flashSaleController` and `notificationController`.**
+    -   `services`: Contain core business logic, interact with models. **Includes `flashSaleService`, `notificationService`, and `sseService`.**
+    -   `lib`: Library instances. **Includes `prisma.ts` for the database client.**
+    -   `models`: Prisma models (primary) and Mongoose schemas (legacy/specialized).
     -   `middleware`: Custom Express middleware (authentication, error handling).
-    -   `routes`: Define API endpoints. **New routes: `flashSaleRoutes`.**
+    -   `routes`: Define API endpoints. **New routes: `flashSaleRoutes` and `notificationRoutes`.**
+    -   `workers`: Background task processors. **Includes `emailWorker` for async email delivery.**
+    -   `queues`: Task queue management. **Includes `emailQueue` and `notificationQueue` using BullMQ.**
 
 ### 3.4. Database Layer
 
 -   **Description:** Persistent storage for application data.
--   **Technology:** MongoDB.
+-   **Technology:** **MySQL (Primary, accessed via Prisma)**, MongoDB (Legacy/Specialized).
 -   **Responsibilities:**
-    -   Storing user data, product information, orders, categories, reviews, **flash sale details, and stock reservations**.
+    -   Storing user data, product information, orders, categories, reviews, **flash sale details, stock reservations, and user notifications**.
     -   Ensuring data integrity and consistency.
     -   Providing efficient data retrieval and storage operations.
     -   Replication for high availability and sharding for scalability (future consideration).
--   **Schema Design:** Uses Mongoose schemas for structured document storage, including `FlashSale` and `StockReservation` with appropriate indexes and TTL for reservations.
+-   **Schema Design:** Uses Prisma Schema for structured MySQL storage, ensuring type safety and easy migrations. Mongoose is maintained for legacy compatibility or specific document-oriented data needs.
 
 ### 3.5. Caching Layer (Implemented: Redis)
 
@@ -125,21 +134,30 @@ graph TD
     -   Implementing rate limiting.
     -   Managing temporary data like shopping cart contents for guest users.
     -   **Real-time stock reservation and availability tracking for flash sales to prevent overselling.**
+    -   **Redis Pub/Sub for cross-server real-time notification broadcasting.**
+    -   **Backing store for BullMQ asynchronous task queues.**
 
-### 3.6. Background Jobs / Task Queue (Implemented for Flash Sales)
+### 3.6. Background Jobs / Task Queue (Implemented: BullMQ)
 
--   **Description:** Handles long-running or asynchronous tasks outside the main request-response cycle. **Currently used for automated flash sale status updates.**
--   **Technology:** `node-cron` (Implemented).
+-   **Description:** Handles long-running or asynchronous tasks outside the main request-response cycle.
+-   **Technology:** `node-cron` and `BullMQ` (Redis-backed).
 -   **Responsibilities:**
-    -   **Automatically updating flash sale statuses (e.g., from 'upcoming' to 'active', and 'active' to 'completed') based on start/end dates and stock levels.**
-    -   (Future) Processing order fulfillment (e.g., sending notifications).
-    -   (Future) Generating reports.
-    -   (Future) Image processing.
-    -   (Future) Email/SMS notifications.
-    -   (Future) Loyalty point calculation.
-    -   (Future) Cleaning up expired flash sale reservations if not handled by TTL index.
+    -   **Automated Status Updates:** `node-cron` handles flash sale status transitions.
+    -   **Asynchronous Email Delivery:** `BullMQ` processes email sending via dedicated workers to prevent blocking the API.
+    -   **Notification Processing:** Offloads heavy notification logic (e.g., batch creation) to background workers.
+    -   (Future) Image processing and complex report generation.
 
-### 3.7. Payment Gateway (Planned)
+### 3.7. Notification & Real-time System (Implemented: SSE & Redis Pub/Sub)
+
+-   **Description:** Delivers instant updates to connected clients.
+-   **Technology:** Server-Sent Events (SSE) for client-server communication, Redis Pub/Sub for server-to-server synchronization.
+-   **Responsibilities:**
+    -   **Push Notifications:** Sending instant alerts for order status changes, points earned, or promotional alerts.
+    -   **Multi-server Support:** Ensuring users receive notifications regardless of which backend instance they are connected to.
+    -   **Connection Management:** Tracking active SSE connections and cleaning up on disconnect.
+    -   **Unread Tracking:** Synchronizing unread counts between the database and the frontend UI.
+
+### 3.8. Payment Gateway (Planned)
 
 -   **Description:** External service for processing financial transactions.
 -   **Technology:** (e.g., SePay, Stripe, PayPal).
@@ -209,6 +227,20 @@ graph TD
     -   Handled via `releaseReservation` API or `cleanupExpiredReservations` cron.
     -   Increments available stock in **Redis** and decrements user's `reserved` count.
     -   Updates reservation status to 'expired' or 'cancelled'.
+
+### 4.5. Real-time Notifications
+
+1.  **Event Trigger:** A backend service (e.g., `orderService`) triggers a notification event (e.g., order status update).
+2.  **Notification Creation:** `notificationService.create()` saves the notification to MongoDB.
+3.  **Broadcasting:**
+    -   `sseService.publish()` publishes the notification to a **Redis Pub/Sub** channel ('notifications').
+    -   All active backend instances listening to this channel receive the message.
+4.  **Delivery:**
+    -   Each instance checks if the target `userId` has an active SSE connection on its node.
+    -   If connected, the instance pushes the data to the client over the SSE stream.
+5.  **UI Update:**
+    -   Frontend `useNotifications` hook receives the event.
+    -   Redux state is updated, and `NotificationBell` displays the unread count/new notification instantly.
 
 ## 5. Deployment Strategy
 

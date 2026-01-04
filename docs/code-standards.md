@@ -15,7 +15,8 @@ This document outlines the coding standards and best practices for the KLeLite L
   - [API Design](#api-design)
   - [Error Handling](#error-handling)
   - [Validation](#validation)
-  - [Database Interactions (Mongoose)](#database-interactions-mongoose)
+  - [Database Interactions (Prisma & MySQL)](#database-interactions-prisma--mysql)
+  - [Database Interactions (Mongoose - Legacy)](#database-interactions-mongoose---legacy)
   - [Authentication & Authorization](#authentication--authorization)
   - [Logging](#logging)
 - [Git Commit Standards](#git-commit-standards)
@@ -138,7 +139,17 @@ These principles are derived from the project's `development-rules.md`.
 -   **Server-Side Validation:** All validation must occur on the server-side, even if client-side validation is also present.
 -   **Clear Error Responses:** Return detailed validation error messages to the client, indicating which fields are invalid and why.
 
-### Database Interactions (Mongoose)
+### Database Interactions (Prisma & MySQL)
+
+-   **Schema Definition:** All MySQL tables and relationships must be defined in `prisma/schema.prisma`. Use descriptive model names and consistent field naming (typically `camelCase` for fields to match TypeScript conventions, while Prisma handles mapping to database-specific cases if needed).
+-   **Client Instance:** Use the global Prisma client singleton provided in `src/lib/prisma.ts` to avoid exhaustion of database connection pools.
+-   **Migrations:** Use `prisma migrate` for all schema changes. Never modify the database schema manually.
+-   **Type Safety:** Leverage Prisma's auto-generated types for all database queries. Avoid using `any` or manual type assertions for database results.
+-   **Query Optimization:** Use `select` and `include` to fetch only the necessary fields and relations, minimizing data transfer and database load.
+-   **Transactions:** Use `prisma.$transaction()` for operations that require atomicity across multiple tables.
+-   **Error Handling:** Catch and handle Prisma-specific errors (e.g., `PrismaClientKnownRequestError`) to provide meaningful feedback and maintain system stability.
+
+### Database Interactions (Mongoose - Legacy)
 
 -   **Schema Definition:** Clearly define Mongoose schemas with types, validators, and default values. This includes new schemas for `FlashSale` and `StockReservation`.
 -   **Indexes:** Create appropriate indexes for frequently queried fields to optimize performance (e.g., `FlashSale.index({ startDate: 1, endDate: 1 })`, `StockReservation.index({ expiresAt: 1 }, { expires: 0 })` for TTL).

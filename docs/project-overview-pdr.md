@@ -15,6 +15,7 @@
   - [4.8. Search & Filtering (Planned)](#48-search--filtering-planned)
   - [4.9. Flash Sales & Promotions (Implemented)](#49-flash-sales--promotions-implemented)
   - [4.10. Loyalty Program (Planned)](#410-loyalty-program-planned)
+  - [4.11. Real-time Notifications (Implemented)](#411-real-time-notifications-implemented)
 - [5. Non-Functional Requirements](#5-non-functional-requirements)
   - [5.1. Performance](#51-performance)
   - [5.2. Security](#52-security)
@@ -145,6 +146,18 @@ This document outlines the Project Overview and Product Development Requirements
 -   **REQ-LP-2:** Customers can redeem loyalty points for discounts or exclusive products.
 -   **REQ-LP-3:** Admin users can manage loyalty program rules and customer points.
 
+### 4.11. Real-time Notifications (Implemented)
+-   **REQ-NOTI-1:** Users must receive instant notifications for critical events (order status updates, points earned).
+    -   *Acceptance Criteria:* Notifications appear in real-time without page refresh using SSE.
+-   **REQ-NOTI-2:** The system must support multi-server environments for real-time delivery.
+    -   *Acceptance Criteria:* Redis Pub/Sub synchronizes notification broadcasting across all backend instances.
+-   **REQ-NOTI-3:** Users must be able to view their notification history and mark them as read.
+    -   *Acceptance Criteria:* NotificationBell displays unread count; dropdown shows recent notifications with 'read' status toggle.
+-   **REQ-NOTI-4:** System must offload notification and email processing to background tasks.
+    -   *Acceptance Criteria:* BullMQ handles email workers and notification queues to ensure API responsiveness.
+-   **REQ-NOTI-5:** Unread counts must be persistent and synchronized across devices.
+    -   *Acceptance Criteria:* Database stores notification status, and frontend fetches/updates state via API and SSE.
+
 ## 5. Non-Functional Requirements
 
 ### 5.1. Performance
@@ -183,22 +196,25 @@ This document outlines the Project Overview and Product Development Requirements
 -   **Language:** TypeScript
 -   **Runtime:** Node.js
 -   **Framework:** Express.js
--   **Database:** MongoDB (via Mongoose)
+-   **Database:** **MySQL (Primary, via Prisma)**, MongoDB (Legacy/Mongoose)
+-   **ORM/Database Client:** **Prisma**
 -   **Authentication:** JWT, Bcrypt
 -   **File Uploads:** Multer
 -   **Validation:** Joi/Zod
--   **Caching/Session:** **Redis (Implemented for Flash Sale stock reservation)**
+-   **Caching/Session/PubSub:** **Redis (Flash Sale stock, SSE broadcasting, BullMQ backing)**
+-   **Task Queue:** **BullMQ (Email delivery, background jobs)**
 -   **Logging:** Winston
--   **Scheduling:** **`node-cron` (Implemented for Flash Sale status updates)**
+-   **Scheduling:** **`node-cron` (Flash Sale status updates)**
 
 ### 6.2. Frontend
 -   **Language:** TypeScript
 -   **Library/Framework:** React.js, Next.js
 -   **Styling:** SCSS Modules
--   **State Management:** Redux Toolkit
+-   **State Management:** Redux Toolkit (UI/Notification State)
 -   **HTTP Client:** Axios
 -   **Animations:** Framer Motion
--   **Data Fetching:** **TanStack Query (Implemented for Flash Sale data)**, React Query / SWR (Planned)
+-   **Data Fetching:** **TanStack Query (Flash Sale/Server state)**
+-   **Real-time:** **Server-Sent Events (SSE)**
 
 ### 6.3. Infrastructure
 -   **Containerization:** Docker, Docker Compose
@@ -209,7 +225,7 @@ This document outlines the Project Overview and Product Development Requirements
 
 -   **Monolithic (initially) with modular design:** Start with a well-structured monolithic architecture to allow for rapid development, with clear separation of concerns to enable future migration to microservices if needed.
 -   **API-first approach:** Design backend APIs before frontend implementation to ensure a clear contract between services.
--   **Database:** MongoDB chosen for its flexibility with schema-less data (though Mongoose adds schema validation) and scalability for e-commerce product catalogs.
+-   **Database:** **MySQL** chosen for its relational structure and strong consistency, managed via **Prisma** for type-safe database access and automated migrations. MongoDB is maintained for legacy compatibility and specialized document storage.
 -   **Frontend Framework:** Next.js for SSR/SSG benefits, performance, and developer experience.
 -   **Containerization:** Docker for consistent environments and simplified deployment.
 -   **Redis for Flash Sale Stock:** Employ Redis for real-time, high-performance stock management during flash sales to prevent overselling and handle high concurrency.
@@ -242,11 +258,15 @@ This document outlines the Project Overview and Product Development Requirements
     -   Loyalty points system
     -   Personalized recommendations
     -   User segmentation for marketing
--   **Phase 06: Deployment & Optimization** (Ongoing/Future)
-    -   CI/CD pipeline setup
-    -   Further performance optimizations
-    -   Monitoring and alerting
-    -   Scalability testing
+-   **Phase 06: Admin Interface & Management System** (Completed)
+    -   Comprehensive Dashboard
+    -   Detailed Management for Orders, Products, Users
+-   **Phase 07: Real-time Notifications & Background Tasks** (Completed)
+    -   Real-time SSE Notifications
+    -   Redis Pub/Sub multi-server synchronization
+    -   BullMQ task queue for emails and async jobs
+    -   NotificationBell UI component & unread tracking
+-   **Phase 08: Loyalty Program & Personalization** (Future)
 
 ## 9. Open Questions / Future Considerations
 
