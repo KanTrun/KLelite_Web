@@ -1,9 +1,9 @@
 import api from './api';
-import type { 
-  User, 
-  Address, 
+import type {
+  User,
+  Address,
   WishlistItem,
-  ApiResponse 
+  ApiResponse
 } from '@/types';
 
 // User Service
@@ -24,7 +24,7 @@ export const userService = {
   uploadAvatar: async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append('avatar', file);
-    
+
     const response = await api.post<ApiResponse<{ url: string }>>('/users/avatar', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -40,8 +40,8 @@ export const userService = {
   },
 
   // Add address
-  addAddress: async (address: Omit<Address, '_id'>): Promise<Address> => {
-    const response = await api.post<ApiResponse<Address>>('/users/addresses', address);
+  addAddress: async (address: Omit<Address, '_id'>): Promise<Address[]> => {
+    const response = await api.post<ApiResponse<Address[]>>('/users/addresses', address);
     return response.data.data;
   },
 
@@ -83,7 +83,7 @@ export const userService = {
     try {
       const response = await api.get<ApiResponse<WishlistItem[]>>('/users/wishlist');
       const wishlist = response.data.data || [];
-      return wishlist.some((item: any) => 
+      return wishlist.some((item: any) =>
         item._id === productId || item.id === productId
       );
     } catch {
@@ -98,7 +98,7 @@ export const adminUserService = {
   getUsers: async (page = 1, limit = 10, search?: string): Promise<ApiResponse<User[]>> => {
     const params = new URLSearchParams({ page: String(page), limit: String(limit) });
     if (search) params.append('search', search);
-    
+
     const response = await api.get<ApiResponse<User[]>>(`/users?${params.toString()}`);
     return response.data;
   },

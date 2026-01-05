@@ -3,6 +3,7 @@ import { recommendationService } from '../services/recommendationService';
 import UserActivity from '../models/UserActivity';
 import Product from '../models/Product';
 import mongoose from 'mongoose';
+import redis from '../config/redis'; // Added Redis import
 
 // Mock external dependencies
 jest.mock('../models/UserActivity', () => ({
@@ -18,6 +19,17 @@ jest.mock('../models/Product', () => ({
   default: {
     findById: jest.fn(),
     find: jest.fn(),
+  },
+}));
+
+// Mock the redis module to prevent actual connections during tests
+jest.mock('../config/redis', () => ({
+  __esModule: true,
+  default: {
+    get: jest.fn(() => null), // Simulate cache miss by default
+    set: jest.fn(), // Mock set to do nothing
+    on: jest.fn(), // Mock 'on' to prevent event listener errors
+    quit: jest.fn(), // Mock quit to prevent open handles
   },
 }));
 

@@ -1,4 +1,4 @@
-import redis from '../config/redis';
+import redis, { isRedisAvailable } from '../config/redis';
 import { FlashSale, StockReservation, IFlashSale, IStockReservation } from '../models';
 import AppError from '../utils/AppError';
 import mongoose from 'mongoose';
@@ -9,6 +9,12 @@ class FlashSaleService {
    * @param sale Flash sale document
    */
   async initializeSaleStock(sale: IFlashSale): Promise<void> {
+    // Skip Redis operations if Redis is not available
+    if (!isRedisAvailable) {
+      console.warn(`⚠️  Skipping Redis stock initialization for: ${sale.name} (Redis unavailable)`);
+      return;
+    }
+
     try {
       const pipeline = redis.pipeline();
 
@@ -27,7 +33,8 @@ class FlashSaleService {
       console.log(`✅ Flash sale stock initialized for: ${sale.name}`);
     } catch (error) {
       console.error('❌ Error initializing flash sale stock:', error);
-      throw new AppError('Failed to initialize flash sale stock', 500);
+      // Don't throw - allow system to continue without Redis
+      console.warn('⚠️  Flash sale will operate without Redis caching');
     }
   }
 
@@ -47,6 +54,11 @@ class FlashSaleService {
     quantity: number,
     loyaltyTier?: string
   ): Promise<IStockReservation> {
+    // Require Redis for flash sale stock management
+    if (!isRedisAvailable) {
+      throw new AppError('Flash sale feature requires Redis. Please contact support.', 503);
+    }
+
     try {
       // Fetch flash sale
       const sale = await FlashSale.findById(saleId);
@@ -177,21 +189,24 @@ class FlashSaleService {
       );
 
       // Move from reserved to confirmed in Redis (atomic pipeline)
-      const userReservedKey = `flash:${reservation.flashSaleId}:product:${reservation.productId}:user:${reservation.userId}:reserved`;
-      const userConfirmedKey = `flash:${reservation.flashSaleId}:product:${reservation.productId}:user:${reservation.userId}:confirmed`;
+      // Skip if Redis is not available
+      if (isRedisAvailable) {
+        const userReservedKey = `flash:${reservation.flashSaleId}:product:${reservation.productId}:user:${reservation.userId}:reserved`;
+        const userConfirmedKey = `flash:${reservation.flashSaleId}:product:${reservation.productId}:user:${reservation.userId}:confirmed`;
 
-      // Get sale for TTL
-      const sale = await FlashSale.findById(reservation.flashSaleId);
-      const ttl = sale ? Math.ceil((sale.endTime.getTime() - Date.now()) / 1000) : 0;
+        // Get sale for TTL
+        const sale = await FlashSale.findById(reservation.flashSaleId);
+        const ttl = sale ? Math.ceil((sale.endTime.getTime() - Date.now()) / 1000) : 0;
 
-      // Atomic pipeline for moving stock from reserved to confirmed
-      const pipeline = redis.pipeline();
-      pipeline.decrby(userReservedKey, reservation.quantity);
-      pipeline.incrby(userConfirmedKey, reservation.quantity);
-      if (ttl > 0) {
-        pipeline.expire(userConfirmedKey, ttl);
+        // Atomic pipeline for moving stock from reserved to confirmed
+        const pipeline = redis.pipeline();
+        pipeline.decrby(userReservedKey, reservation.quantity);
+        pipeline.incrby(userConfirmedKey, reservation.quantity);
+        if (ttl > 0) {
+          pipeline.expire(userConfirmedKey, ttl);
+        }
+        await pipeline.exec();
       }
-      await pipeline.exec();
 
       console.log(`✅ Reservation confirmed: ${reservationId}`);
     } catch (error) {
@@ -214,13 +229,15 @@ class FlashSaleService {
         return; // Already processed
       }
 
-      // Return stock to Redis
-      const stockKey = `flash:${reservation.flashSaleId}:product:${reservation.productId}:stock`;
-      await redis.incrby(stockKey, reservation.quantity);
+      // Return stock to Redis (skip if Redis is not available)
+      if (isRedisAvailable) {
+        const stockKey = `flash:${reservation.flashSaleId}:product:${reservation.productId}:stock`;
+        await redis.incrby(stockKey, reservation.quantity);
 
-      // Decrement reserved count
-      const userReservedKey = `flash:${reservation.flashSaleId}:product:${reservation.productId}:user:${reservation.userId}:reserved`;
-      await redis.decrby(userReservedKey, reservation.quantity);
+        // Decrement reserved count
+        const userReservedKey = `flash:${reservation.flashSaleId}:product:${reservation.productId}:user:${reservation.userId}:reserved`;
+        await redis.decrby(userReservedKey, reservation.quantity);
+      }
 
       // Update reservation status
       reservation.status = 'expired';
@@ -246,6 +263,12 @@ class FlashSaleService {
    * @param productId Product ID
    */
   async getProductStock(saleId: string, productId: string): Promise<number> {
+    // Return 0 if Redis is not available
+    if (!isRedisAvailable) {
+      console.warn('⚠️  Cannot get product stock: Redis unavailable');
+      return 0;
+    }
+
     try {
       const stockKey = `flash:${saleId}:product:${productId}:stock`;
       const stock = await redis.get(stockKey);

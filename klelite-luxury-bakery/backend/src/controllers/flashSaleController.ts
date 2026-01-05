@@ -111,7 +111,7 @@ export const getProductStock = asyncHandler(async (req: Request, res: Response) 
 export const reserveStock = asyncHandler(async (req: Request, res: Response) => {
   const { saleId } = req.params;
   const { productId, quantity } = req.body;
-  const userId = req.user?._id.toString();
+  const userId = (req as any).user?._id.toString();
 
   if (!userId) {
     throw new AppError('User not authenticated', 401);

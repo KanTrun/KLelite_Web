@@ -6,6 +6,7 @@ import User from '../models/User';
 import Category from '../models/Category';
 import Product from '../models/Product';
 import Voucher from '../models/Voucher';
+import { ThemeConfig } from '../models/ThemeConfig';
 
 // Helper function to generate slug
 const generateSlug = (name: string) =>
@@ -22,6 +23,7 @@ const seedAll = async () => {
       Category.deleteMany({}),
       Product.deleteMany({}),
       Voucher.deleteMany({}),
+      ThemeConfig.deleteMany({}),
     ]);
     console.log('Cleared all collections');
 
@@ -1018,6 +1020,25 @@ const seedAll = async () => {
       },
     ]);
     console.log(`Created ${vouchers.length} vouchers`);
+
+    // Create default theme
+    const defaultTheme = await ThemeConfig.create({
+      isActive: true,
+      name: 'Default Luxury',
+      type: 'default',
+      header: {
+        variant: 'transparent'
+      },
+      hero: {
+        title: "KL'élite Luxury Bakery",
+        subtitle: "Experience the Taste of Elegance",
+        ctaText: "Shop Now",
+        ctaLink: "/products",
+        backgroundImage: "https://images.unsplash.com/photo-1579306194872-64d3b7bac4c2?q=80&w=2057&auto=format&fit=crop",
+        overlayOpacity: 0.3
+      }
+    });
+    console.log('Created default theme:', defaultTheme.name);
 
     console.log('\n===========================================');
     console.log('Database seeded successfully!');

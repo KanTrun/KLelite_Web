@@ -258,7 +258,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           )}
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 };
 

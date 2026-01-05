@@ -1,21 +1,41 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { FiSearch, FiShoppingCart, FiUser, FiMenu, FiX, FiHeart, FiChevronDown } from 'react-icons/fi';
 import { useAuth, useCart } from '@/hooks';
+import { AppDispatch, RootState } from '@/store';
+import { fetchCurrentTheme } from '@/store/slices/themeSlice';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { SearchBar } from '@/components/common/SearchBar';
 import NotificationBell from '@/components/Notifications/NotificationBell';
 import styles from './Header.module.scss';
 
 export const Header: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { currentTheme } = useSelector((state: RootState) => state.theme);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   const { user, isAuthenticated, logout } = useAuth();
   const { cartItemsCount } = useCart();
+
+  useEffect(() => {
+    dispatch(fetchCurrentTheme());
+  }, [dispatch]);
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -41,8 +61,10 @@ export const Header: React.FC = () => {
     { path: '/contact', label: 'Liên hệ' },
   ];
 
+  const headerClass = `${styles.header} ${isScrolled ? styles.scrolled : ''} ${currentTheme?.type === 'christmas' ? styles.christmas : ''} ${currentTheme?.type === 'tet' ? styles.tet : ''}`;
+
   return (
-    <header className={styles.header}>
+    <header className={headerClass}>
       <div className={styles.container}>
         {/* Logo */}
         <Link to="/" className={styles.logo}>

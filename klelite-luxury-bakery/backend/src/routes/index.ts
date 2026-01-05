@@ -14,6 +14,7 @@ import flashSaleRoutes from './flashSaleRoutes';
 import recommendationRoutes from './recommendationRoutes';
 import chatbotRoutes from './chatbotRoutes';
 import notificationRoutes from './notificationRoutes';
+import themeRoutes from './themeRoutes';
 
 const router = Router();
 
@@ -42,5 +43,6 @@ router.use('/flash-sales', flashSaleRoutes);
 router.use('/recommendations', recommendationRoutes);
 router.use('/chat', chatbotRoutes);
 router.use('/notifications', notificationRoutes);
+router.use('/themes', themeRoutes);
 
 export default router;

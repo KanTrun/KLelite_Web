@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/store';
+import { fetchCurrentTheme } from '@/store/slices/themeSlice';
 import {
   FiArrowRight,
   FiStar,
@@ -255,7 +258,14 @@ const formatPrice = (price: number): string => {
 // Home Component - Royal Luxury Design
 // ============================================
 const Home: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { currentTheme } = useSelector((state: RootState) => state.theme);
   const heroRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    dispatch(fetchCurrentTheme());
+  }, [dispatch]);
+
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ['start start', 'end start'],
@@ -265,6 +275,13 @@ const Home: React.FC = () => {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.5], [1, 1.1]);
 
+  // Use dynamic data or fallbacks
+  const heroTitle = currentTheme?.hero?.title || "KL'élite Luxury Bakery";
+  const heroSubtitle = currentTheme?.hero?.subtitle || "Experience the Taste of Elegance";
+  const heroBgImage = currentTheme?.hero?.backgroundImage || "https://images.unsplash.com/photo-1579306194872-64d3b7bac4c2?q=80&w=2057&auto=format&fit=crop";
+  const heroCtaText = currentTheme?.hero?.ctaText || "Shop Now";
+  const heroCtaLink = currentTheme?.hero?.ctaLink || "/products";
+
   return (
     <div className={styles.home}>
       {/* ============================================ */}
@@ -273,9 +290,9 @@ const Home: React.FC = () => {
       <section className={styles.hero} ref={heroRef}>
         {/* Parallax Background */}
         <motion.div className={styles.heroBackground} style={{ y: heroY, scale: heroScale }}>
-          <div className={styles.heroOverlay} />
+          <div className={styles.heroOverlay} style={{ opacity: currentTheme?.hero?.overlayOpacity || 0.3 }} />
           <img
-            src="https://png.pngtree.com/thumb_back/fh260/background/20211128/pngtree-luxury-royal-golden-mandala-background-with-borders-for-invitation-and-wedding-image_916989.png"
+            src={heroBgImage}
             alt="Luxury Bakery Ambiance"
             className={styles.heroBgImage}
           />
@@ -304,13 +321,13 @@ const Home: React.FC = () => {
         >
           <motion.div className={styles.heroTaglineWrapper} variants={fadeInUp} custom={0}>
             <div className={styles.heroTaglineLine} />
-            <span className={styles.heroTagline}>The Art of Luxury Pastry</span>
+            <span className={styles.heroTagline}>{currentTheme?.type === 'christmas' ? 'Merry Christmas & Happy New Year' : 'The Art of Luxury Pastry'}</span>
             <div className={styles.heroTaglineLine} />
           </motion.div>
 
           <motion.h1 className={styles.heroTitle} variants={fadeInUp} custom={0.1}>
-            <span className={styles.heroTitleMain}>KL'élite</span>
-            <span className={styles.heroTitleSub}>Luxury Bakery</span>
+            <span className={styles.heroTitleMain}>{heroTitle}</span>
+            <span className={styles.heroTitleSub}>{heroSubtitle}</span>
           </motion.h1>
 
           <motion.p className={styles.heroDescription} variants={fadeInUp} custom={0.2}>
@@ -319,8 +336,8 @@ const Home: React.FC = () => {
           </motion.p>
 
           <motion.div className={styles.heroActions} variants={fadeInUp} custom={0.3}>
-            <Link to="/products" className={styles.heroPrimaryBtn}>
-              <span>Khám Phá Bộ Sưu Tập</span>
+            <Link to={heroCtaLink} className={styles.heroPrimaryBtn}>
+              <span>{heroCtaText}</span>
               <FiArrowRight />
             </Link>
             <Link to="/about" className={styles.heroSecondaryBtn}>

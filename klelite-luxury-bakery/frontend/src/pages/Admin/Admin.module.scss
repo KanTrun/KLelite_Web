@@ -4,32 +4,35 @@
 // ============================================
 
 // ============================================
-// Light Luxury Color Palette
+// Light Luxury Color Palette - Using CSS Variables
 // ============================================
-$admin-bg: #FAFBFC;
-$admin-surface: #FFFFFF;
-$admin-surface-elevated: #FFFFFF;
-$admin-border: #E8E8E8;
-$admin-border-light: #F0F0F0;
-$admin-text-primary: #1A1A2E;
-$admin-text-secondary: #64748B;
-$admin-text-muted: #94A3B8;
-$admin-accent: #C9A857;
-$admin-accent-light: #EBE4D4;
-$admin-accent-dark: #A68A3D;
-$admin-success: #10B981;
-$admin-warning: #F59E0B;
-$admin-danger: #EF4444;
-$admin-info: #3B82F6;
-$admin-purple: #8B5CF6;
+// Note: Actual values are defined in variables.scss
+// These SCSS variables are mapped to CSS variables for dynamic theming
+
+$admin-bg: var(--admin-bg);
+$admin-surface: var(--admin-surface);
+$admin-surface-elevated: var(--admin-surface-elevated);
+$admin-border: var(--admin-border);
+$admin-border-light: var(--admin-border-light);
+$admin-text-primary: var(--admin-text-primary);
+$admin-text-secondary: var(--admin-text-secondary);
+$admin-text-muted: var(--admin-text-muted);
+$admin-accent: var(--admin-accent);
+$admin-accent-light: var(--admin-accent-light);
+$admin-accent-dark: var(--admin-accent-dark);
+$admin-success: var(--admin-success);
+$admin-warning: var(--admin-warning);
+$admin-danger: var(--admin-danger);
+$admin-info: var(--admin-info);
+$admin-purple: var(--admin-purple);
 
 // Shadows
 $shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
-$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-$shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
-$shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.1);
-$shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.12);
-$shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
+$shadow-sm: var(--shadow-sm);
+$shadow-md: var(--shadow-md);
+$shadow-lg: var(--shadow-lg);
+$shadow-xl: var(--shadow-xl);
+$shadow-gold: var(--shadow-gold);
 
 // ============================================
 // Admin Layout
@@ -42,53 +45,55 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   width: 100%;
   position: relative;
+  color: $admin-text-primary;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 // ============================================
-// Sidebar - Light Luxury
+// Sidebar - Modern Minimalist
 // ============================================
 .adminSidebar {
-  background: linear-gradient(180deg, #1A1A2E 0%, #16213E 100%);
-  border-right: none;
+  background: #111827; // Keep dark for sidebar always
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
   padding: 0;
   position: fixed;
   top: 0;
   left: 0;
-  width: 280px;
+  width: 260px; // Slightly narrower for modern look
   height: 100vh;
   overflow-y: auto;
   z-index: 1000;
-  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
+  transition: all 0.3s ease;
 
   // Custom scrollbar
   &::-webkit-scrollbar {
     width: 4px;
   }
-  
+
   &::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   &::-webkit-scrollbar-thumb {
-    background: rgba($admin-accent, 0.3);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 2px;
   }
 
   @media (max-width: 1200px) {
-    width: 260px;
+    width: 240px;
   }
 
   @media (max-width: 992px) {
     display: none;
     position: fixed;
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
 
     &.open {
       display: flex;
       transform: translateX(0);
+      box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
     }
   }
 }
@@ -97,103 +102,105 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
   display: flex;
   align-items: center;
   gap: $spacing-sm;
-  padding: $spacing-xl $spacing-lg;
+  padding: 24px 20px;
   margin-bottom: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(0, 0, 0, 0.1);
+  background: transparent;
 
   a {
     font-family: $font-heading;
-    font-size: 1.35rem;
-    font-weight: 600;
+    font-size: 1.25rem;
+    font-weight: 700;
     color: #FFFFFF;
     text-decoration: none;
-    letter-spacing: 0.02em;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 
     span {
       color: $admin-accent;
+      font-weight: 400;
     }
   }
 }
 
 .adminBadge {
-  padding: 4px 10px;
-  background: linear-gradient(135deg, $admin-accent 0%, $admin-accent-dark 100%);
-  color: #1A1A2E;
-  font-size: 0.6rem;
-  font-weight: 700;
+  padding: 2px 8px;
+  background: rgba(201, 168, 87, 0.15); // hardcoded gold for sidebar which is always dark
+  color: #C9A857;
+  font-size: 0.65rem;
+  font-weight: 600;
   text-transform: uppercase;
-  border-radius: 4px;
-  letter-spacing: 0.8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
   margin-left: auto;
+  border: 1px solid rgba(201, 168, 87, 0.2);
 }
 
 .sidebarNav {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px; // Tighter gap
   padding: $spacing-md;
+  flex: 1;
 
   a {
     display: flex;
     align-items: center;
-    gap: $spacing-md;
-    padding: 12px 16px;
-    color: rgba(255, 255, 255, 0.6);
+    gap: 12px;
+    padding: 10px 14px;
+    color: #9CA3AF; // Muted text
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     font-weight: 500;
-    border-radius: 10px;
+    border-radius: 8px;
     transition: all 0.2s ease;
     position: relative;
+    margin-bottom: 2px;
 
     svg {
-      font-size: 1.15rem;
-      opacity: 0.8;
+      font-size: 1.1rem;
+      opacity: 0.7;
+      transition: all 0.2s ease;
     }
 
     &:hover {
-      color: rgba(255, 255, 255, 0.95);
-      background: rgba(255, 255, 255, 0.06);
-      
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.04);
+
       svg {
         opacity: 1;
       }
     }
 
     &.active {
-      color: $admin-accent;
-      background: rgba($admin-accent, 0.12);
+      color: #FFFFFF;
+      background: #C9A857; // Solid accent color
+      box-shadow: 0 4px 12px rgba(201, 168, 87, 0.25);
 
+      // Remove the left border style
       &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 3px;
-        height: 24px;
-        background: linear-gradient(180deg, $admin-accent 0%, $admin-accent-dark 100%);
-        border-radius: 0 2px 2px 0;
+        display: none;
       }
 
       svg {
         opacity: 1;
-        color: $admin-accent;
+        color: #FFFFFF; // White icon on active
       }
     }
   }
 
   .badge {
     margin-left: auto;
-    padding: 3px 8px;
+    padding: 2px 6px;
     background: $admin-danger;
     color: #FFFFFF;
     font-size: 0.7rem;
-    font-weight: 700;
-    border-radius: 10px;
-    min-width: 22px;
+    font-weight: 600;
+    border-radius: 6px;
+    min-width: 18px;
     text-align: center;
+    line-height: 1.2;
   }
 }
 
@@ -225,7 +232,7 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
   &:hover {
     background: rgba(255, 255, 255, 0.05);
     color: $admin-accent;
-    
+
     svg {
       opacity: 1;
       color: $admin-accent;
@@ -304,19 +311,20 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
 }
 
 // ============================================
-// Main Content - Light Background
+// Main Content - Clean Background
 // ============================================
 .adminMain {
-  margin-left: 280px;
+  margin-left: 260px; // Match new sidebar width
   flex: 1;
   min-height: 100vh;
-  width: calc(100% - 280px);
-  background: $admin-bg;
+  width: calc(100% - 260px);
+  background: $admin-bg; // Use variable
   overflow-x: hidden;
+  transition: background-color 0.3s ease;
 
   @media (max-width: 1200px) {
-    margin-left: 260px;
-    width: calc(100% - 260px);
+    margin-left: 240px;
+    width: calc(100% - 240px);
   }
 
   @media (max-width: 992px) {
@@ -326,21 +334,23 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
 }
 
 .pageContent {
-  padding: $spacing-2xl $spacing-2xl $spacing-3xl;
-  background: $admin-bg;
+  padding: 32px; // More generous padding
+  background: transparent;
   overflow-x: hidden;
   min-height: calc(100vh - 100px);
+  max-width: 1600px; // Limit max width for large screens
+  margin: 0 auto;
 
   @media (max-width: 1200px) {
-    padding: $spacing-xl;
+    padding: 24px;
   }
 
   @media (max-width: 992px) {
-    padding: $spacing-lg;
+    padding: 20px;
   }
 
   @media (max-width: 576px) {
-    padding: $spacing-md;
+    padding: 16px;
   }
 }
 
@@ -351,10 +361,10 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
 .pageHeader {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: $spacing-xl;
-  padding-bottom: $spacing-lg;
-  border-bottom: 1px solid $admin-border-light;
+  align-items: flex-end; // Align bottom
+  margin-bottom: 32px;
+  padding-bottom: 0; // Remove border/padding
+  border-bottom: none;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -364,16 +374,17 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
 
   h1 {
     font-family: $font-heading;
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: $admin-text-primary;
-    margin-bottom: 6px;
+    font-size: 1.875rem;
+    font-weight: 800; // Bolder title
+    color: $admin-text-primary; // Use variable
+    margin-bottom: 8px;
     letter-spacing: -0.02em;
+    line-height: 1.2;
   }
 
   p {
-    color: $admin-text-secondary;
-    font-size: 0.9rem;
+    color: $admin-text-secondary; // Use variable
+    font-size: 0.95rem;
     line-height: 1.5;
   }
 }
@@ -500,13 +511,13 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
 }
 
 // ============================================
-// Stats Grid - Premium Cards
+// Stats Grid - Bento Box Style
 // ============================================
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: $spacing-lg;
-  margin-bottom: $spacing-2xl;
+  gap: 24px; // Larger gap
+  margin-bottom: 32px;
 
   @media (max-width: 1400px) {
     grid-template-columns: repeat(2, 1fr);
@@ -514,43 +525,32 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: $spacing-md;
+    gap: 16px;
   }
 }
 
 .statCard {
   display: flex;
   align-items: flex-start;
-  gap: $spacing-md;
-  padding: $spacing-lg $spacing-xl;
-  background: $admin-surface;
-  border: 1px solid $admin-border-light;
-  border-radius: 16px;
-  box-shadow: $shadow-sm;
-  transition: all 0.25s ease;
+  gap: 20px;
+  padding: 24px;
+  background: $admin-surface; // Use variable
+  border: 1px solid $admin-border; // Use variable
+  border-radius: 20px; // More rounded
+  box-shadow: $shadow-sm; // Use variable
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
 
+  // Remove the gradient line
   &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, $admin-accent 0%, $admin-accent-dark 100%);
-    opacity: 0;
-    transition: opacity 0.25s ease;
+    display: none;
   }
 
   &:hover {
-    border-color: $admin-border;
+    border-color: $admin-border-light;
     box-shadow: $shadow-md;
-    transform: translateY(-2px);
-
-    &::before {
-      opacity: 1;
-    }
+    transform: translateY(-4px);
   }
 }
 
@@ -558,30 +558,31 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  font-size: 1.35rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px; // Match card roundness style
+  font-size: 1.5rem;
   flex-shrink: 0;
-  
+
+  // Use CSS variables with opacity for background
   &.revenue {
-    background: rgba($admin-success, 0.1);
+    background: rgba(16, 185, 129, 0.1);
     color: $admin-success;
   }
-  
+
   &.orders {
-    background: rgba($admin-info, 0.1);
+    background: rgba(59, 130, 246, 0.1);
     color: $admin-info;
   }
-  
+
   &.products {
-    background: rgba($admin-purple, 0.1);
+    background: rgba(139, 92, 246, 0.1);
     color: $admin-purple;
   }
-  
+
   &.users {
-    background: rgba($admin-accent, 0.12);
-    color: $admin-accent;
+    background: rgba(245, 158, 11, 0.1);
+    color: $admin-warning;
   }
 }
 
@@ -601,7 +602,7 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
 
 .statValue {
   font-family: $font-heading;
-  font-size: 1.65rem;
+  font-size: 1.875rem; // Larger numbers
   font-weight: 700;
   color: $admin-text-primary;
   letter-spacing: -0.02em;
@@ -635,7 +636,7 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
 .contentGrid {
   display: grid;
   grid-template-columns: 1.6fr 1fr;
-  gap: $spacing-xl;
+  gap: 24px;
 
   @media (max-width: 1200px) {
     grid-template-columns: 1fr;
@@ -644,11 +645,11 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
 
 .card {
   background: $admin-surface;
-  border: 1px solid $admin-border-light;
-  border-radius: 16px;
+  border: 1px solid $admin-border;
+  border-radius: 20px;
   overflow: hidden;
   box-shadow: $shadow-sm;
-  transition: box-shadow 0.25s ease;
+  transition: box-shadow 0.3s ease;
 
   &:hover {
     box-shadow: $shadow-md;
@@ -659,14 +660,14 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: $spacing-lg $spacing-xl;
-  border-bottom: 1px solid $admin-border-light;
+  padding: 24px 28px; // More padding
+  border-bottom: 1px solid $admin-border;
   background: $admin-surface;
 
   h2 {
     font-family: $font-heading;
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.125rem;
+    font-weight: 700;
     color: $admin-text-primary;
     letter-spacing: -0.01em;
   }
@@ -722,7 +723,7 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, $admin-bg 0%, #F0F4F8 100%);
+  background: linear-gradient(135deg, $admin-bg 0%, $admin-surface 100%);
   border-radius: 12px;
   border: 2px dashed $admin-border;
   color: $admin-text-muted;
@@ -907,7 +908,7 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
   }
 
   th {
-    background: #F8FAFC;
+    background: $admin-bg;
     font-size: 0.75rem;
     font-weight: 600;
     color: $admin-text-secondary;
@@ -927,7 +928,7 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
     transition: background 0.15s ease;
 
     &:hover {
-      background: #FAFBFC;
+      background: $admin-bg;
     }
 
     &:last-child td {
@@ -938,15 +939,15 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
 
 .ordersTable {
   overflow-x: auto;
-  
+
   &::-webkit-scrollbar {
     height: 6px;
   }
-  
+
   &::-webkit-scrollbar-track {
     background: $admin-bg;
   }
-  
+
   &::-webkit-scrollbar-thumb {
     background: $admin-border;
     border-radius: 3px;
@@ -1270,17 +1271,17 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
   border-radius: 10px;
   font-size: 1.1rem;
   flex-shrink: 0;
-  
+
   &.products {
     background: rgba($admin-purple, 0.1);
     color: $admin-purple;
   }
-  
+
   &.users {
     background: rgba($admin-accent, 0.12);
     color: $admin-accent;
   }
-  
+
   &.categories {
     background: rgba($admin-info, 0.1);
     color: $admin-info;
@@ -1353,7 +1354,7 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--color-backdrop);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -2040,8 +2041,8 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
   justify-content: space-between;
   align-items: center;
   padding: $spacing-md $spacing-lg;
-  background: linear-gradient(135deg, rgba($admin-accent, 0.08) 0%, rgba($admin-accent, 0.04) 100%);
-  border: 1px solid rgba($admin-accent, 0.15);
+  background: linear-gradient(135deg, rgba(201, 168, 87, 0.08) 0%, rgba(201, 168, 87, 0.04) 100%);
+  border: 1px solid rgba(201, 168, 87, 0.15);
   border-radius: 12px;
   margin-top: $spacing-md;
 
@@ -2139,7 +2140,7 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
   justify-content: center;
   color: $admin-border;
   font-size: 3rem;
-  background: linear-gradient(135deg, $admin-bg 0%, #F0F4F8 100%);
+  background: linear-gradient(135deg, $admin-bg 0%, $admin-surface 100%);
 }
 
 .categoryInfo {
@@ -2305,77 +2306,6 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
 }
 
 // ============================================
-// Charts Section - Premium Design
-// ============================================
-.chartsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: $spacing-xl;
-  margin-bottom: $spacing-2xl;
-
-  @media (max-width: 1200px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.chartCard {
-  background: $admin-surface;
-  border: 1px solid $admin-border-light;
-  border-radius: 16px;
-  padding: $spacing-xl;
-  box-shadow: $shadow-sm;
-  transition: box-shadow 0.25s ease;
-
-  &:hover {
-    box-shadow: $shadow-md;
-  }
-}
-
-.chartHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: $spacing-lg;
-
-  h3 {
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-    font-size: 1rem;
-    font-weight: 600;
-    color: $admin-text-primary;
-    margin: 0;
-
-    svg {
-      color: $admin-accent;
-      font-size: 1.1rem;
-    }
-  }
-}
-
-.chartPlaceholder {
-  height: 280px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, $admin-bg 0%, #F0F4F8 100%);
-  border-radius: 12px;
-  border: 2px dashed $admin-border;
-  color: $admin-text-muted;
-
-  svg {
-    font-size: 2.5rem;
-    margin-bottom: $spacing-md;
-    opacity: 0.5;
-  }
-
-  p {
-    font-size: 0.9rem;
-  }
-}
-
-// ============================================
 // Responsive Adjustments
 // ============================================
 @media (max-width: 992px) {
@@ -2413,4 +2343,3 @@ $shadow-gold: 0 4px 20px rgba($admin-accent, 0.15);
     grid-template-columns: 1fr;
   }
 }
-

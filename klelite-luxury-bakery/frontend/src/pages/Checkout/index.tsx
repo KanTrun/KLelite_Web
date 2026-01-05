@@ -125,8 +125,8 @@ const Checkout: React.FC = () => {
     try {
       const response = await userService.getAddresses();
       // Handle both array and object with addresses property
-      const addressList = Array.isArray(response) 
-        ? response 
+      const addressList = Array.isArray(response)
+        ? response
         : (response as any)?.addresses || [];
       setAddresses(addressList);
       // Select default address if exists
@@ -156,9 +156,15 @@ const Checkout: React.FC = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const newAddr = await userService.addAddress(newAddress);
-      setAddresses([...addresses, newAddr]);
-      setSelectedAddressId(newAddr._id);
+      const updatedAddresses = await userService.addAddress({
+        ...newAddress,
+        city: newAddress.province,
+      });
+      setAddresses(updatedAddresses);
+      // Select the last added address
+      if (updatedAddresses.length > 0) {
+        setSelectedAddressId(updatedAddresses[updatedAddresses.length - 1]._id);
+      }
       setShowAddressForm(false);
       setNewAddress({
         fullName: user?.fullName || '',
@@ -266,14 +272,15 @@ const Checkout: React.FC = () => {
           city: selectedAddress.city || selectedAddress.province,
           district: selectedAddress.district,
           ward: selectedAddress.ward || '',
+          isDefault: false,
         },
-        paymentMethod: selectedPayment,
+        paymentMethod: selectedPayment as any,
         note: note || undefined,
         voucherCode: appliedVoucher?.code || undefined,
       };
 
       const order = await orderService.createOrder(orderData);
-      
+
       // Handle online payment methods
       if (selectedPayment === 'momo') {
         const momoPayment = await paymentService.createMoMoPayment(
@@ -284,7 +291,7 @@ const Checkout: React.FC = () => {
         window.location.href = momoPayment.payUrl;
         return;
       }
-      
+
       if (selectedPayment === 'vnpay') {
         const vnpayPayment = await paymentService.createVNPayPayment(
           order._id,
@@ -294,7 +301,7 @@ const Checkout: React.FC = () => {
         window.location.href = vnpayPayment.payUrl;
         return;
       }
-      
+
       // COD or Bank Transfer
       setCreatedOrder(order);
       setOrderSuccess(true);
@@ -371,7 +378,7 @@ const Checkout: React.FC = () => {
             </div>
             <h1>Đặt hàng thành công!</h1>
             <p>Cảm ơn bạn đã đặt hàng tại KL'élite</p>
-            
+
             <div className={styles.orderInfo}>
               <div className={styles.orderInfoRow}>
                 <span>Mã đơn hàng:</span>
@@ -433,7 +440,7 @@ const Checkout: React.FC = () => {
             { num: 3, label: 'Xác nhận đơn hàng' },
           ].map((s, idx) => (
             <React.Fragment key={s.num}>
-              <div 
+              <div
                 className={`${styles.step} ${step >= s.num ? styles.active : ''} ${step > s.num ? styles.completed : ''}`}
                 onClick={() => step > s.num && setStep(s.num)}
               >
@@ -449,7 +456,7 @@ const Checkout: React.FC = () => {
 
         {/* Error Message */}
         {error && (
-          <motion.div 
+          <motion.div
             className={styles.errorMessage}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -514,7 +521,7 @@ const Checkout: React.FC = () => {
 
                 {/* Add New Address Button */}
                 {!showAddressForm && (
-                  <button 
+                  <button
                     className={styles.addAddressBtn}
                     onClick={() => setShowAddressForm(true)}
                   >
@@ -525,7 +532,7 @@ const Checkout: React.FC = () => {
 
                 {/* New Address Form */}
                 {showAddressForm && (
-                  <motion.form 
+                  <motion.form
                     className={styles.addressForm}
                     onSubmit={handleAddressSubmit}
                     initial={{ opacity: 0, height: 0 }}
@@ -604,15 +611,15 @@ const Checkout: React.FC = () => {
                       <label htmlFor="isDefault">Đặt làm địa chỉ mặc định</label>
                     </div>
                     <div className={styles.formActions}>
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         className={styles.cancelBtn}
                         onClick={() => setShowAddressForm(false)}
                       >
                         Hủy
                       </button>
-                      <button 
-                        type="submit" 
+                      <button
+                        type="submit"
                         className={styles.submitBtn}
                         disabled={loading}
                       >
@@ -667,7 +674,7 @@ const Checkout: React.FC = () => {
                     <FiTag />
                     <h3>Mã giảm giá</h3>
                   </div>
-                  
+
                   {appliedVoucher ? (
                     <div className={styles.appliedVoucher}>
                       <div className={styles.appliedVoucherInfo}>
@@ -677,7 +684,7 @@ const Checkout: React.FC = () => {
                           <span>Giảm {formatCurrency(appliedVoucher.discount)}</span>
                         </div>
                       </div>
-                      <button 
+                      <button
                         className={styles.removeVoucherBtn}
                         onClick={handleRemoveVoucher}
                       >
@@ -694,41 +701,41 @@ const Checkout: React.FC = () => {
                           onChange={e => setVoucherCode(e.target.value)}
                           disabled={voucherLoading}
                         />
-                        <button 
-                          onClick={handleApplyVoucher} 
+                        <button
+                          onClick={handleApplyVoucher}
                           disabled={voucherLoading || !voucherCode}
                         >
                           {voucherLoading ? 'Đang kiểm tra...' : 'Áp dụng'}
                         </button>
                       </div>
-                      
+
                       {voucherError && (
                         <p className={styles.voucherError}>{voucherError}</p>
                       )}
-                      
+
                       {availableVouchers.length > 0 && (
                         <div className={styles.availableVouchers}>
-                          <button 
+                          <button
                             className={styles.showVouchersBtn}
                             onClick={() => setShowVoucherList(!showVoucherList)}
                           >
                             <FiPercent />
                             Xem {availableVouchers.length} voucher có sẵn
                           </button>
-                          
+
                           {showVoucherList && (
                             <div className={styles.voucherList}>
                               {availableVouchers.map((voucher) => (
-                                <div 
-                                  key={voucher._id} 
+                                <div
+                                  key={voucher._id}
                                   className={styles.voucherItem}
                                   onClick={() => handleSelectVoucher(voucher)}
                                 >
                                   <div className={styles.voucherItemInfo}>
                                     <strong>{voucher.code}</strong>
                                     <span>
-                                      Giảm {voucher.type === 'percentage' 
-                                        ? `${voucher.value}%` 
+                                      Giảm {voucher.type === 'percentage'
+                                        ? `${voucher.value}%`
                                         : formatCurrency(voucher.value)}
                                       {voucher.minOrder && ` cho đơn từ ${formatCurrency(voucher.minOrder)}`}
                                     </span>
@@ -875,8 +882,8 @@ const Checkout: React.FC = () => {
                   <FiChevronRight />
                 </button>
               ) : (
-                <button 
-                  className={styles.placeOrderBtn} 
+                <button
+                  className={styles.placeOrderBtn}
                   onClick={handlePlaceOrder}
                   disabled={loading}
                 >
@@ -896,7 +903,7 @@ const Checkout: React.FC = () => {
           {/* Order Summary Sidebar */}
           <div className={styles.orderSummary}>
             <h3>Tóm tắt đơn hàng</h3>
-            
+
             <div className={styles.summaryItems}>
               {cart?.items.slice(0, 3).map(item => {
                 const imgSrc = item.product.images?.[0]

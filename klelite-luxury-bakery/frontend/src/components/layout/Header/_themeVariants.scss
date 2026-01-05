@@ -1,0 +1,94 @@
+// ============================================
+// Theme Mixins & Variables
+// ============================================
+
+// Christmas Theme
+.christmas {
+  &.header {
+    background: color-mix(in srgb, #c62828, transparent 10%);
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+
+    &.scrolled {
+      background: color-mix(in srgb, #b71c1c, transparent 2%);
+      box-shadow: 0 4px 12px rgba(183, 28, 28, 0.3);
+    }
+  }
+
+  .navLink {
+    color: rgba(255, 255, 255, 0.9);
+
+    &:hover, &.active {
+      color: #ffd700; // Gold text on red bg
+      &::after {
+        background: #ffd700;
+      }
+    }
+  }
+
+  .logoText {
+    background: linear-gradient(to right, #ffffff, #f0f0f0); // White logo
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .logoSubtext {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .iconButton {
+    color: rgba(255, 255, 255, 0.9);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+  }
+}
+
+// Tet Theme (Lunar New Year)
+.tet {
+  &.header {
+    background: color-mix(in srgb, #e65100, transparent 10%);
+    border-bottom-color: rgba(255, 215, 0, 0.3);
+
+    &.scrolled {
+      background: color-mix(in srgb, #ef6c00, transparent 2%);
+      box-shadow: 0 4px 12px rgba(239, 108, 0, 0.3);
+    }
+  }
+
+  .navLink {
+    color: #fffde7;
+
+    &:hover, &.active {
+      color: #ffeb3b; // Yellow text
+      &::after {
+        background: #ffeb3b;
+      }
+    }
+  }
+
+  .logoText {
+    background: linear-gradient(to right, #ffeb3b, #fbc02d); // Yellow/Gold logo
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .logoSubtext {
+    color: rgba(255, 235, 59, 0.9);
+  }
+
+  .iconButton {
+    color: rgba(255, 255, 255, 0.95);
+
+    &:hover {
+      background: rgba(255, 235, 59, 0.2);
+      color: #ffeb3b;
+    }
+  }
+}
+
+// Valentine Theme
+.valentine {
+    // Add logic later
+}

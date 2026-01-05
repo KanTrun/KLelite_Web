@@ -9,6 +9,7 @@ import {
   FiGrid,
   FiHome,
   FiLogOut,
+  FiLayout,
 } from 'react-icons/fi';
 import { RootState, AppDispatch } from '@/store';
 import { logout } from '@/store/slices/authSlice';
@@ -33,6 +34,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title, subtitle, ac
     { path: '/admin/products', icon: <FiPackage />, label: 'Sản phẩm', badge: null as string | null },
     { path: '/admin/categories', icon: <FiGrid />, label: 'Danh mục', badge: null as string | null },
     { path: '/admin/users', icon: <FiUsers />, label: 'Tài khoản', badge: null as string | null },
+    { path: '/admin/themes', icon: <FiLayout />, label: 'Giao diện', badge: null as string | null },
   ];
 
   const isActive = (path: string) => {

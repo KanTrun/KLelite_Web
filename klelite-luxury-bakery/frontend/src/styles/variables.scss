@@ -388,11 +388,15 @@ $product-card-radius: $radius-lg;
   --color-text-secondary: #{$gray-600};
   --color-text-muted: #{$gray-500};
   --color-text-inverse: #{$white};
+  --color-text-rgb: 255, 255, 255; /* RGB for $white */
 
   // Primary/Brand
   --color-primary: #{$primary-color};
   --color-primary-light: #{$primary-light};
   --color-primary-dark: #{$primary-dark};
+  --color-gold-secondary: #{$gold-secondary};
+  --color-primary-rgb: 201, 169, 98; /* RGB for $primary-color */
+  --color-primary-rgb: 201, 169, 98; /* RGB for $primary-color */
 
   // Border
   --color-border: #{$gray-200};
@@ -404,6 +408,8 @@ $product-card-radius: $radius-lg;
   --color-warning: #{$warning-color};
   --color-error: #{$error-color};
   --color-info: #{$info-color};
+  --color-error-rgb: 244, 67, 54; /* RGB for $error-color */
+  --color-error-rgb: 244, 67, 54; /* RGB for $error-color */
 
   // Shadows
   --shadow-sm: #{$shadow-sm};
@@ -435,6 +441,29 @@ $product-card-radius: $radius-lg;
   --input-border: #{$gray-300};
   --input-border-focus: #{$primary-color};
   --input-placeholder: #{$gray-500};
+ 
+  // Gradients
+  --gradient-gold: #{$gradient-gold};
+  --gradient-gold-shimmer: #{$gradient-gold-shimmer};
+  --gradient-gold-radial: #{$gradient-gold-radial};
+
+  // Admin Colors (Light Mode Defaults)
+  --admin-bg: #FAFBFC;
+  --admin-surface: #FFFFFF;
+  --admin-surface-elevated: #FFFFFF;
+  --admin-border: #E8E8E8;
+  --admin-border-light: #F0F0F0;
+  --admin-text-primary: #1A1A2E;
+  --admin-text-secondary: #64748B;
+  --admin-text-muted: #94A3B8;
+  --admin-accent: #C9A857;
+  --admin-accent-light: #EBE4D4;
+  --admin-accent-dark: #A68A3D;
+  --admin-success: #10B981;
+  --admin-warning: #F59E0B;
+  --admin-danger: #EF4444;
+  --admin-info: #3B82F6;
+  --admin-purple: #8B5CF6;
 }
 
 [data-theme="dark"] {
@@ -450,11 +479,14 @@ $product-card-radius: $radius-lg;
   --color-text-secondary: #{$gray-400};
   --color-text-muted: #{$gray-500};
   --color-text-inverse: #{$gray-900};
+  --color-text-rgb: 245, 245, 245; /* RGB for $gray-100 */
 
   // Primary stays the same for brand consistency
   --color-primary: #{$primary-color};
   --color-primary-light: #{$primary-light};
   --color-primary-dark: #{$gold-muted};
+  --color-gold-secondary: #{$gold-secondary};
+  --color-primary-rgb: 201, 169, 98; /* RGB for $primary-color */
 
   // Border - darker borders
   --color-border: #{rgba($gray-600, 0.3)};
@@ -491,4 +523,32 @@ $product-card-radius: $radius-lg;
   --input-border: #{rgba($gray-600, 0.4)};
   --input-border-focus: #{$primary-color};
   --input-placeholder: #{$gray-500};
+ 
+  // Gradients
+  --gradient-gold: #{$gradient-gold};
+  --gradient-gold-shimmer: #{$gradient-gold-shimmer};
+  --gradient-gold-radial: #{$gradient-gold-radial};
+ 
+  // Gradients
+  --gradient-gold: #{$gradient-gold};
+  --gradient-gold-shimmer: #{$gradient-gold-shimmer};
+  --gradient-gold-radial: #{$gradient-gold-radial};
+
+  // Admin Colors (Dark Mode Overrides)
+  --admin-bg: #{$dark-deeper};
+  --admin-surface: #{$dark-secondary};
+  --admin-surface-elevated: #{$dark-surface};
+  --admin-border: #{rgba($gray-600, 0.3)};
+  --admin-border-light: #{rgba($gray-700, 0.3)};
+  --admin-text-primary: #{$gray-100};
+  --admin-text-secondary: #{$gray-400};
+  --admin-text-muted: #{$gray-500};
+  --admin-accent: #{$primary-color};
+  --admin-accent-light: #{rgba($primary-color, 0.2)};
+  --admin-accent-dark: #{$primary-dark};
+  --admin-success: #{$success-color};
+  --admin-warning: #{$warning-color};
+  --admin-danger: #{$error-color};
+  --admin-info: #{$info-color};
+  --admin-purple: #8B5CF6;
 }

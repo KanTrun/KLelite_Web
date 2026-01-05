@@ -6,6 +6,9 @@ import { INotification } from '../models/Notification';
 // Map of userId to array of SSE response objects
 const connections = new Map<string, Response[]>();
 
+// Maximum SSE connections per user (prevent memory leak)
+const MAX_CONNECTIONS_PER_USER = 5;
+
 // Redis Pub/Sub instances for multi-server support
 const redisSub = new Redis({
   host: config.redis.host,
@@ -62,6 +65,7 @@ export const initSseRedis = async (): Promise<void> => {
 
 /**
  * Add a new SSE connection for a user
+ * Limits connections to MAX_CONNECTIONS_PER_USER to prevent memory leaks
  */
 export const addConnection = (userId: string, res: Response): void => {
   if (!connections.has(userId)) {
@@ -69,6 +73,16 @@ export const addConnection = (userId: string, res: Response): void => {
   }
 
   const userConnections = connections.get(userId)!;
+
+  // If max connections reached, close oldest connection
+  if (userConnections.length >= MAX_CONNECTIONS_PER_USER) {
+    const oldestConnection = userConnections.shift();
+    if (oldestConnection) {
+      oldestConnection.end();
+      console.log(`SSE connection limit reached for user ${userId}. Closed oldest connection.`);
+    }
+  }
+
   userConnections.push(res);
 
   console.log(`SSE connection added for user ${userId}. Total connections: ${userConnections.length}`);

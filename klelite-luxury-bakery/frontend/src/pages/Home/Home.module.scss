@@ -185,7 +185,7 @@
   font-family: $font-heading;
   font-size: clamp(3rem, 10vw, 7rem);
   font-weight: $font-bold;
-  color: var(--color-text-inverse); // Keep inverse for hero overlay
+  color: $white; // Keep white for hero overlay independent of theme
   line-height: 1;
   letter-spacing: 2px;
   text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
@@ -193,9 +193,9 @@
   // Gold gradient effect
   background: linear-gradient(
     135deg,
-    var(--color-text-inverse) 0%, // Keep inverse
+    $white 0%, // Keep inverse
     $gold-champagne 50%,
-    var(--color-text-inverse) 100% // Keep inverse
+    $white 100% // Keep inverse
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -312,7 +312,7 @@
   gap: $spacing-sm;
   padding: $spacing-md $spacing-xl;
   background: transparent;
-  color: var(--color-text-inverse);
+  color: $white;
   font-family: $font-body;
   font-size: $text-sm;
   font-weight: $font-medium;
@@ -872,7 +872,7 @@
   font-family: $font-heading;
   font-size: $text-xl;
   font-weight: $font-semibold;
-  color: var(--color-text-inverse);
+  color: $white;
   margin-bottom: $spacing-2xs;
 
   @media (min-width: 768px) {
@@ -1582,7 +1582,7 @@
   font-family: $font-heading;
   font-size: clamp(2rem, 5vw, 3rem);
   font-weight: $font-bold;
-  color: var(--color-text-inverse);
+  color: $white;
   line-height: 1.2;
   margin-bottom: $spacing-md;
 }
@@ -1671,7 +1671,7 @@
   gap: $spacing-sm;
   padding: $spacing-md $spacing-xl;
   background: transparent;
-  color: var(--color-text-inverse);
+  color: $white;
   font-family: $font-body;
   font-size: $text-base;
   font-weight: $font-medium;

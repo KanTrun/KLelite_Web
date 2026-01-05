@@ -18,7 +18,14 @@
       "Bash(npx tsc:*)",
       "Bash(git log:*)",
       "Bash(npm install)",
-      "Bash(npm test)"
+      "Bash(npm test)",
+      "Bash(cat:*)",
+      "Bash(node:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm test:*)",
+      "Bash(APPROVED:.env git commit:*)",
+      "Bash(awk:*)",
+      "Bash(git checkout:*)"
     ]
   }
 }

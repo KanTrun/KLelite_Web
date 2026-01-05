@@ -12,8 +12,9 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@types/dompurify": "^3.0.5",
     "cors": "^2.8.5",
+    "dompurify": "^3.3.1",
     "express": "^5.1.0"
-  },
-  "devDependencies": {}
+  }
 }
