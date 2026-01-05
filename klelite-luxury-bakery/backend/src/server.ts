@@ -52,7 +52,7 @@ app.use(
   cors({
     origin: [
       config.frontendUrl, 
-      'http://localhost:3000',
+      'http://localhost:3001', 'http://localhost:3000',
       'http://localhost:5173',
       'https://k-lelite-web-a5fc.vercel.app',
       /\.vercel\.app$/

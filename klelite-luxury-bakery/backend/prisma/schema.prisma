@@ -1,9 +1,557 @@
 generator client {
   provider = "prisma-client-js"
+  engineType = "library"
 }
 
 datasource db {
   provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
-// Models added in Phase 02
+// User & Auth
+enum Role {
+  USER
+  ADMIN
+  STAFF
+}
+
+model User {
+  id                  String    @id @default(uuid())
+  email               String    @unique
+  password            String
+  googleId            String?   @unique
+  firstName           String
+  lastName            String
+  phone               String?
+  avatar              String?
+  role                Role      @default(USER)
+  isActive            Boolean   @default(true)
+  isVerified          Boolean   @default(false)
+  verificationToken   String?
+  verificationExpire  DateTime?
+  resetPasswordToken  String?
+  resetPasswordExpire DateTime?
+  refreshToken        String?   @db.Text
+  lastLogin           DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  // Relations
+  addresses         Address[]
+  notifications     Notification[]
+  loyaltyAccount    LoyaltyAccount?
+  orders            Order[]
+  reviews           Review[]
+  wishlist          Product[]          @relation("UserWishlist")
+  cart              Cart?
+  voucherUsages     VoucherUsage[]
+  stockReservations StockReservation[]
+  activities        UserActivity[]
+
+  @@index([email])
+  @@index([googleId])
+}
+
+model Address {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName  String
+  phone     String
+  address   String
+  ward      String
+  district  String
+  city      String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Notification {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String // enum in code
+  title     String
+  message   String
+  data      Json?
+  read      Boolean   @default(false)
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([read])
+}
+
+enum LoyaltyTier {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+model LoyaltyAccount {
+  id             String      @id @default(uuid())
+  userId         String      @unique
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currentPoints  Int         @default(0)
+  lifetimePoints Int         @default(0)
+  tier           LoyaltyTier @default(BRONZE)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  // Relations
+  history PointTransaction[]
+
+  @@index([userId])
+}
+
+enum TransactionType {
+  EARN
+  REDEEM
+  EXPIRE
+  ADJUSTMENT
+}
+
+model PointTransaction {
+  id                  String          @id @default(uuid())
+  loyaltyAccountId    String
+  loyaltyAccount      LoyaltyAccount  @relation(fields: [loyaltyAccountId], references: [id], onDelete: Cascade)
+  orderId             String?
+  order               Order?          @relation(fields: [orderId], references: [id])
+  type                TransactionType
+  amount              Int
+  description         String
+  expiresAt           DateTime?
+  expirationProcessed Boolean         @default(false)
+  createdAt           DateTime        @default(now())
+
+  @@index([loyaltyAccountId])
+}
+
+// Commerce Placeholders (to satisfy relations)
+// removed duplicate Order
+
+// Product Catalog
+model Category {
+  id          String     @id @default(uuid())
+  name        String
+  slug        String     @unique
+  description String?    @db.Text
+  image       String?
+  parentId    String?
+  parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children    Category[] @relation("CategoryHierarchy")
+  order       Int        @default(0)
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relations
+  products Product[]
+  vouchers Voucher[]
+
+  @@index([slug])
+  @@index([parentId])
+}
+
+model Product {
+  id               String    @id @default(uuid())
+  categoryId       String?
+  category         Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  name             String
+  slug             String    @unique
+  description      String    @db.Text
+  shortDescription String?   @db.Text
+  price            Decimal   @db.Decimal(10, 2)
+  comparePrice     Decimal?  @db.Decimal(10, 2)
+  sku              String?   @unique
+  stock            Int       @default(0)
+  sold             Int       @default(0)
+  rating           Decimal   @default(0) @db.Decimal(3, 2)
+  numReviews       Int       @default(0)
+  isFeatured       Boolean   @default(false)
+  isAvailable      Boolean   @default(true)
+  isNewProduct     Boolean   @default(false)
+
+  // Product Details
+  ingredients          Json? // Array of strings
+  allergens            Json? // Array of strings
+  nutrition            Json? // Object: {calories, protein, etc}
+  tags                 Json? // Array of strings
+  preparationTime      Int? // Minutes
+  shelfLife            String?
+  storageInstructions  String?
+  customizable         Boolean @default(false)
+  customizationOptions Json? // Array of strings
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  images      ProductImage[]
+  sizes       ProductSize[]
+  reviews     Review[]
+  wishedBy    User[]         @relation("UserWishlist")
+  relatedTo   Product[]      @relation("RelatedProducts")
+  relatedFrom Product[]      @relation("RelatedProducts")
+
+  cartItems         CartItem[]
+  orderItems        OrderItem[]
+  vouchers          Voucher[]
+  flashSaleProducts FlashSaleProduct[]
+  stockReservations StockReservation[]
+  activities        UserActivity[]
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([isAvailable])
+}
+
+model ProductImage {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  publicId  String?
+  isMain    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+model ProductSize {
+  id           String   @id @default(uuid())
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name         String
+  price        Decimal  @db.Decimal(10, 2)
+  comparePrice Decimal? @db.Decimal(10, 2)
+  createdAt    DateTime @default(now())
+
+  @@index([productId])
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  rating     Int
+  comment    String?  @db.Text
+  images     Json? // Array of strings
+  isVerified Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId])
+  @@index([productId])
+}
+
+// Commerce
+model Cart {
+  id         String     @id @default(uuid())
+  userId     String     @unique
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items      CartItem[]
+  totalItems Int        @default(0)
+  totalPrice Decimal    @default(0) @db.Decimal(10, 2)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@index([userId])
+}
+
+model CartItem {
+  id            String   @id @default(uuid())
+  cartId        String
+  cart          Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity      Int
+  size          String? // Store as JSON string or plain text if simple
+  customization Json? // Store customization details
+  price         Decimal  @db.Decimal(10, 2) // Snapshot price
+  createdAt     DateTime @default(now())
+
+  @@index([cartId])
+  @@index([productId])
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPING
+  DELIVERED
+  CANCELLED
+  RETURNED
+}
+
+enum PaymentMethod {
+  COD
+  BANK_TRANSFER
+  VNPAY
+  MOMO
+  ZALOPAY
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  orderNumber String      @unique
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  items       OrderItem[]
+
+  // Shipping Address Snapshot
+  shippingFullName String
+  shippingPhone    String
+  shippingAddress  String
+  shippingWard     String
+  shippingDistrict String
+  shippingCity     String
+
+  // Payment Info
+  paymentMethod PaymentMethod
+  paymentStatus PaymentStatus @default(PENDING)
+  transactionId String?
+  paidAt        DateTime?
+
+  // Financials
+  subtotal    Decimal @db.Decimal(10, 2)
+  shippingFee Decimal @default(0) @db.Decimal(10, 2)
+  discount    Decimal @default(0) @db.Decimal(10, 2)
+  voucherCode String?
+  total       Decimal @db.Decimal(10, 2)
+
+  // Status & Meta
+  status           OrderStatus @default(PENDING)
+  note             String?     @db.Text
+  deliveryDate     DateTime?
+  deliveryTimeSlot String?
+  isGift           Boolean     @default(false)
+  giftMessage      String?     @db.Text
+  cancelReason     String?
+  cancelledAt      DateTime?
+  deliveredAt      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  pointTransactions PointTransaction[]
+
+  @@index([userId])
+  @@index([orderNumber])
+  @@index([status])
+}
+
+model OrderItem {
+  id            String  @id @default(uuid())
+  orderId       String
+  order         Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId     String
+  product       Product @relation(fields: [productId], references: [id])
+  name          String
+  image         String?
+  quantity      Int
+  size          String?
+  customization Json?
+  price         Decimal @db.Decimal(10, 2)
+  total         Decimal @db.Decimal(10, 2)
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+enum VoucherType {
+  PERCENTAGE
+  FIXED_AMOUNT
+  FREE_SHIPPING
+}
+
+model Voucher {
+  id            String      @id @default(uuid())
+  code          String      @unique
+  description   String?
+  type          VoucherType
+  value         Decimal     @db.Decimal(10, 2)
+  minOrderValue Decimal     @default(0) @db.Decimal(10, 2)
+  maxDiscount   Decimal?    @db.Decimal(10, 2)
+  usageLimit    Int? // Global limit
+  usedCount     Int         @default(0)
+  userLimit     Int? // Per user limit
+  startDate     DateTime
+  endDate       DateTime?
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  usedByUsers          VoucherUsage[]
+  applicableCategories Category[]
+  applicableProducts   Product[]
+
+  @@index([code])
+  @@index([isActive])
+}
+
+model VoucherUsage {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  voucherId String
+  voucher   Voucher  @relation(fields: [voucherId], references: [id], onDelete: Cascade)
+  usedAt    DateTime @default(now())
+
+  @@index([userId])
+  @@index([voucherId])
+}
+
+enum FlashSaleStatus {
+  UPCOMING
+  ACTIVE
+  ENDED
+}
+
+model FlashSale {
+  id               String          @id @default(uuid())
+  name             String
+  slug             String          @unique
+  description      String?         @db.Text
+  startTime        DateTime
+  endTime          DateTime
+  status           FlashSaleStatus @default(UPCOMING)
+  earlyAccessTiers Json? // Array of LoyaltyTier enum strings
+  earlyAccessMin   Int             @default(0) // Minutes
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  // Relations
+  products     FlashSaleProduct[]
+  reservations StockReservation[]
+
+  @@index([slug])
+  @@index([status])
+  @@index([startTime, endTime])
+}
+
+model FlashSaleProduct {
+  id            String    @id @default(uuid())
+  flashSaleId   String
+  flashSale     FlashSale @relation(fields: [flashSaleId], references: [id], onDelete: Cascade)
+  productId     String
+  product       Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  flashPrice    Decimal   @db.Decimal(10, 2)
+  originalPrice Decimal   @db.Decimal(10, 2)
+  stockLimit    Int
+  perUserLimit  Int?
+  soldCount     Int       @default(0)
+
+  @@index([flashSaleId])
+  @@index([productId])
+}
+
+// System & Utils
+model Counter {
+  id        String   @id @default(uuid())
+  seq       Int      @default(0)
+  entity    String   @unique // e.g., 'order'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FAQ {
+  id        String   @id @default(uuid())
+  question  String   @db.Text
+  keywords  Json? // Array of strings
+  answer    String   @db.Text
+  category  String?
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ReservationStatus {
+  ACTIVE
+  EXPIRED
+  COMPLETED
+  CANCELLED
+}
+
+model StockReservation {
+  id          String            @id @default(uuid())
+  flashSaleId String
+  flashSale   FlashSale         @relation(fields: [flashSaleId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product           @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quantity    Int
+  expiresAt   DateTime
+  status      ReservationStatus @default(ACTIVE)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([flashSaleId])
+  @@index([userId])
+  @@index([status])
+}
+
+enum ActivityType {
+  VIEW_PRODUCT
+  ADD_TO_CART
+  PURCHASE
+  SEARCH
+  FILTER
+}
+
+model UserActivity {
+  id           String       @id @default(uuid())
+  userId       String
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId    String?
+  product      Product?     @relation(fields: [productId], references: [id], onDelete: SetNull)
+  activityType ActivityType
+  metadata     Json?
+  createdAt    DateTime     @default(now())
+
+  @@index([userId])
+  @@index([activityType])
+  @@index([createdAt])
+}
+
+// Configs
+enum ThemeType {
+  LIGHT
+  DARK
+  HOLIDAY
+  CUSTOM
+}
+
+model ThemeConfig {
+  id        String    @id @default(uuid())
+  name      String
+  type      ThemeType @default(LIGHT)
+  isActive  Boolean   @default(false)
+  startDate DateTime?
+  endDate   DateTime?
+  header    Json // { variant, textColor, accentColor, logoUrl }
+  hero      Json // { title, subtitle, ctaText, ctaLink, backgroundImage, overlayOpacity }
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([isActive])
+}

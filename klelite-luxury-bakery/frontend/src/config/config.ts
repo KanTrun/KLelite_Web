@@ -1,7 +1,7 @@
 // Application Configuration
 export const config = {
   // API
-  apiUrl: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  apiUrl: import.meta.env.VITE_API_URL || 'http://localhost:5001/api',
   
   // App Info
   appName: import.meta.env.VITE_APP_NAME || "KL'élite Luxury Bakery",
