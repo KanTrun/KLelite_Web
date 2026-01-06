@@ -14,6 +14,7 @@ jest.mock('../config/redis', () => ({
     expire: jest.fn().mockReturnThis(),
     exec: jest.fn().mockResolvedValue([]),
   })),
+  isRedisAvailable: true, // Mock isRedisAvailable to true
 }));
 
 import flashSaleService from '../services/flashSaleService';

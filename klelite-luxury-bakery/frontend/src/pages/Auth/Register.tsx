@@ -191,9 +191,16 @@ const Register: React.FC = () => {
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }));
+
+    // Map custom field names back to state keys
+    let fieldName = name;
+    if (name === 'klelite-email') fieldName = 'email';
+    else if (name === 'klelite-pass') fieldName = 'password';
+    else if (name === 'klelite-confirm-pass') fieldName = 'confirmPassword';
+
+    setFormData((prev) => ({ ...prev, [fieldName]: value }));
+    if (errors[fieldName]) {
+      setErrors((prev) => ({ ...prev, [fieldName]: '' }));
     }
   }, [errors]);
 
@@ -305,14 +312,14 @@ const Register: React.FC = () => {
               <span className={styles.offerText}>Đơn hàng đầu tiên</span>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className={styles.brandingFeatures}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.6 }}
             >
               {features.map((feature, index) => (
-                <motion.div 
+                <motion.div
                   key={index}
                   className={styles.feature}
                   initial={{ opacity: 0, x: -20 }}
@@ -325,6 +332,16 @@ const Register: React.FC = () => {
                   <span>{feature.text}</span>
                 </motion.div>
               ))}
+            </motion.div>
+
+            <motion.div
+              className={styles.trustBadges}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+            >
+              <span>✓ SSL Bảo mật</span>
+              <span>✓ Thanh toán an toàn</span>
             </motion.div>
           </div>
         </motion.div>
@@ -441,31 +458,36 @@ const Register: React.FC = () => {
                 </motion.div>
               </div>
 
-              <motion.div 
+              <motion.div
                 className={`${styles.inputGroup} ${errors.email ? styles.hasError : ''} ${focusedField === 'email' ? styles.focused : ''}`}
                 variants={itemVariants}
               >
-                <label htmlFor="email">Email</label>
+                <label htmlFor="klelite-email">Email</label>
                 <div className={styles.inputWrapper}>
                   <span className={styles.inputIcon}>
                     <FiMail />
                   </span>
                   <input
-                    type="email"
-                    id="email"
-                    name="email"
+                    type="text"
+                    id="klelite-email"
+                    name="klelite-email"
                     value={formData.email}
                     onChange={handleChange}
                     onFocus={() => setFocusedField('email')}
                     onBlur={() => setFocusedField(null)}
                     placeholder="email@example.com"
-                    autoComplete="email"
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
+                    data-lpignore="true"
+                    data-form-type="other"
                   />
                   <div className={styles.inputGlow} />
                 </div>
                 <AnimatePresence>
                   {errors.email && (
-                    <motion.span 
+                    <motion.span
                       className={styles.errorText}
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -513,25 +535,27 @@ const Register: React.FC = () => {
                 </AnimatePresence>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 className={`${styles.inputGroup} ${errors.password ? styles.hasError : ''} ${focusedField === 'password' ? styles.focused : ''}`}
                 variants={itemVariants}
               >
-                <label htmlFor="password">Mật khẩu</label>
+                <label htmlFor="klelite-pass">Mật khẩu</label>
                 <div className={styles.inputWrapper}>
                   <span className={styles.inputIcon}>
                     <FiLock />
                   </span>
                   <input
                     type={showPassword ? 'text' : 'password'}
-                    id="password"
-                    name="password"
+                    id="klelite-pass"
+                    name="klelite-pass"
                     value={formData.password}
                     onChange={handleChange}
                     onFocus={() => setFocusedField('password')}
                     onBlur={() => setFocusedField(null)}
                     placeholder="Tối thiểu 6 ký tự"
                     autoComplete="new-password"
+                    data-lpignore="true"
+                    data-form-type="other"
                   />
                   <button
                     type="button"
@@ -580,25 +604,27 @@ const Register: React.FC = () => {
                 </AnimatePresence>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 className={`${styles.inputGroup} ${errors.confirmPassword ? styles.hasError : ''} ${focusedField === 'confirmPassword' ? styles.focused : ''}`}
                 variants={itemVariants}
               >
-                <label htmlFor="confirmPassword">Xác nhận mật khẩu</label>
+                <label htmlFor="klelite-confirm-pass">Xác nhận mật khẩu</label>
                 <div className={styles.inputWrapper}>
                   <span className={styles.inputIcon}>
                     <FiLock />
                   </span>
                   <input
                     type={showConfirmPassword ? 'text' : 'password'}
-                    id="confirmPassword"
-                    name="confirmPassword"
+                    id="klelite-confirm-pass"
+                    name="klelite-confirm-pass"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     onFocus={() => setFocusedField('confirmPassword')}
                     onBlur={() => setFocusedField(null)}
                     placeholder="Nhập lại mật khẩu"
                     autoComplete="new-password"
+                    data-lpignore="true"
+                    data-form-type="other"
                   />
                   <button
                     type="button"
@@ -707,6 +733,7 @@ const Register: React.FC = () => {
                   size="large"
                   text="signup_with"
                   shape="rectangular"
+                  logo_alignment="left"
                   width="100%"
                 />
               </div>

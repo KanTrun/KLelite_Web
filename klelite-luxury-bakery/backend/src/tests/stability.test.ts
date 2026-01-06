@@ -37,25 +37,24 @@ describe('Database Stability', () => {
     setTimeoutSpy.mockRestore();
   });
 
-  it('should retry connecting to MySQL with exponential backoff on failure', async () => {
+  it('should connect to MySQL once successfully', async () => {
     const connectMock = prisma.$connect as jest.Mock;
-    connectMock
-      .mockRejectedValueOnce(new Error('Connection failed 1'))
-      .mockRejectedValueOnce(new Error('Connection failed 2'))
-      .mockResolvedValueOnce(undefined);
+    connectMock.mockResolvedValue(undefined);
 
     await connectDB();
-    expect(connectMock).toHaveBeenCalledTimes(3);
-    expect(setTimeoutSpy).toHaveBeenCalledTimes(2);
-    expect(setTimeoutSpy).toHaveBeenNthCalledWith(1, expect.any(Function), 5000);
-    expect(setTimeoutSpy).toHaveBeenNthCalledWith(2, expect.any(Function), 10000);
+    expect(connectMock).toHaveBeenCalledTimes(1);
+    expect(logSpy).toHaveBeenCalledWith('MySQL Connected via Prisma');
+    expect(setTimeoutSpy).not.toHaveBeenCalled();
+    expect(exitSpy).not.toHaveBeenCalled();
   });
 
-  it('should exit process after maximum retries', async () => {
+  it('should log an error and not exit on MySQL connection failure', async () => {
     const connectMock = prisma.$connect as jest.Mock;
-    connectMock.mockRejectedValue(new Error('Persistent failure'));
-    await expect(connectDB()).rejects.toThrow('Process.exit called with 1');
-    expect(connectMock).toHaveBeenCalledTimes(5);
-    expect(exitSpy).toHaveBeenCalledWith(1);
+    connectMock.mockRejectedValue(new Error('Connection failed'));
+
+    await connectDB();
+    expect(connectMock).toHaveBeenCalledTimes(1);
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('MySQL connection failed'));
+    expect(exitSpy).not.toHaveBeenCalled();
   });
 });

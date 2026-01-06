@@ -129,9 +129,10 @@ describe('Loyalty Points System', () => {
         _id: 'order1',
         user: 'user1',
         total: 100000,
-        status: 'shipping',
-        payment: { method: 'cod' },
+        orderStatus: 'shipping',
+        payment: { method: 'cod', status: 'pending', paidAt: null }, // Corrected mock for nested payment object
         save: jest.fn().mockResolvedValue(true),
+        populate: jest.fn().mockReturnThis(),
       };
       jest.spyOn(Order, 'findById').mockResolvedValue(mockOrder as any);
       const earnPointsSpy = jest.spyOn(loyaltyService, 'earnPoints').mockResolvedValue(100);

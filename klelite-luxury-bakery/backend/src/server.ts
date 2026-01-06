@@ -19,7 +19,7 @@ import { initSseRedis, cleanup as sseCleanup } from './services/sseService';
 import { initQueues, cleanupQueues } from './queues';
 import { startEmailWorker, stopEmailWorker } from './workers/emailWorker';
 
-// Create Express app
+// Create Express app 
 const app: Application = express();
 
 // Trust proxy for Render/Vercel deployment
@@ -51,8 +51,10 @@ app.use('/api', limiter);
 app.use(
   cors({
     origin: [
-      config.frontendUrl, 
-      'http://localhost:3001', 'http://localhost:3000',
+      config.frontendUrl,
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:3002',
       'http://localhost:5173',
       'https://k-lelite-web-a5fc.vercel.app',
       /\.vercel\.app$/
@@ -164,14 +166,18 @@ process.on('uncaughtException', (err: Error) => {
 });
 
 // Graceful shutdown
-process.on('SIGTERM', async () => {
-  console.log('SIGTERM received. Shutting down gracefully...');
+const gracefulShutdown = async (signal: string) => {
+  console.log(`${signal} received. Shutting down gracefully...`);
   await sseCleanup();
   await cleanupQueues();
   await stopEmailWorker();
   server.close(() => {
     console.log('Process terminated');
+    process.exit(0);
   });
-});
+};
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 export default app;

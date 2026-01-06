@@ -80,13 +80,17 @@ This document outlines the strategic plan and progression for the Klelite Luxury
 - **Description**: Migrate backend from MongoDB (Mongoose) to MySQL (Prisma) to improve relational data handling and transaction support.
 - **Milestones**:
     - [x] Prisma setup & MySQL configuration (Phase 01)
-    - [ ] Schema design & migration (Phase 02)
-    - [ ] Service layer refactoring (Phase 03)
+    - [x] Schema design & migration (Phase 02)
+    - [x] Service layer refactoring (Phase 03)
     - [ ] Controller & Middleware updates (Phase 04)
     - [ ] Data seeding & validation (Phase 05)
 - **Estimated Completion**: 2026-01-15
 
 ## Changelog
+
+### 2026-01-06
+- **Completed**: Phase 03 - Service Layer Migration.
+- **Implemented**: All services (User, Product, Order, Cart, Auth) have been migrated from Mongoose to Prisma, ensuring type safety and proper handling of relational data.
 
 ### 2026-01-05
 - **In Progress**: Phase 08 - Database Migration to MySQL/Prisma.
