@@ -95,6 +95,74 @@ export const authService = {
   },
 
   /**
+   * Generate Verification Token
+   */
+  async generateVerificationToken(userId: string): Promise<string> {
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const hashedToken = crypto
+      .createHash('sha256')
+      .update(verificationToken)
+      .digest('hex');
+
+    const verificationExpire = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        verificationToken: hashedToken,
+        verificationExpire
+      }
+    });
+
+    return verificationToken;
+  },
+
+  /**
+   * Generate Reset Password Token
+   */
+  async generateResetPasswordToken(userId: string): Promise<string> {
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const hashedToken = crypto
+      .createHash('sha256')
+      .update(resetToken)
+      .digest('hex');
+
+    const resetPasswordExpire = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        resetPasswordToken: hashedToken,
+        resetPasswordExpire
+      }
+    });
+
+    return resetToken;
+  },
+
+  /**
+   * Generate Refresh Token
+   */
+  async generateRefreshToken(userId: string): Promise<string> {
+     // Check if JWT_REFRESH_SECRET exists
+     const refreshSecret = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET || 'secret';
+     const refreshExpire = process.env.JWT_REFRESH_EXPIRE || '30d';
+
+     const refreshToken = jwt.sign(
+      { id: userId },
+      refreshSecret,
+      { expiresIn: refreshExpire } as jwt.SignOptions
+    );
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { refreshToken }
+    });
+
+    return refreshToken;
+  },
+
+  /**
    * Generate JWT Token
    */
   generateToken(id: string): string {

@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { IUser } from '../models/User';
+import { User } from '@prisma/client';
 
 // Extended Request with user
 export interface AuthRequest extends Request {
-  user?: IUser;
+  user?: User;
 }
 
 // API Response

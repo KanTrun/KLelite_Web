@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '../config';
-import User, { IUser } from '../models/User';
+import prisma from '../lib/prisma';
 import { UnauthorizedError, ForbiddenError } from '../utils';
 import { JwtPayload, AuthRequest } from '../types';
 
@@ -35,8 +35,10 @@ export const protect = async (
     const decoded = jwt.verify(token, config.jwt.secret) as JwtPayload;
 
     // Check if user still exists
-    const user = await User.findById(decoded.id).select('-password');
-    
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id }
+    });
+
     if (!user) {
       throw UnauthorizedError('Người dùng không tồn tại');
     }
@@ -80,7 +82,9 @@ export const optionalAuth = async (
 
     if (token) {
       const decoded = jwt.verify(token, config.jwt.secret) as JwtPayload;
-      const user = await User.findById(decoded.id).select('-password');
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.id }
+      });
       if (user && user.isActive) {
         req.user = user;
       }
@@ -131,13 +135,13 @@ export const authorizeOwnerOrAdmin = (
 
       // Get resource owner ID
       const ownerId = await getResourceOwnerId(req);
-      
+
       if (!ownerId) {
         throw ForbiddenError('Không có quyền truy cập tài nguyên này');
       }
 
       // Check if user owns the resource
-      if (req.user._id.toString() !== ownerId) {
+      if (req.user.id !== ownerId) {
         throw ForbiddenError('Không có quyền truy cập tài nguyên này');
       }
 

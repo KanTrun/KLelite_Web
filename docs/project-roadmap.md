@@ -86,11 +86,19 @@ This document outlines the strategic plan and progression for the Klelite Luxury
     - [ ] Data seeding & validation (Phase 05)
 - **Estimated Completion**: 2026-01-15
 
-## Changelog
+### Phase 09: Mobile App Comprehensive Overhaul (In Progress)
+- **Status**: In Progress
+- **Description**: Comprehensive overhaul of the mobile application, focusing on stability, feature parity, and luxury UI.
+- **Milestones**:
+    - [x] Phase 1: Infrastructure & Stability (Immediate Fixes)
+    - [ ] Phase 2: Feature Implementation (Core Screens)
+    - [ ] Phase 3: UI/UX & "Luxury" Theme
+- **Estimated Completion**: 2026-01-31
 
 ### 2026-01-06
 - **Completed**: Phase 03 - Service Layer Migration.
 - **Implemented**: All services (User, Product, Order, Cart, Auth) have been migrated from Mongoose to Prisma, ensuring type safety and proper handling of relational data.
+- **Updated**: Mobile App Comprehensive Overhaul Phase 01 completed (Infrastructure & Stability).
 
 ### 2026-01-05
 - **In Progress**: Phase 08 - Database Migration to MySQL/Prisma.
