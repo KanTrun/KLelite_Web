@@ -142,6 +142,7 @@ model Category {
   slug        String     @unique
   description String?    @db.Text
   image       String?
+  icon        String?
   parentId    String?
   parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
   children    Category[] @relation("CategoryHierarchy")
@@ -554,4 +555,23 @@ model ThemeConfig {
   updatedAt DateTime  @updatedAt
 
   @@index([isActive])
+}
+
+// Media Library for uploaded assets (banners, logos, etc.)
+model MediaAsset {
+  id          String   @id @default(uuid())
+  url         String   // Cloudinary URL
+  publicId    String   // Cloudinary public ID for deletion
+  type        String   // 'banner', 'logo', 'product', etc.
+  fileName    String
+  fileSize    Int      // Size in bytes
+  mimeType    String   // image/jpeg, image/png, etc.
+  width       Int?     // Image width in pixels
+  height      Int?     // Image height in pixels
+  uploadedBy  String   // User ID who uploaded
+  createdAt   DateTime @default(now())
+
+  @@index([type])
+  @@index([uploadedBy])
+  @@index([createdAt])
 }
