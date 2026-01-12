@@ -12,6 +12,12 @@
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
+  // Compensate for main padding-top since hero should extend to top
+  margin-top: -88px;
+
+  @media (max-width: 768px) {
+    margin-top: -72px;
+  }
   
   // Subtle texture overlay
   &::before {

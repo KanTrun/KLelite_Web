@@ -7,8 +7,10 @@
 @import './themeVariants';
 
 .header {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  width: 100%;
   z-index: $z-sticky;
   background: color-mix(in srgb, var(--header-bg), transparent 5%);
   backdrop-filter: blur(20px);

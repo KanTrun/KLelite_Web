@@ -64,10 +64,15 @@ body {
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
-  
+
   main {
     flex: 1;
     overflow-x: hidden;
+    padding-top: 88px; // Add padding to compensate for fixed header
+
+    @media (max-width: 768px) {
+      padding-top: 72px;
+    }
   }
 }
 

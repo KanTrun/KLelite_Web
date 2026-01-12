@@ -7,6 +7,14 @@
   min-height: 100vh;
   background: $dark-primary;
   padding: $spacing-3xl 0;
+  // Compensate for main padding-top
+  margin-top: -88px;
+  padding-top: calc(88px + #{$spacing-3xl});
+
+  @media (max-width: 768px) {
+    margin-top: -72px;
+    padding-top: calc(72px + #{$spacing-3xl});
+  }
 }
 
 .container {

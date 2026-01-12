@@ -444,7 +444,7 @@ const Login: React.FC = () => {
                   text="signin_with"
                   shape="rectangular"
                   logo_alignment="left"
-                  width="100%"
+                  width="350"
                 />
               </div>
             </motion.div>

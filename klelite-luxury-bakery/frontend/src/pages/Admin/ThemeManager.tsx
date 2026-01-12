@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   FiPlus, FiEdit2, FiCheck, FiTrash2, FiArrowRight,
   FiUploadCloud, FiImage, FiX, FiLayout, FiMonitor,
-  FiSmartphone, FiEye, FiSave, FiAlertCircle, FiChevronRight
+  FiSmartphone, FiEye, FiSave, FiAlertCircle, FiChevronRight,
+  FiStar, FiGift, FiHeart, FiSun
 } from 'react-icons/fi';
 import { AppDispatch, RootState } from '@/store';
 import {
@@ -15,17 +16,37 @@ import {
 } from '@/store/slices/themeSlice';
 import AdminLayout from './AdminLayout';
 import BannerGallery from './components/BannerGallery';
-import styles from './Admin.module.scss';
+import styles from './ThemeManager.module.scss';
 import { IThemeConfig } from '@/types/theme.types';
 import axiosClient from '@/services/axiosClient';
 import { toast } from 'react-hot-toast';
 
-// Theme type labels
+// Theme type config with icons
 const THEME_TYPES = {
-  default: { label: 'Mặc định', color: '#3b82f6' },
-  christmas: { label: 'Giáng sinh', color: '#ef4444' },
-  tet: { label: 'Tết Nguyên Đán', color: '#f97316' },
-  valentine: { label: 'Valentine', color: '#ec4899' },
+  default: { 
+    label: 'Mặc định', 
+    color: '#D4AF37',
+    icon: FiStar,
+    description: 'Giao diện sang trọng chuẩn'
+  },
+  christmas: { 
+    label: 'Giáng Sinh', 
+    color: '#ef4444',
+    icon: FiGift,
+    description: 'Không khí lễ hội Noel'
+  },
+  tet: { 
+    label: 'Tết Nguyên Đán', 
+    color: '#f97316',
+    icon: FiSun,
+    description: 'Đón xuân về rộn ràng'
+  },
+  valentine: { 
+    label: 'Valentine', 
+    color: '#ec4899',
+    icon: FiHeart,
+    description: 'Ngọt ngào tình yêu'
+  },
 };
 
 const ThemeManager: React.FC = () => {
@@ -100,7 +121,7 @@ const ThemeManager: React.FC = () => {
     }
 
     const formData = new FormData();
-    formData.append('images', file);
+    formData.append('image', file); // Field name phải là 'image' theo backend
 
     setUploading(true);
     setUploadProgress(0);
@@ -116,12 +137,22 @@ const ThemeManager: React.FC = () => {
         }
       });
 
-      if (response.data && response.data[0]) {
+      // Backend trả về { success: true, data: { url, filename } }
+      if (response.data?.data?.url) {
         setCurrentEdit(prev => ({
           ...prev,
-          hero: { ...prev.hero!, backgroundImage: response.data[0].url }
+          hero: { ...prev.hero!, backgroundImage: response.data.data.url }
         }));
         toast.success('Tải ảnh lên thành công!');
+      } else if (response.data?.url) {
+        // Fallback nếu response format khác
+        setCurrentEdit(prev => ({
+          ...prev,
+          hero: { ...prev.hero!, backgroundImage: response.data.url }
+        }));
+        toast.success('Tải ảnh lên thành công!');
+      } else {
+        throw new Error('Invalid response format');
       }
     } catch (error) {
       console.error('Upload failed', error);
@@ -252,18 +283,28 @@ const ThemeManager: React.FC = () => {
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label htmlFor="themeType">Loại giao diện</label>
-                    <div className={styles.themeTypeGrid}>
-                      {Object.entries(THEME_TYPES).map(([key, { label, color }]) => (
+                    <label htmlFor="themeType">Chủ đề sự kiện</label>
+                    <div className={styles.themeTypeCards}>
+                      {Object.entries(THEME_TYPES).map(([key, { label, color, icon: Icon, description }]) => (
                         <button
                           key={key}
                           type="button"
-                          className={`${styles.themeTypeOption} ${currentEdit.type === key ? styles.selected : ''}`}
+                          className={`${styles.themeTypeCard} ${currentEdit.type === key ? styles.selected : ''}`}
                           onClick={() => setCurrentEdit({ ...currentEdit, type: key as IThemeConfig['type'] })}
                           style={{ '--theme-color': color } as React.CSSProperties}
                         >
-                          <span className={styles.typeDot} />
-                          {label}
+                          <div className={styles.cardIcon}>
+                            <Icon />
+                          </div>
+                          <div className={styles.cardInfo}>
+                            <span className={styles.cardLabel}>{label}</span>
+                            <span className={styles.cardDesc}>{description}</span>
+                          </div>
+                          {currentEdit.type === key && (
+                            <div className={styles.cardCheck}>
+                              <FiCheck />
+                            </div>
+                          )}
                         </button>
                       ))}
                     </div>
@@ -463,20 +504,21 @@ const ThemeManager: React.FC = () => {
                 <span>Xem trước trực tiếp</span>
               </div>
               <div className={`${styles.previewFrame} ${styles[previewMode]}`}>
-                <div className={styles.heroPreview}>
-                  <div className={styles.heroBg}>
-                    <div 
-                      className={styles.heroOverlay} 
-                      style={{ opacity: currentEdit.hero?.overlayOpacity ?? 0.4 }} 
-                    />
-                    <img
-                      src={currentEdit.hero?.backgroundImage || "https://images.unsplash.com/photo-1579306194872-64d3b7bac4c2?q=80&w=2057&auto=format&fit=crop"}
-                      alt="Hero Background Preview"
-                    />
-                  </div>
-                  <div className={styles.heroContent}>
-                    <div className={styles.tagline}>
-                      <div className={styles.line} />
+                <div className={styles.deviceFrame}>
+                  <div className={styles.heroPreview}>
+                    <div className={styles.heroBg}>
+                      <div 
+                        className={styles.heroOverlay} 
+                        style={{ opacity: currentEdit.hero?.overlayOpacity ?? 0.4 }} 
+                      />
+                      <img
+                        src={currentEdit.hero?.backgroundImage || "https://images.unsplash.com/photo-1579306194872-64d3b7bac4c2?q=80&w=2057&auto=format&fit=crop"}
+                        alt="Hero Background Preview"
+                      />
+                    </div>
+                    <div className={styles.heroContent}>
+                      <div className={styles.tagline}>
+                        <div className={styles.line} />
                       <span>
                         {currentEdit.type === 'christmas' ? 'Merry Christmas' : 
                          currentEdit.type === 'tet' ? 'Chúc Mừng Năm Mới' :
@@ -496,6 +538,7 @@ const ThemeManager: React.FC = () => {
                     <button className={styles.ctaButton}>
                       {currentEdit.hero?.ctaText || "Mua ngay"} <FiArrowRight />
                     </button>
+                  </div>
                   </div>
                 </div>
               </div>

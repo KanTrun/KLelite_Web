@@ -280,7 +280,7 @@ const AdminUsers: React.FC = () => {
           >
             <option value="all">Tất cả vai trò</option>
             <option value="user">Khách hàng</option>
-            <option value="manager">Quản lý</option>
+            <option value="staff">Nhân viên</option>
             <option value="admin">Admin</option>
           </select>
           <select
@@ -344,8 +344,8 @@ const AdminUsers: React.FC = () => {
                       <span className={`${styles.roleBadge} ${styles[user.role]}`}>
                         {user.role === 'ADMIN'
                           ? 'Admin'
-                          : user.role === 'MANAGER'
-                          ? 'Quản lý'
+                          : user.role === 'STAFF'
+                          ? 'Nhân viên'
                           : 'Khách hàng'}
                       </span>
                     </td>
@@ -495,7 +495,7 @@ const AdminUsers: React.FC = () => {
                           disabled={selectedUser.role === 'ADMIN'}
                         >
                           <option value="USER">Khách hàng</option>
-                          <option value="MANAGER">Quản lý</option>
+                          <option value="STAFF">Nhân viên</option>
                           <option value="ADMIN">Admin</option>
                         </select>
                       </div>

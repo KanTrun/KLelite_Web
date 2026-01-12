@@ -208,8 +208,7 @@ const Register: React.FC = () => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    const { confirmPassword, ...registerData } = formData;
-    dispatch(register(registerData));
+    dispatch(register(formData));
   };
 
   const passwordStrength = useCallback(() => {
@@ -734,7 +733,7 @@ const Register: React.FC = () => {
                   text="signup_with"
                   shape="rectangular"
                   logo_alignment="left"
-                  width="100%"
+                  width="350"
                 />
               </div>
             </motion.div>

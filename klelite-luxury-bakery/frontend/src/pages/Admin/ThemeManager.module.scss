@@ -1,11 +1,13 @@
 // ============================================
-// Theme Manager - Professional Admin UI
+// Theme Manager - Luxury Admin UI
+// KL'élite Bakery Theme Builder
 // ============================================
 
-// Design Tokens
-$primary: #d4a373;
-$primary-dark: #c4935f;
-$accent: #3b82f6;
+// Design Tokens - Luxury Dark Theme
+$primary: #D4AF37; // Metallic Gold
+$primary-dark: #B8963A;
+$primary-light: #E8C860;
+$accent: #D4AF37;
 $success: #22c55e;
 $danger: #ef4444;
 $warning: #f59e0b;
@@ -21,18 +23,35 @@ $gray-700: #3f3f46;
 $gray-800: #27272a;
 $gray-900: #18181b;
 
-$border-radius-sm: 6px;
-$border-radius: 10px;
-$border-radius-lg: 16px;
+// Dark Mode Colors - Deep Charcoal
+$dark-bg: #111827;
+$dark-surface: #1f2937;
+$dark-surface-elevated: #374151;
+$dark-border: rgba(212, 175, 55, 0.15);
+$dark-border-subtle: rgba(255, 255, 255, 0.06);
+$dark-text: #ffffff;
+$dark-text-secondary: rgba(255, 255, 255, 0.8);
+$dark-text-muted: rgba(255, 255, 255, 0.5);
 
-$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-$shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-$shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
-$shadow-xl: 0 20px 40px -5px rgba(0, 0, 0, 0.15);
+// Glassmorphism
+$glass-bg: rgba(31, 41, 55, 0.8);
+$glass-border: rgba(212, 175, 55, 0.2);
+$glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 
-$transition-fast: 150ms ease;
-$transition: 200ms ease;
-$transition-slow: 300ms ease;
+$border-radius-sm: 8px;
+$border-radius: 12px;
+$border-radius-lg: 20px;
+$border-radius-xl: 28px;
+
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+$shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+$shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.2);
+$shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.25);
+$shadow-gold: 0 0 30px rgba($primary, 0.3);
+
+$transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+$transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+$transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
 
 // ============================================
 // COMMON BUTTONS
@@ -42,8 +61,8 @@ $transition-slow: 300ms ease;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: $gray-900;
-  color: white;
+  background: $primary;
+  color: #1a1a1f;
   border: none;
   padding: 0.75rem 1.25rem;
   border-radius: $border-radius;
@@ -53,9 +72,9 @@ $transition-slow: 300ms ease;
   transition: all $transition;
 
   &:hover {
-    background: $gray-800;
+    background: $primary-dark;
     transform: translateY(-1px);
-    box-shadow: $shadow-lg;
+    box-shadow: 0 8px 20px rgba($primary, 0.3);
   }
 
   &:active {
@@ -72,24 +91,25 @@ $transition-slow: 300ms ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
-  background: $gray-100;
-  border: 1px solid $gray-200;
+  width: 40px;
+  height: 40px;
+  background: $dark-surface-elevated;
+  border: 1px solid $dark-border;
   border-radius: $border-radius;
   cursor: pointer;
-  color: $gray-600;
+  color: $dark-text-secondary;
   transition: all $transition;
 
   &:hover {
-    background: $gray-200;
-    color: $gray-900;
+    background: rgba($primary, 0.1);
+    border-color: rgba($primary, 0.3);
+    color: $primary;
   }
 
   &.danger {
     &:hover {
-      background: #fef2f2;
-      border-color: #fecaca;
+      background: rgba($danger, 0.1);
+      border-color: rgba($danger, 0.3);
       color: $danger;
     }
   }
@@ -115,14 +135,14 @@ $transition-slow: 300ms ease;
   .spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid $gray-200;
+    border: 3px solid $dark-border;
     border-top-color: $primary;
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
 
   p {
-    color: $gray-500;
+    color: $dark-text-muted;
     font-size: 0.875rem;
   }
 }
@@ -142,9 +162,9 @@ $transition-slow: 300ms ease;
   justify-content: center;
   padding: 5rem 2rem;
   text-align: center;
-  background: white;
+  background: $dark-surface;
   border-radius: $border-radius-lg;
-  border: 2px dashed $gray-200;
+  border: 2px dashed $dark-border;
 
   .emptyIcon {
     width: 80px;
@@ -152,27 +172,28 @@ $transition-slow: 300ms ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, $gray-100, $gray-50);
+    background: linear-gradient(135deg, $dark-surface-elevated, $dark-surface);
     border-radius: 50%;
     margin-bottom: 1.5rem;
+    border: 1px solid $dark-border;
 
     svg {
       width: 36px;
       height: 36px;
-      color: $gray-400;
+      color: $primary;
     }
   }
 
   h3 {
     margin: 0 0 0.5rem;
     font-size: 1.25rem;
-    color: $gray-900;
+    color: $dark-text;
     font-weight: 600;
   }
 
   p {
     margin: 0 0 1.5rem;
-    color: $gray-500;
+    color: $dark-text-muted;
     max-width: 360px;
     line-height: 1.6;
   }
@@ -185,25 +206,31 @@ $transition-slow: 300ms ease;
 .statsBar {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  padding: 1rem 1.5rem;
-  background: white;
+  gap: 2rem;
+  padding: 1.25rem 1.75rem;
+  background: $dark-surface;
   border-radius: $border-radius-lg;
-  margin-bottom: 1.5rem;
-  box-shadow: $shadow-sm;
-  border: 1px solid $gray-100;
+  margin-bottom: 2rem;
+  border: 1px solid $dark-border;
+
+  @media (max-width: 576px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
 }
 
 .statItem {
   display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .statNumber {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 700;
-  color: $gray-900;
+  color: $dark-text;
+  line-height: 1;
 
   &.active {
     color: $success;
@@ -211,14 +238,22 @@ $transition-slow: 300ms ease;
 }
 
 .statLabel {
-  font-size: 0.875rem;
-  color: $gray-500;
+  font-size: 0.8rem;
+  color: $dark-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
 }
 
 .statDivider {
   width: 1px;
-  height: 32px;
-  background: $gray-200;
+  height: 48px;
+  background: $dark-border;
+
+  @media (max-width: 576px) {
+    width: 100%;
+    height: 1px;
+  }
 }
 
 // ============================================
@@ -227,7 +262,7 @@ $transition-slow: 300ms ease;
 
 .themeGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   gap: 1.5rem;
 
   @media (max-width: 768px) {
@@ -236,22 +271,21 @@ $transition-slow: 300ms ease;
 }
 
 .themeCard {
-  background: white;
+  background: $dark-surface;
   border-radius: $border-radius-lg;
   overflow: hidden;
-  border: 1px solid $gray-200;
+  border: 1px solid $dark-border;
   transition: all $transition-slow;
-  box-shadow: $shadow-sm;
 
   &:hover {
-    box-shadow: $shadow-lg;
-    border-color: $gray-300;
-    transform: translateY(-2px);
+    border-color: rgba($primary, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   }
 
   &.active {
     border-color: $primary;
-    box-shadow: 0 0 0 3px rgba($primary, 0.1);
+    box-shadow: 0 0 0 1px rgba($primary, 0.3), 0 20px 40px rgba(0, 0, 0, 0.2);
   }
 }
 
@@ -316,7 +350,7 @@ $transition-slow: 300ms ease;
 }
 
 .cardBody {
-  padding: 1.25rem;
+  padding: 1.5rem;
 }
 
 .cardHeader {
@@ -327,32 +361,31 @@ $transition-slow: 300ms ease;
 
   h4 {
     margin: 0;
-    font-size: 1rem;
+    font-size: 1.125rem;
     font-weight: 600;
-    color: $gray-900;
+    color: $dark-text;
   }
 }
 
 .typeBadge {
   --badge-color: #{$accent};
   font-size: 0.7rem;
-  padding: 0.25rem 0.6rem;
+  padding: 0.3rem 0.75rem;
   border-radius: 999px;
-  background: rgba(var(--badge-color), 0.1);
+  background: color-mix(in srgb, var(--badge-color) 15%, transparent);
   color: var(--badge-color);
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 0.5px;
-  
-  background: color-mix(in srgb, var(--badge-color) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--badge-color) 30%, transparent);
 }
 
 .cardMeta {
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
   
   span {
     font-size: 0.8rem;
-    color: $gray-500;
+    color: $dark-text-muted;
   }
 }
 
@@ -360,6 +393,8 @@ $transition-slow: 300ms ease;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid $dark-border;
 }
 
 .btnActivate {
@@ -368,10 +403,10 @@ $transition-slow: 300ms ease;
   align-items: center;
   justify-content: center;
   gap: 0.375rem;
-  background: $gray-900;
-  color: white;
+  background: $primary;
+  color: $dark-bg;
   border: none;
-  padding: 0.625rem 1rem;
+  padding: 0.75rem 1rem;
   border-radius: $border-radius;
   cursor: pointer;
   font-weight: 600;
@@ -379,7 +414,8 @@ $transition-slow: 300ms ease;
   transition: all $transition;
 
   &:hover {
-    background: $gray-800;
+    background: $primary-dark;
+    box-shadow: 0 4px 12px rgba($primary, 0.3);
   }
 
   svg {
@@ -417,18 +453,18 @@ $transition-slow: 300ms ease;
   .btnConfirmYes {
     background: $danger;
     color: white;
-    
+
     &:hover {
-      background: darken($danger, 10%);
+      background: color.adjust($danger, $lightness: -10%);
     }
   }
 
   .btnConfirmNo {
-    background: $gray-200;
-    color: $gray-700;
+    background: $dark-surface-elevated;
+    color: $dark-text-secondary;
     
     &:hover {
-      background: $gray-300;
+      background: $dark-surface;
     }
   }
 }
@@ -438,11 +474,13 @@ $transition-slow: 300ms ease;
 // ============================================
 
 .editorContainer {
-  margin: -1.5rem;
+  margin: 0;
   min-height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
-  background: $gray-50;
+  background: $dark-bg;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
 }
 
 .editorHeader {
@@ -450,8 +488,8 @@ $transition-slow: 300ms ease;
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem;
-  background: white;
-  border-bottom: 1px solid $gray-200;
+  background: $dark-surface;
+  border-bottom: 1px solid $dark-border;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -474,8 +512,8 @@ $transition-slow: 300ms ease;
   align-items: center;
   gap: 0.375rem;
   background: transparent;
-  border: 1px solid $gray-300;
-  color: $gray-600;
+  border: 1px solid $dark-border;
+  color: $dark-text-secondary;
   padding: 0.5rem 0.875rem;
   border-radius: $border-radius;
   cursor: pointer;
@@ -484,9 +522,9 @@ $transition-slow: 300ms ease;
   transition: all $transition;
 
   &:hover {
-    background: $gray-100;
-    border-color: $gray-400;
-    color: $gray-900;
+    background: $dark-surface-elevated;
+    border-color: rgba($primary, 0.3);
+    color: $dark-text;
   }
 
   svg {
@@ -499,7 +537,7 @@ $transition-slow: 300ms ease;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: $gray-900;
+  color: $dark-text;
   font-weight: 600;
 
   svg {
@@ -511,7 +549,7 @@ $transition-slow: 300ms ease;
 
 .previewToggle {
   display: flex;
-  background: $gray-100;
+  background: $dark-surface-elevated;
   border-radius: $border-radius;
   padding: 3px;
 
@@ -525,17 +563,17 @@ $transition-slow: 300ms ease;
     background: transparent;
     border-radius: 6px;
     cursor: pointer;
-    color: $gray-500;
+    color: $dark-text-muted;
     transition: all $transition-fast;
 
     &:hover {
-      color: $gray-700;
+      color: $dark-text-secondary;
     }
 
     &.active {
-      background: white;
-      color: $gray-900;
-      box-shadow: $shadow-sm;
+      background: $primary;
+      color: $dark-bg;
+      box-shadow: 0 2px 8px rgba($primary, 0.3);
     }
 
     svg {
@@ -550,7 +588,7 @@ $transition-slow: 300ms ease;
   align-items: center;
   gap: 0.5rem;
   background: $primary;
-  color: white;
+  color: $dark-bg;
   border: none;
   padding: 0.625rem 1.25rem;
   border-radius: $border-radius;
@@ -561,7 +599,7 @@ $transition-slow: 300ms ease;
 
   &:hover:not(:disabled) {
     background: $primary-dark;
-    box-shadow: $shadow;
+    box-shadow: 0 4px 16px rgba($primary, 0.3);
   }
 
   &:disabled {
@@ -577,9 +615,14 @@ $transition-slow: 300ms ease;
 
 .editorBody {
   display: grid;
-  grid-template-columns: 420px 1fr;
+  grid-template-columns: 480px 1fr;
   flex: 1;
   overflow: hidden;
+  gap: 0;
+
+  @media (max-width: 1400px) {
+    grid-template-columns: 420px 1fr;
+  }
 
   @media (max-width: 1200px) {
     grid-template-columns: 1fr;
@@ -591,94 +634,140 @@ $transition-slow: 300ms ease;
 // ============================================
 
 .editorPanel {
-  background: white;
-  border-right: 1px solid $gray-200;
+  background: $dark-surface;
+  border-right: 1px solid $dark-border;
   overflow-y: auto;
   max-height: calc(100vh - 140px);
-  padding: 1.5rem;
+  padding: 2rem;
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba($primary, 0.3);
+    border-radius: 3px;
+
+    &:hover {
+      background: rgba($primary, 0.5);
+    }
+  }
 
   @media (max-width: 1200px) {
     max-height: none;
     border-right: none;
-    border-bottom: 1px solid $gray-200;
+    border-bottom: 1px solid $dark-border;
   }
 }
 
 .formSection {
-  padding-bottom: 1.5rem;
+  padding: 1.75rem;
   margin-bottom: 1.5rem;
-  border-bottom: 1px solid $gray-100;
+  background: rgba($dark-surface-elevated, 0.5);
+  border: 1px solid $dark-border-subtle;
+  border-radius: $border-radius-lg;
 
   &:last-child {
-    border-bottom: none;
     margin-bottom: 0;
-    padding-bottom: 0;
   }
 }
 
 .sectionTitle {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin: 0 0 1.25rem;
+  gap: 0.875rem;
+  margin: 0 0 1.5rem;
   font-size: 1rem;
   font-weight: 600;
-  color: $gray-900;
+  color: $dark-text;
 }
 
 .sectionIcon {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: $gray-900;
-  color: white;
-  border-radius: 50%;
-  font-size: 0.75rem;
+  background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+  color: $dark-bg;
+  border-radius: 8px;
+  font-size: 0.8rem;
   font-weight: 700;
+  box-shadow: 0 4px 12px rgba($primary, 0.3);
 }
 
 .formGroup {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 
   &:last-child {
     margin-bottom: 0;
   }
 
   label {
-    display: block;
-    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
     font-size: 0.875rem;
-    font-weight: 500;
-    color: $gray-700;
+    font-weight: 600;
+    color: $dark-text;
+    letter-spacing: 0.025em;
+
+    &::before {
+      content: '';
+      width: 3px;
+      height: 14px;
+      background: linear-gradient(180deg, $primary 0%, $primary-dark 100%);
+      border-radius: 2px;
+    }
   }
 
   input[type="text"],
   input[type="number"],
-  select {
+  select,
+  textarea {
     width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid $gray-200;
+    padding: 1rem 1.25rem;
+    border: 2px solid $dark-border-subtle;
     border-radius: $border-radius;
-    font-size: 0.9rem;
-    background: white;
+    font-size: 0.95rem;
+    font-weight: 500;
+    background: linear-gradient(135deg, $dark-surface 0%, $dark-surface-elevated 100%);
     transition: all $transition;
-    color: $gray-900;
+    color: $dark-text;
+    font-family: inherit;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 
     &::placeholder {
-      color: $gray-400;
+      color: $dark-text-muted;
+      font-weight: 400;
     }
 
     &:hover {
-      border-color: $gray-300;
+      border-color: rgba($primary, 0.4);
+      background: linear-gradient(135deg, $dark-surface-elevated 0%, $dark-surface 100%);
     }
 
     &:focus {
       outline: none;
       border-color: $primary;
-      box-shadow: 0 0 0 3px rgba($primary, 0.1);
+      box-shadow: 
+        0 0 0 4px rgba($primary, 0.15),
+        inset 0 2px 4px rgba(0, 0, 0, 0.1),
+        0 0 20px rgba($primary, 0.1);
+      background: $dark-surface-elevated;
     }
+  }
+
+  textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.6;
   }
 }
 
@@ -692,7 +781,156 @@ $transition-slow: 300ms ease;
   }
 }
 
-// Theme Type Grid Selection
+// ============================================
+// Theme Type Visual Cards
+// ============================================
+
+.themeTypeCards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+
+  @media (max-width: 500px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.themeTypeCard {
+  --theme-color: #{$primary};
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: $dark-surface;
+  border: 2px solid transparent;
+  border-radius: $border-radius-lg;
+  cursor: pointer;
+  transition: all $transition;
+  overflow: hidden;
+
+  // Subtle gradient background
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(var(--theme-color-rgb, 212, 175, 55), 0.03) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity $transition;
+  }
+
+  &:hover {
+    border-color: rgba(var(--theme-color-rgb, 212, 175, 55), 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+    &::before {
+      opacity: 1;
+    }
+
+    .cardIcon {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(var(--theme-color-rgb, 212, 175, 55), 0.4);
+    }
+  }
+
+  &.selected {
+    border-color: var(--theme-color);
+    background: linear-gradient(135deg, rgba(var(--theme-color-rgb, 212, 175, 55), 0.08) 0%, $dark-surface 100%);
+    box-shadow: 0 0 0 1px rgba(var(--theme-color-rgb, 212, 175, 55), 0.2), 
+                0 12px 32px rgba(0, 0, 0, 0.25),
+                0 0 40px rgba(var(--theme-color-rgb, 212, 175, 55), 0.15);
+
+    &::before {
+      opacity: 1;
+    }
+
+    .cardIcon {
+      background: var(--theme-color);
+      color: $dark-bg;
+      box-shadow: 0 0 30px rgba(var(--theme-color-rgb, 212, 175, 55), 0.5);
+    }
+
+    .cardLabel {
+      color: var(--theme-color);
+    }
+  }
+}
+
+.cardIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: $dark-surface-elevated;
+  border: 1px solid $dark-border-subtle;
+  border-radius: $border-radius;
+  color: var(--theme-color);
+  transition: all $transition;
+  flex-shrink: 0;
+
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.cardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.cardLabel {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: $dark-text;
+  transition: color $transition;
+}
+
+.cardDesc {
+  font-size: 0.75rem;
+  color: $dark-text-muted;
+  line-height: 1.4;
+}
+
+.cardCheck {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: var(--theme-color);
+  border-radius: 50%;
+  color: $dark-bg;
+  animation: checkPop 0.3s ease;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@keyframes checkPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+// Legacy theme type grid (keeping for backward compatibility)
 .themeTypeGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -705,13 +943,13 @@ $transition-slow: 300ms ease;
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: white;
-  border: 1px solid $gray-200;
+  background: $dark-surface-elevated;
+  border: 1px solid $dark-border-subtle;
   border-radius: $border-radius;
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: 500;
-  color: $gray-700;
+  color: $dark-text-secondary;
   transition: all $transition;
 
   &:hover {
@@ -722,7 +960,7 @@ $transition-slow: 300ms ease;
   &.selected {
     border-color: var(--theme-color);
     background: color-mix(in srgb, var(--theme-color) 8%, transparent);
-    color: $gray-900;
+    color: $dark-text;
 
     .typeDot {
       background: var(--theme-color);
@@ -734,22 +972,23 @@ $transition-slow: 300ms ease;
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: $gray-300;
+    background: $dark-text-muted;
     transition: all $transition;
   }
 }
 
 // ============================================
-// UPLOAD ZONE
+// UPLOAD ZONE - Premium Style
 // ============================================
 
 .bannerTabs {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 1rem;
-  background: $gray-100;
-  padding: 4px;
+  margin-bottom: 1.25rem;
+  background: $dark-bg;
+  padding: 5px;
   border-radius: $border-radius;
+  border: 1px solid $dark-border-subtle;
 
   .tabBtn {
     flex: 1;
@@ -757,15 +996,15 @@ $transition-slow: 300ms ease;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0.625rem 1rem;
+    padding: 0.75rem 1rem;
     background: transparent;
     border: none;
-    border-radius: calc(#{$border-radius} - 2px);
+    border-radius: calc(#{$border-radius} - 3px);
     font-size: 0.875rem;
     font-weight: 500;
-    color: $gray-600;
+    color: $dark-text-muted;
     cursor: pointer;
-    transition: all $transition-fast;
+    transition: all $transition;
 
     svg {
       width: 16px;
@@ -773,46 +1012,63 @@ $transition-slow: 300ms ease;
     }
 
     &:hover {
-      color: $gray-900;
-      background: rgba($gray-900, 0.05);
+      color: $dark-text-secondary;
+      background: $dark-surface-elevated;
     }
 
     &.active {
-      background: white;
-      color: $gray-900;
-      box-shadow: $shadow-sm;
+      background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+      color: $dark-bg;
+      box-shadow: 0 4px 12px rgba($primary, 0.35);
     }
   }
 }
 
 .uploadZone {
-  border: 2px dashed $gray-300;
+  position: relative;
+  border: 2px dashed rgba($primary, 0.25);
   border-radius: $border-radius-lg;
-  padding: 2rem;
+  padding: 2.5rem;
   cursor: pointer;
   transition: all $transition;
-  background: $gray-50;
-  min-height: 160px;
+  background: linear-gradient(135deg, rgba($primary, 0.02) 0%, transparent 100%);
+  min-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
 
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 1px solid $dark-border-subtle;
+    border-radius: calc(#{$border-radius-lg} - 4px);
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
   &:hover {
     border-color: $primary;
-    background: rgba($primary, 0.02);
+    background: linear-gradient(135deg, rgba($primary, 0.06) 0%, rgba($primary, 0.02) 100%);
+    box-shadow: 0 0 30px rgba($primary, 0.1);
   }
 
   &.dragging {
     border-color: $primary;
-    background: rgba($primary, 0.05);
     border-style: solid;
+    background: linear-gradient(135deg, rgba($primary, 0.1) 0%, rgba($primary, 0.05) 100%);
+    box-shadow: 0 0 40px rgba($primary, 0.2);
   }
 
   &.hasImage {
     padding: 0;
     border-style: solid;
-    border-color: $gray-200;
+    border-color: rgba($primary, 0.3);
     overflow: hidden;
+
+    &::before {
+      display: none;
+    }
   }
 }
 
@@ -820,24 +1076,31 @@ $transition-slow: 300ms ease;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
   text-align: center;
+  padding: 1rem;
 
   svg {
-    width: 40px;
-    height: 40px;
-    color: $gray-400;
+    width: 52px;
+    height: 52px;
+    color: $primary;
+    opacity: 0.8;
+    filter: drop-shadow(0 4px 12px rgba($primary, 0.3));
   }
 
   span {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 500;
-    color: $gray-600;
+    color: $dark-text-secondary;
   }
 
   small {
     font-size: 0.8rem;
-    color: $gray-400;
+    color: $dark-text-muted;
+    padding: 0.375rem 0.875rem;
+    background: $dark-bg;
+    border-radius: 999px;
+    border: 1px solid $dark-border-subtle;
   }
 }
 
@@ -847,28 +1110,30 @@ $transition-slow: 300ms ease;
   align-items: center;
   gap: 1rem;
   width: 100%;
-  max-width: 240px;
+  max-width: 280px;
 
   span {
     font-size: 0.875rem;
-    color: $gray-600;
-    font-weight: 500;
+    color: $primary;
+    font-weight: 600;
   }
 }
 
 .progressBar {
   width: 100%;
-  height: 6px;
-  background: $gray-200;
+  height: 8px;
+  background: $dark-bg;
   border-radius: 999px;
   overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .progressFill {
   height: 100%;
-  background: $primary;
+  background: linear-gradient(90deg, $primary-dark 0%, $primary 50%, $primary-light 100%);
   border-radius: 999px;
   transition: width 150ms ease;
+  box-shadow: 0 0 10px rgba($primary, 0.5);
 }
 
 .uploadPreview {
@@ -932,7 +1197,7 @@ $transition-slow: 300ms ease;
   color: white;
 
   &:hover {
-    background: darken($danger, 10%);
+    background: color.adjust($danger, $lightness: -10%);
   }
 }
 
@@ -942,7 +1207,7 @@ $transition-slow: 300ms ease;
   height: 6px;
   -webkit-appearance: none;
   appearance: none;
-  background: $gray-200;
+  background: $dark-border;
   border-radius: 999px;
   outline: none;
   cursor: pointer;
@@ -985,69 +1250,150 @@ $transition-slow: 300ms ease;
 
   span {
     font-size: 0.75rem;
-    color: $gray-400;
+    color: $dark-text-muted;
   }
 }
 
 // ============================================
-// PREVIEW PANEL (RIGHT)
+// PREVIEW PANEL (RIGHT) - Glassmorphism Style
 // ============================================
 
 .previewPanel {
-  background: $gray-100;
-  padding: 1.5rem;
+  position: relative;
+  background: linear-gradient(135deg, $dark-bg 0%, color.adjust($dark-bg, $lightness: -3%) 100%);
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 
+  // Floating orbs for premium feel
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::before {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba($primary, 0.2) 0%, transparent 70%);
+    top: -100px;
+    right: -100px;
+  }
+
+  &::after {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba($primary, 0.15) 0%, transparent 70%);
+    bottom: -50px;
+    left: -50px;
+  }
+
   @media (max-width: 1200px) {
-    min-height: 400px;
+    min-height: 500px;
   }
 }
 
 .previewHeader {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 0.875rem;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: $gray-600;
+  color: $dark-text-secondary;
 
   svg {
     width: 16px;
     height: 16px;
+    color: $primary;
   }
 }
 
 .previewFrame {
+  position: relative;
+  z-index: 1;
   flex: 1;
-  background: white;
-  border-radius: $border-radius-lg;
-  overflow: hidden;
-  box-shadow: $shadow-xl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all $transition-slow;
 
   &.desktop {
-    aspect-ratio: 16/9;
-    max-height: 600px;
+    .deviceFrame {
+      width: 100%;
+      max-width: 800px;
+      aspect-ratio: 16/9;
+      background: $dark-surface;
+      border-radius: $border-radius-xl;
+      overflow: hidden;
+      box-shadow: 
+        0 0 0 1px rgba($primary, 0.1),
+        0 4px 8px rgba(0, 0, 0, 0.2),
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 0 80px rgba($primary, 0.08);
+      border: 3px solid $dark-surface-elevated;
+    }
   }
 
   &.mobile {
-    max-width: 375px;
-    aspect-ratio: 9/16;
-    margin: 0 auto;
-    border-radius: 24px;
-    border: 8px solid $gray-800;
+    .deviceFrame {
+      position: relative;
+      width: 280px;
+      aspect-ratio: 9/19;
+      background: $dark-surface;
+      border-radius: 36px;
+      overflow: hidden;
+      box-shadow: 
+        0 0 0 1px rgba($primary, 0.1),
+        0 25px 80px rgba(0, 0, 0, 0.5),
+        0 0 60px rgba($primary, 0.1);
+      border: 6px solid $dark-surface-elevated;
+
+      // Dynamic Island
+      &::before {
+        content: '';
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 24px;
+        background: #000;
+        border-radius: 20px;
+        z-index: 10;
+      }
+    }
   }
 }
 
+.deviceFrame {
+  overflow: hidden;
+}
+
 .previewNote {
-  margin-top: 1rem;
+  position: relative;
+  z-index: 1;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
   text-align: center;
   font-size: 0.8rem;
-  color: $gray-500;
+  color: $dark-text-muted;
   font-style: italic;
+  background: $glass-bg;
+  backdrop-filter: blur(10px);
+  border: 1px solid $glass-border;
+  border-radius: 999px;
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 // Hero Preview Styles

@@ -475,3 +475,147 @@
     transform: scale(0.92);
   }
 }
+
+// ============================================
+// Seasonal Effects Wrapper
+// ============================================
+.seasonalEffectsWrapper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+// ============================================
+// Theme Variants
+// ============================================
+
+// Christmas Theme
+.christmas {
+  background: linear-gradient(
+    180deg,
+    #1a1a2e 0%,
+    #16213e 50%,
+    #0f3460 100%
+  );
+
+  &::before {
+    background-image: 
+      radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  }
+
+  &::after {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(239, 68, 68, 0.4),
+      rgba(34, 197, 94, 0.4),
+      transparent
+    );
+  }
+
+  .logoText {
+    background: linear-gradient(to right, #ffffff, #e8e8e8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .logoSubtext {
+    color: rgba(239, 68, 68, 0.9);
+  }
+
+  .columnTitle {
+    color: #ef4444;
+  }
+
+  a:hover {
+    color: #22c55e;
+  }
+}
+
+// Tet Theme (Lunar New Year)
+.tet {
+  background: linear-gradient(
+    180deg,
+    #2d1810 0%,
+    #4a1c10 50%,
+    #722f1e 100%
+  );
+
+  &::before {
+    background-image: 
+      radial-gradient(rgba(255, 215, 0, 0.05) 1px, transparent 1px);
+  }
+
+  &::after {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 215, 0, 0.5),
+      rgba(255, 165, 0, 0.5),
+      transparent
+    );
+  }
+
+  .logoText {
+    background: linear-gradient(to right, #FFD700, #FFA500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .logoSubtext {
+    color: rgba(255, 215, 0, 0.9);
+  }
+
+  .columnTitle {
+    color: #FFD700;
+  }
+
+  a:hover {
+    color: #FFD700;
+  }
+}
+
+// Valentine Theme
+.valentine {
+  background: linear-gradient(
+    180deg,
+    #2d1f2d 0%,
+    #4a2040 50%,
+    #6d2b5c 100%
+  );
+
+  &::before {
+    background-image: 
+      radial-gradient(rgba(255, 182, 193, 0.05) 1px, transparent 1px);
+  }
+
+  &::after {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 105, 180, 0.4),
+      rgba(255, 182, 193, 0.4),
+      transparent
+    );
+  }
+
+  .logoText {
+    background: linear-gradient(to right, #fff, #ffb6c1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .logoSubtext {
+    color: rgba(255, 182, 193, 0.9);
+  }
+
+  .columnTitle {
+    color: #ff69b4;
+  }
+
+  a:hover {
+    color: #ffb6c1;
+  }
+}

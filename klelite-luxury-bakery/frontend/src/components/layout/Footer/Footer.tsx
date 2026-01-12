@@ -1,13 +1,46 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { FiFacebook, FiInstagram, FiMail, FiPhone, FiMapPin } from 'react-icons/fi';
+import { RootState } from '@/store';
+import { SnowfallEffect, FireworksEffect, ValentineEffect } from '@/components/common/SeasonalEffects';
 import styles from './Footer.module.scss';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
+  const { currentTheme } = useSelector((state: RootState) => state.theme);
+
+  // Build footer class based on theme type
+  const getFooterClass = () => {
+    const classes = [styles.footer];
+    if (currentTheme?.type === 'christmas') classes.push(styles.christmas);
+    if (currentTheme?.type === 'tet') classes.push(styles.tet);
+    if (currentTheme?.type === 'valentine') classes.push(styles.valentine);
+    return classes.join(' ');
+  };
+
+  // Render seasonal effect based on theme type
+  const renderSeasonalEffect = () => {
+    if (!currentTheme) return null;
+    
+    switch (currentTheme.type) {
+      case 'christmas':
+        return <SnowfallEffect intensity="light" />;
+      case 'tet':
+        return <FireworksEffect intensity="light" />;
+      case 'valentine':
+        return <ValentineEffect intensity="light" />;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <footer className={styles.footer}>
+    <footer className={getFooterClass()}>
+      {/* Seasonal Effect Overlay */}
+      <div className={styles.seasonalEffectsWrapper}>
+        {renderSeasonalEffect()}
+      </div>
       <div className={styles.container}>
         <div className={styles.grid}>
           {/* Brand */}

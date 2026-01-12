@@ -10,6 +10,12 @@
   width: 100%;
   background: var(--color-bg);
   color: var(--color-text);
+  // Compensate for main padding-top since hero should be full viewport
+  margin-top: -88px;
+
+  @media (max-width: 768px) {
+    margin-top: -72px;
+  }
 }
 
 // ============================================

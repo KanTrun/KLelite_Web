@@ -22,6 +22,14 @@ $text-secondary: #666;
   background: $cream-bg;
   position: relative;
   overflow-x: hidden;
+  // Compensate for main padding-top
+  margin-top: -88px;
+  padding-top: 88px;
+
+  @media (max-width: 768px) {
+    margin-top: -72px;
+    padding-top: 72px;
+  }
 
   // Subtle background pattern
   &::before {
