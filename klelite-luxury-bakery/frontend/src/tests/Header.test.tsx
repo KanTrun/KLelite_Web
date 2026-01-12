@@ -9,9 +9,21 @@ import { BrowserRouter } from 'react-router-dom';
 import { Header } from '../components/layout/Header/Header';
 import * as hooks from '../hooks';
 import * as matchers from '@testing-library/jest-dom/matchers';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Extend expect matchers
 expect.extend(matchers);
+
+// Mock react-redux
+vi.mock('react-redux', () => ({
+  useDispatch: vi.fn(),
+  useSelector: vi.fn(),
+}));
+
+// Mock theme slice
+vi.mock('@/store/slices/themeSlice', () => ({
+  fetchCurrentTheme: vi.fn(),
+}));
 
 // Define mockNavigate outside the describe block so it can be used in the mock
 const mockNavigate = vi.fn();
@@ -63,6 +75,12 @@ describe('Header Component', () => {
     (hooks.useCart as any).mockReturnValue({
       cartItemsCount: 0,
     });
+
+    // Mock Redux hooks
+    (useDispatch as any).mockReturnValue(vi.fn());
+    (useSelector as any).mockImplementation((selector: any) => selector({
+      theme: { currentTheme: { type: 'default' } }
+    }));
   });
 
   afterEach(() => {
