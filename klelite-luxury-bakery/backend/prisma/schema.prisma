@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = "mysql://root:@localhost:3306/klelite_bakery"
 }
 
 // User & Auth
@@ -534,18 +534,18 @@ model UserActivity {
   @@index([createdAt])
 }
 
-// Configs
+// Configs - Theme Types for seasonal effects
 enum ThemeType {
-  LIGHT
-  DARK
-  HOLIDAY
-  CUSTOM
+  default
+  christmas
+  tet
+  valentine
 }
 
 model ThemeConfig {
   id        String    @id @default(uuid())
   name      String
-  type      ThemeType @default(LIGHT)
+  type      ThemeType @default(default)
   isActive  Boolean   @default(false)
   startDate DateTime?
   endDate   DateTime?

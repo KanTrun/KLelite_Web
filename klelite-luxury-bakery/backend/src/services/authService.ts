@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { userService } from './userService';
+import { config } from '../config';
 
 export interface RegisterDTO {
   email: string;
@@ -21,11 +22,9 @@ export interface LoginDTO {
   googleId?: string;
 }
 
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET is not defined in environment variables');
-}
-const JWT_EXPIRE = process.env.JWT_EXPIRE || '30d';
+// Use config object instead of local constants to ensure consistency with middleware
+const JWT_SECRET = config.jwt.secret;
+const JWT_EXPIRE = config.jwt.expire;
 
 export const authService = {
   /**
@@ -145,9 +144,9 @@ export const authService = {
    * Generate Refresh Token
    */
   async generateRefreshToken(userId: string): Promise<string> {
-     // Check if JWT_REFRESH_SECRET exists
-     const refreshSecret = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET || 'secret';
-     const refreshExpire = process.env.JWT_REFRESH_EXPIRE || '30d';
+     // Use config object for consistency
+     const refreshSecret = config.jwt.refreshSecret;
+     const refreshExpire = config.jwt.refreshExpire;
 
      const refreshToken = jwt.sign(
       { id: userId },

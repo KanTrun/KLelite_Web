@@ -347,7 +347,7 @@ const seedAll = async () => {
       data: {
         isActive: true,
         name: 'Default Luxury',
-        type: 'LIGHT',
+        type: 'default',
         header: {
           variant: 'transparent'
         },

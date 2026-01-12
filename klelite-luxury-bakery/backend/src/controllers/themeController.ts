@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import prisma from '../lib/prisma';
-import { ThemeType } from '@prisma/client';
 
 export const getPublicConfig = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -16,7 +15,7 @@ export const getPublicConfig = async (req: Request, res: Response): Promise<void
     // Fallback if no active theme found
     res.json({
       name: 'Default Fallback',
-      type: ThemeType.LIGHT,
+      type: 'default',
       header: { variant: 'transparent' },
       hero: {
         title: "KL'élite Luxury Bakery",
