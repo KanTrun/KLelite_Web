@@ -31,7 +31,7 @@ const AdminProducts = lazy(() => import('@/pages/Admin/Products'));
 const AdminOrders = lazy(() => import('@/pages/Admin/Orders'));
 const AdminUsers = lazy(() => import('@/pages/Admin/Users'));
 const AdminCategories = lazy(() => import('@/pages/Admin/Categories'));
-const AdminThemeManager = lazy(() => import('@/pages/Admin/ThemeManagerPro'));
+const AdminThemeManager = lazy(() => import('@/pages/Admin/ThemeManager'));
 
 // Manager pages
 const ManagerDashboard = lazy(() => import('@/pages/Manager'));
