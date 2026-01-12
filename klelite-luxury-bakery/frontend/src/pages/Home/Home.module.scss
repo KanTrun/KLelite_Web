@@ -10,12 +10,6 @@
   width: 100%;
   background: var(--color-bg);
   color: var(--color-text);
-  // Compensate for main padding-top since hero should be full viewport
-  margin-top: -88px;
-
-  @media (max-width: 768px) {
-    margin-top: -72px;
-  }
 }
 
 // ============================================
@@ -28,6 +22,11 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  padding-top: 100px; // Space for fixed header
+
+  @media (max-width: 768px) {
+    padding-top: 85px;
+  }
 }
 
 .heroBackground {

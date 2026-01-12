@@ -12,22 +12,26 @@
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
-  // Compensate for main padding-top since hero should extend to top
-  margin-top: -88px;
 
-  @media (max-width: 768px) {
-    margin-top: -72px;
-  }
-  
   // Subtle texture overlay
   &::before {
     content: '';
     position: fixed;
     inset: 0;
-    background: 
+    background:
       url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A962' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     pointer-events: none;
     z-index: 0;
+  }
+
+  // Light theme - comfortable background
+  [data-theme="light"] & {
+    background: #FAFAFA;
+
+    &::before {
+      background:
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A962' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
   }
 }
 
@@ -41,9 +45,11 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  padding-top: 100px; // Space for fixed header
   
   @media (max-width: 768px) {
     min-height: 65vh;
+    padding-top: 85px;
   }
 }
 
@@ -188,12 +194,12 @@
     letter-spacing: -0.02em;
     
     background: linear-gradient(
-      135deg, 
-      $light-text 0%, 
+      135deg,
+      var(--color-text-inverse) 0%,
       $gold-secondary 25%,
-      $light-text 50%,
+      var(--color-text-inverse) 50%,
       $gold-primary 75%,
-      $light-text 100%
+      var(--color-text-inverse) 100%
     );
     background-size: 300% auto;
     -webkit-background-clip: text;
@@ -424,6 +430,17 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   }
 
+  [data-theme="light"] & {
+    background: white;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+
+    &:hover {
+      border-color: rgba($gold-primary, 0.3);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+  }
+
   h4 {
     display: flex;
     align-items: center;
@@ -435,7 +452,7 @@
     margin-bottom: $spacing-lg;
     padding-bottom: $spacing-sm;
     border-bottom: 1px solid rgba($gold-primary, 0.1);
-    
+
     .filterIcon {
       color: $gold-primary;
       font-size: 0.75rem;
@@ -767,7 +784,7 @@
   }
 
   svg {
-    color: rgba($light-text, 0.35);
+    color: var(--color-text-muted);
     flex-shrink: 0;
     font-size: 1.1rem;
   }
@@ -782,7 +799,7 @@
     font-family: $font-body;
 
     &::placeholder {
-      color: rgba($light-text, 0.35);
+      color: var(--color-text-muted);
     }
   }
 }
@@ -867,7 +884,7 @@
     height: 46px;
     background: transparent;
     border: none;
-    color: rgba($light-text, 0.4);
+    color: var(--color-text-muted);
     cursor: pointer;
     transition: all 0.3s ease;
 
@@ -1254,7 +1271,7 @@
 
   .reviewCount {
     font-size: 0.8rem;
-    color: rgba($light-text, 0.4);
+    color: var(--color-text-muted);
   }
 }
 
@@ -1275,7 +1292,7 @@
 
 .originalPrice {
   font-size: 0.95rem;
-  color: rgba($light-text, 0.35);
+  color: var(--color-text-muted);
   text-decoration: line-through;
 }
 
@@ -1498,7 +1515,7 @@
 }
 
 .ellipsis {
-  color: rgba($light-text, 0.25);
+  color: var(--color-text-muted);
   padding: 0 $spacing-sm;
   font-size: 1.25rem;
   letter-spacing: 3px;
@@ -1607,5 +1624,95 @@
 
   &:hover {
     background: rgba(220, 53, 69, 0.15);
+  }
+}
+
+// ============================================
+// Light Theme Comprehensive Fixes
+// ============================================
+
+[data-theme="light"] {
+  // Product Cards
+  .productCard {
+    background: white;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+    &::before {
+      background: linear-gradient(
+        135deg,
+        transparent 0%,
+        rgba($gold-primary, 0.03) 50%,
+        transparent 100%
+      );
+    }
+
+    &:hover {
+      border-color: rgba($gold-primary, 0.4);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+  }
+
+  // Toolbar
+  .toolbar {
+    background: white;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  // Search Form
+  .searchForm {
+    background: #F5F5F5;
+    border: 1px solid #D0D0D0;
+
+    &:focus-within {
+      border-color: $gold-primary;
+      background: white;
+    }
+  }
+
+  // Sort Select
+  .sortSelect select {
+    background: white;
+    border: 1px solid #D0D0D0;
+
+    &:focus {
+      border-color: $gold-primary;
+    }
+  }
+
+  // View Toggle
+  .viewToggle {
+    background: white;
+    border: 1px solid #E0E0E0;
+  }
+
+  // Empty State
+  .emptyState {
+    background: white;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  // Pagination
+  .pageNumbers button {
+    background: white;
+    border: 1px solid #E0E0E0;
+
+    &:hover:not(:disabled) {
+      border-color: $gold-primary;
+      background: rgba($gold-primary, 0.05);
+    }
+  }
+
+  // Mobile Filter
+  .mobileFilterPanel {
+    background: #FAFAFA;
+    border-right: 1px solid #E0E0E0;
+  }
+
+  .mobileFilterHeader {
+    background: white;
+    border-bottom: 1px solid #E0E0E0;
   }
 }

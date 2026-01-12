@@ -28,13 +28,13 @@ export const Header: React.FC = () => {
     dispatch(fetchCurrentTheme());
   }, [dispatch]);
 
-  // Handle scroll effect
+  // Simple scroll effect for header background
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -62,7 +62,7 @@ export const Header: React.FC = () => {
     { path: '/contact', label: 'Liên hệ' },
   ];
 
-  // Build header class based on theme type
+  // Build header class based on theme type and scroll state
   const getHeaderClass = () => {
     const classes = [styles.header];
     if (isScrolled) classes.push(styles.scrolled);

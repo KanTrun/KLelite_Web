@@ -7,12 +7,6 @@
   min-height: 100vh;
   background: var(--color-bg);
   overflow-x: hidden;
-  // Compensate for main padding-top since hero should extend to top
-  margin-top: -88px;
-
-  @media (max-width: 768px) {
-    margin-top: -72px;
-  }
 }
 
 // ============================================
@@ -31,6 +25,11 @@
   justify-content: center;
   text-align: center;
   color: var(--color-text);
+  padding-top: 100px; // Space for fixed header
+
+  @media (max-width: 768px) {
+    padding-top: 85px;
+  }
 }
 
 .heroOverlay {
@@ -56,7 +55,7 @@
     font-size: clamp(2.5rem, 6vw, 4.5rem);
     font-weight: 400;
     margin-bottom: $spacing-md;
-    background: linear-gradient(135deg, $light-text 0%, $gold-secondary 50%, $light-text 100%);
+    background: linear-gradient(135deg, var(--color-text-inverse) 0%, $gold-secondary 50%, var(--color-text-inverse) 100%);
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -67,7 +66,7 @@
   p {
     font-family: $font-accent;
     font-size: 1.25rem;
-    color: rgba($light-text, 0.8);
+    color: var(--color-text-secondary);
     letter-spacing: 1px;
     max-width: 600px;
     margin: 0 auto;
@@ -600,5 +599,62 @@
   &:hover {
     background: rgba($gold-primary, 0.1);
     border-color: $gold-primary;
+  }
+}
+
+// ============================================
+// Light Theme Comprehensive Fixes
+// ============================================
+
+[data-theme="light"] {
+  // Page Background
+  .aboutPage {
+    background: #FAFAFA;
+  }
+
+  // Value Cards
+  .valueCard {
+    background: white;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+
+    &:hover {
+      border-color: rgba($gold-primary, 0.4);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+  }
+
+  // Values Section
+  .values {
+    background: #F5F5F5;
+  }
+
+  // Timeline Content
+  .timelineContent {
+    background: white;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  // Team Cards
+  .teamCard {
+    background: white;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+
+    &:hover {
+      border-color: rgba($gold-primary, 0.4);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+  }
+
+  // Team Section
+  .team {
+    background: #F5F5F5;
+  }
+
+  // Stats Section
+  .stats {
+    background: linear-gradient(135deg, rgba($gold-primary, 0.05) 0%, #FAFAFA 50%, rgba($gold-primary, 0.03) 100%);
   }
 }

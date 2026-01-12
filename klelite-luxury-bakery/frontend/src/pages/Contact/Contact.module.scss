@@ -7,12 +7,6 @@
   min-height: 100vh;
   background: var(--color-bg);
   overflow-x: hidden;
-  // Compensate for main padding-top since hero should extend to top
-  margin-top: -88px;
-
-  @media (max-width: 768px) {
-    margin-top: -72px;
-  }
 }
 
 // ============================================
@@ -31,6 +25,11 @@
   justify-content: center;
   text-align: center;
   color: var(--color-text);
+  padding-top: 100px; // Space for fixed header
+
+  @media (max-width: 768px) {
+    padding-top: 85px;
+  }
 }
 
 .heroOverlay {
@@ -55,7 +54,7 @@
     font-size: clamp(2.5rem, 6vw, 4rem);
     font-weight: 400;
     margin-bottom: $spacing-md;
-    background: linear-gradient(135deg, $light-text 0%, $gold-secondary 50%, $light-text 100%);
+    background: linear-gradient(135deg, var(--color-text-inverse) 0%, $gold-secondary 50%, var(--color-text-inverse) 100%);
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -66,7 +65,7 @@
   p {
     font-family: $font-accent;
     font-size: 1.25rem;
-    color: rgba($light-text, 0.8);
+    color: var(--color-text-secondary);
     letter-spacing: 1px;
   }
 }
@@ -189,7 +188,7 @@
 }
 
 .infoSubContent {
-  color: rgba($light-text, 0.5);
+  color: var(--color-text-muted);
   font-size: 0.875rem;
 }
 
@@ -228,7 +227,7 @@
   }
 
   > p {
-    color: rgba($light-text, 0.6);
+    color: var(--color-text-secondary);
     margin-bottom: $spacing-xl;
     font-family: $font-accent;
   }
@@ -262,7 +261,7 @@
     font-family: $font-accent;
     font-size: 0.875rem;
     font-weight: 500;
-    color: rgba($light-text, 0.8);
+    color: var(--color-text-secondary);
     text-transform: uppercase;
     letter-spacing: 1px;
 
@@ -290,7 +289,7 @@
     }
 
     &::placeholder {
-      color: rgba($light-text, 0.3);
+      color: var(--color-text-muted);
     }
   }
 
@@ -493,10 +492,7 @@
   margin-bottom: $spacing-lg;
 
   p {
-    display: flex;
-    align-items: flex-start;
-    gap: $spacing-sm;
-    color: rgba($light-text, 0.6);
+    color: var(--color-text-secondary);
     font-size: 0.9rem;
     line-height: 1.6;
 
@@ -565,8 +561,86 @@
   }
 
   p {
-    color: rgba($light-text, 0.6);
+    color: var(--color-text-secondary);
     font-size: 0.95rem;
     line-height: 1.7;
+  }
+}
+
+// ============================================
+// Light Theme Comprehensive Fixes
+// ============================================
+
+[data-theme="light"] {
+  // Page Background
+  .contactPage {
+    background: #FAFAFA;
+  }
+
+  // Info Cards
+  .infoCard {
+    background: white;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+
+    &:hover {
+      border-color: rgba($gold-primary, 0.4);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+  }
+
+  // Form Section
+  .formSection {
+    background: white;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  // Form Inputs
+  .formGroup input,
+  .formGroup select,
+  .formGroup textarea {
+    background: #F5F5F5;
+    border: 1px solid #D0D0D0;
+
+    &:focus {
+      background: white;
+      border-color: $gold-primary;
+    }
+  }
+
+  // Social Links
+  .socialLinks {
+    background: white;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  // Branch Cards
+  .branchCard {
+    background: white;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+
+    &:hover {
+      border-color: rgba($gold-primary, 0.4);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+  }
+
+  // Branches Section
+  .branches {
+    background: #F5F5F5;
+  }
+
+  // FAQ Items
+  .faqItem {
+    background: white;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+
+    &:hover {
+      border-color: rgba($gold-primary, 0.3);
+    }
   }
 }

@@ -563,41 +563,42 @@ const ThemeManager: React.FC = () => {
         </button>
       }
     >
-      {/* Loading State */}
-      {loading && themes.length === 0 && (
-        <div className={styles.loadingState}>
-          <div className={styles.spinner} />
-          <p>Đang tải danh sách giao diện...</p>
-        </div>
-      )}
-
-      {/* Empty State */}
-      {!loading && themes.length === 0 && (
-        <div className={styles.emptyState}>
-          <div className={styles.emptyIcon}>
-            <FiLayout />
+      <div className={styles.pageContent}>
+        {/* Loading State */}
+        {loading && themes.length === 0 && (
+          <div className={styles.loadingState}>
+            <div className={styles.spinner} />
+            <p>Đang tải danh sách giao diện...</p>
           </div>
-          <h3>Chưa có giao diện nào</h3>
-          <p>Tạo giao diện đầu tiên để tùy chỉnh Hero Banner và chủ đề cho cửa hàng của bạn.</p>
-          <button className={styles.btnPrimary} onClick={handleCreate}>
-            <FiPlus /> Tạo giao diện đầu tiên
-          </button>
-        </div>
-      )}
+        )}
 
-      {/* Theme Grid */}
-      {themes.length > 0 && (
-        <>
-          {/* Stats Bar */}
-          <div className={styles.statsBar}>
-            <div className={styles.statItem}>
-              <span className={styles.statNumber}>{themes.length}</span>
-              <span className={styles.statLabel}>Tổng giao diện</span>
+        {/* Empty State */}
+        {!loading && themes.length === 0 && (
+          <div className={styles.emptyState}>
+            <div className={styles.emptyIcon}>
+              <FiLayout />
             </div>
-            <div className={styles.statDivider} />
-            <div className={styles.statItem}>
-              <span className={`${styles.statNumber} ${styles.active}`}>
-                {themes.filter(t => t.isActive).length}
+            <h3>Chưa có giao diện nào</h3>
+            <p>Tạo giao diện đầu tiên để tùy chỉnh Hero Banner và chủ đề cho cửa hàng của bạn.</p>
+            <button className={styles.btnPrimary} onClick={handleCreate}>
+              <FiPlus /> Tạo giao diện đầu tiên
+            </button>
+          </div>
+        )}
+
+        {/* Theme Grid */}
+        {themes.length > 0 && (
+          <>
+            {/* Stats Bar */}
+            <div className={styles.statsBar}>
+              <div className={styles.statItem}>
+                <span className={styles.statNumber}>{themes.length}</span>
+                <span className={styles.statLabel}>Tổng giao diện</span>
+              </div>
+              <div className={styles.statDivider} />
+              <div className={styles.statItem}>
+                <span className={`${styles.statNumber} ${styles.active}`}>
+                  {themes.filter(t => t.isActive).length}
               </span>
               <span className={styles.statLabel}>Đang hoạt động</span>
             </div>
@@ -699,6 +700,7 @@ const ThemeManager: React.FC = () => {
           </div>
         </>
       )}
+      </div>
     </AdminLayout>
   );
 };

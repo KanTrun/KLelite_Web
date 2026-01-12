@@ -376,19 +376,19 @@ $product-card-radius: $radius-lg;
 // --------------------------------------------------------------------------
 
 :root {
-  // Core colors
+  // Core colors - Light Theme
   --color-bg: #{$white};
   --color-bg-secondary: #{$gray-50};
   --color-bg-tertiary: #{$gray-100};
   --color-surface: #{$white};
   --color-surface-elevated: #{$white};
 
-  // Text colors
-  --color-text: #{$gray-900};
-  --color-text-secondary: #{$gray-700};    // Changed: #616161 (7.0:1 contrast - WCAG AAA)
-  --color-text-muted: #{$gray-600};        // Changed: #757575 (4.6:1 contrast - WCAG AA)
+  // Text colors - High contrast for light theme
+  --color-text: #{$gray-900};              // #212121 (15.8:1 contrast - WCAG AAA)
+  --color-text-secondary: #{$gray-700};    // #616161 (7.0:1 contrast - WCAG AAA)
+  --color-text-muted: #{$gray-600};        // #757575 (4.6:1 contrast - WCAG AA)
   --color-text-inverse: #{$white};
-  --color-text-rgb: 255, 255, 255; /* RGB for $white */
+  --color-text-rgb: 33, 33, 33; /* RGB for $gray-900 */
 
   // Primary/Brand
   --color-primary: #{$primary-color};
@@ -396,31 +396,29 @@ $product-card-radius: $radius-lg;
   --color-primary-dark: #{$primary-dark};
   --color-gold-secondary: #{$gold-secondary};
   --color-primary-rgb: 201, 169, 98; /* RGB for $primary-color */
-  --color-primary-rgb: 201, 169, 98; /* RGB for $primary-color */
 
   // Border
-  --color-border: #{$gray-200};
-  --color-border-light: #{$gray-100};
+  --color-border: #{$gray-300};            // More visible border
+  --color-border-light: #{$gray-200};
   --color-border-strong: #{$gray-400};
 
   // Semantic
   --color-success: #{$success-color};
-  --color-warning: #{$warning-color};
+  --color-warning: #F59E0B;                // Amber for better contrast
   --color-error: #{$error-color};
   --color-info: #{$info-color};
   --color-error-rgb: 244, 67, 54; /* RGB for $error-color */
-  --color-error-rgb: 244, 67, 54; /* RGB for $error-color */
 
-  // Shadows
-  --shadow-sm: #{$shadow-sm};
-  --shadow-md: #{$shadow-md};
-  --shadow-lg: #{$shadow-lg};
-  --shadow-xl: #{$shadow-xl};
-  --shadow-gold: #{$shadow-gold};
+  // Shadows - Softer for light theme
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-gold: 0 4px 20px 0 rgba(201, 169, 98, 0.25);
 
-  // Overlay
-  --color-overlay: rgba(0, 0, 0, 0.5);
-  --color-backdrop: rgba(0, 0, 0, 0.4);
+  // Overlay - Lighter for light theme
+  --color-overlay: rgba(0, 0, 0, 0.3);
+  --color-backdrop: rgba(0, 0, 0, 0.25);
 
   // Scrollbar
   --scrollbar-bg: #{$gray-100};
@@ -441,7 +439,7 @@ $product-card-radius: $radius-lg;
   --input-border: #{$gray-300};
   --input-border-focus: #{$primary-color};
   --input-placeholder: #{$gray-500};
- 
+
   // Gradients
   --gradient-gold: #{$gradient-gold};
   --gradient-gold-shimmer: #{$gradient-gold-shimmer};
@@ -467,18 +465,18 @@ $product-card-radius: $radius-lg;
 }
 
 [data-theme="dark"] {
-  // Core colors
+  // Core colors - Dark Theme
   --color-bg: #{$dark-primary};
   --color-bg-secondary: #{$dark-secondary};
   --color-bg-tertiary: #{$dark-surface};
   --color-surface: #{$dark-secondary};
   --color-surface-elevated: #{$dark-surface};
 
-  // Text colors
-  --color-text: #{$gray-100};
-  --color-text-secondary: #{$gray-400};
-  --color-text-muted: #{$gray-500};
-  --color-text-inverse: #{$gray-900};
+  // Text colors - Adjusted for dark backgrounds
+  --color-text: #{$gray-100};              // Light text on dark bg
+  --color-text-secondary: #{$gray-400};    // Muted light text
+  --color-text-muted: #{$gray-500};        // Very muted text
+  --color-text-inverse: #{$gray-900};      // Dark text (for light surfaces)
   --color-text-rgb: 245, 245, 245; /* RGB for $gray-100 */
 
   // Primary stays the same for brand consistency
@@ -488,10 +486,17 @@ $product-card-radius: $radius-lg;
   --color-gold-secondary: #{$gold-secondary};
   --color-primary-rgb: 201, 169, 98; /* RGB for $primary-color */
 
-  // Border - darker borders
+  // Border - darker borders for dark theme
   --color-border: #{rgba($gray-600, 0.3)};
   --color-border-light: #{rgba($gray-700, 0.3)};
   --color-border-strong: #{$gray-600};
+
+  // Semantic colors
+  --color-success: #{$success-color};
+  --color-warning: #F59E0B;
+  --color-error: #{$error-color};
+  --color-info: #{$info-color};
+  --color-error-rgb: 244, 67, 54; /* RGB for $error-color */
 
   // Shadows - adjusted for dark mode
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
@@ -500,7 +505,7 @@ $product-card-radius: $radius-lg;
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
   --shadow-gold: 0 4px 20px 0 rgba(201, 169, 98, 0.2);
 
-  // Overlay
+  // Overlay - Darker for dark theme
   --color-overlay: rgba(0, 0, 0, 0.7);
   --color-backdrop: rgba(0, 0, 0, 0.6);
 
@@ -523,12 +528,7 @@ $product-card-radius: $radius-lg;
   --input-border: #{rgba($gray-600, 0.4)};
   --input-border-focus: #{$primary-color};
   --input-placeholder: #{$gray-500};
- 
-  // Gradients
-  --gradient-gold: #{$gradient-gold};
-  --gradient-gold-shimmer: #{$gradient-gold-shimmer};
-  --gradient-gold-radial: #{$gradient-gold-radial};
- 
+
   // Gradients
   --gradient-gold: #{$gradient-gold};
   --gradient-gold-shimmer: #{$gradient-gold-shimmer};
@@ -547,7 +547,7 @@ $product-card-radius: $radius-lg;
   --admin-accent-light: #{rgba($primary-color, 0.2)};
   --admin-accent-dark: #{$primary-dark};
   --admin-success: #{$success-color};
-  --admin-warning: #{$warning-color};
+  --admin-warning: #F59E0B;
   --admin-danger: #{$error-color};
   --admin-info: #{$info-color};
   --admin-purple: #8B5CF6;

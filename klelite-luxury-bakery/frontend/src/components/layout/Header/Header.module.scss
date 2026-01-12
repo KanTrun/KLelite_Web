@@ -412,7 +412,7 @@
   min-height: 44px; // Ensure minimum height for touch
   font-family: $font-body;
   font-size: $text-sm;
-  color: var(--color-text-secondary);
+  color: #1A1614; // Fixed dark color for white background dropdown
   text-decoration: none;
   text-align: left;
   background: transparent;
@@ -423,6 +423,7 @@
   svg {
     width: 18px;
     height: 18px;
+    color: #1A1614;
     opacity: 0.7;
     transition: opacity $transition-micro $ease-out;
   }
@@ -432,6 +433,7 @@
     color: $gold-primary;
 
     svg {
+      color: $gold-primary;
       opacity: 1;
     }
   }

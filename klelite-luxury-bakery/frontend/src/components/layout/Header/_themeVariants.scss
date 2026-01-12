@@ -6,7 +6,6 @@
 // Christmas Theme - Elegant Winter Wonderland
 .christmas {
   &.header {
-    position: relative;
     background: linear-gradient(
       135deg,
       rgba(139, 0, 0, 0.95) 0%,
@@ -96,7 +95,6 @@
 // Tet Theme (Lunar New Year) - Vibrant Prosperity
 .tet {
   &.header {
-    position: relative;
     background: linear-gradient(
       135deg,
       rgba(211, 47, 47, 0.95) 0%,
@@ -186,7 +184,6 @@
 // Valentine Theme - Romantic Luxury
 .valentine {
   &.header {
-    position: relative;
     background: linear-gradient(
       135deg,
       rgba(136, 14, 79, 0.95) 0%,

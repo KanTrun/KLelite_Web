@@ -22,14 +22,6 @@ $text-secondary: #666;
   background: $cream-bg;
   position: relative;
   overflow-x: hidden;
-  // Compensate for main padding-top
-  margin-top: -88px;
-  padding-top: 88px;
-
-  @media (max-width: 768px) {
-    margin-top: -72px;
-    padding-top: 72px;
-  }
 
   // Subtle background pattern
   &::before {
@@ -128,7 +120,7 @@ $text-secondary: #666;
 
     &.active {
       background: linear-gradient(135deg, $gold-primary 0%, $gold-dark 100%);
-      color: #fff;
+      color: $dark-primary; // Dark text on gold background for readability
       box-shadow: 0 4px 15px rgba($gold-primary, 0.3);
     }
   }
@@ -251,7 +243,7 @@ $text-secondary: #666;
 
   &:hover {
     background: $gold-primary;
-    color: #fff;
+    color: $dark-primary; // Dark text on gold for contrast
   }
 }
 
@@ -419,7 +411,7 @@ $text-secondary: #666;
 
   &:hover {
     background: $gold-primary;
-    color: #fff;
+    color: $dark-primary;
     border-color: $gold-primary;
   }
 }
@@ -440,7 +432,7 @@ $text-secondary: #666;
 
   &:hover:not(:disabled) {
     background: #EF4444;
-    color: #fff;
+    color: $white; // White text on red background for readability
   }
 
   &:disabled {
@@ -457,7 +449,7 @@ $text-secondary: #666;
   padding: 10px 20px;
   background: linear-gradient(135deg, $gold-primary 0%, $gold-dark 100%);
   border: none;
-  color: #fff;
+  color: $dark-primary; // Dark text on gold for readability
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -495,7 +487,7 @@ $text-secondary: #666;
   display: inline-flex;
   padding: 12px 30px;
   background: linear-gradient(135deg, $gold-primary 0%, $gold-dark 100%);
-  color: #fff;
+  color: $dark-primary; // Dark text on gold
   border-radius: 30px;
   text-decoration: none;
   font-weight: 600;
