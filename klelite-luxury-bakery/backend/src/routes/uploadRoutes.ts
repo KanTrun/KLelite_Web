@@ -24,6 +24,9 @@ router.post(
         if (err.code === 'LIMIT_FILE_SIZE') {
           return next(new AppError('File quá lớn. Tối đa 5MB', 400));
         }
+        if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+          return next(new AppError('Lỗi upload: Vui lòng kiểm tra field name (yêu cầu: "image" hoặc "file") hoặc số lượng file', 400));
+        }
         return next(new AppError(err.message || 'Lỗi upload file', 400));
       }
       next();
@@ -31,7 +34,7 @@ router.post(
   },
   asyncHandler(async (req, res) => {
     if (!req.file) {
-      throw new AppError('Không có file được upload', 400);
+      throw new AppError('Không có file được upload (Field name bắt buộc là "image")', 400);
     }
 
     // Save file to disk

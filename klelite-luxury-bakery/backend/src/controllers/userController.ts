@@ -1,20 +1,25 @@
 import { Response, NextFunction } from 'express';
-import User from '../models/User';
-import Product from '../models/Product';
+import prisma from '../lib/prisma';
 import { asyncHandler, successResponse, NotFoundError, BadRequestError, ConflictError, parsePagination, generatePaginationInfo } from '../utils';
 import { AuthRequest } from '../types';
 import cloudinary from '../config/cloudinary';
+import { Role } from '@prisma/client';
 
 // @desc    Get user profile
 // @route   GET /api/users/profile
 // @access  Private
 export const getProfile = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const user = await User.findById(req.user?._id);
-  
+  const user = await prisma.user.findUnique({
+    where: { id: req.user!.id },
+    include: {
+      addresses: true
+    }
+  });
+
   if (!user) {
     throw NotFoundError('Không tìm thấy người dùng');
   }
-  
+
   successResponse(res, user);
 });
 
@@ -23,19 +28,17 @@ export const getProfile = asyncHandler(async (req: AuthRequest, res: Response, _
 // @access  Private
 export const updateProfile = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   const { firstName, lastName, phone } = req.body;
-  
-  const user = await User.findById(req.user?._id);
-  
-  if (!user) {
-    throw NotFoundError('Không tìm thấy người dùng');
-  }
-  
-  if (firstName) user.firstName = firstName;
-  if (lastName) user.lastName = lastName;
-  if (phone) user.phone = phone;
-  
-  await user.save();
-  
+
+  const updateData: any = {};
+  if (firstName) updateData.firstName = firstName;
+  if (lastName) updateData.lastName = lastName;
+  if (phone) updateData.phone = phone;
+
+  const user = await prisma.user.update({
+    where: { id: req.user!.id },
+    data: updateData
+  });
+
   successResponse(res, user, 'Cập nhật thông tin thành công');
 });
 
@@ -43,16 +46,18 @@ export const updateProfile = asyncHandler(async (req: AuthRequest, res: Response
 // @route   PUT /api/users/avatar
 // @access  Private
 export const updateAvatar = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const user = await User.findById(req.user?._id);
-  
+  const user = await prisma.user.findUnique({
+    where: { id: req.user!.id }
+  });
+
   if (!user) {
     throw NotFoundError('Không tìm thấy người dùng');
   }
-  
+
   if (!req.file) {
     throw BadRequestError('Vui lòng chọn ảnh để upload');
   }
-  
+
   // Delete old avatar from cloudinary if exists
   if (user.avatar) {
     const publicId = user.avatar.split('/').pop()?.split('.')[0];
@@ -60,7 +65,7 @@ export const updateAvatar = asyncHandler(async (req: AuthRequest, res: Response,
       await cloudinary.uploader.destroy(`klelite/avatars/${publicId}`);
     }
   }
-  
+
   // Upload new avatar
   const result = await cloudinary.uploader.upload(
     `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`,
@@ -72,148 +77,189 @@ export const updateAvatar = asyncHandler(async (req: AuthRequest, res: Response,
       ],
     }
   );
-  
-  user.avatar = result.secure_url;
-  await user.save();
-  
-  successResponse(res, { avatar: user.avatar }, 'Cập nhật ảnh đại diện thành công');
+
+  const updatedUser = await prisma.user.update({
+    where: { id: user.id },
+    data: { avatar: result.secure_url }
+  });
+
+  successResponse(res, { avatar: updatedUser.avatar }, 'Cập nhật ảnh đại diện thành công');
 });
 
 // @desc    Add address
 // @route   POST /api/users/addresses
 // @access  Private
 export const addAddress = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const user = await User.findById(req.user?._id);
-  
-  if (!user) {
-    throw NotFoundError('Không tìm thấy người dùng');
-  }
-  
   const { fullName, phone, address, ward, district, city, province, isDefault } = req.body;
-  
+
   // If this is default, unset other default addresses
   if (isDefault) {
-    user.addresses.forEach(addr => {
-      addr.isDefault = false;
+    await prisma.address.updateMany({
+      where: { userId: req.user!.id, isDefault: true },
+      data: { isDefault: false }
     });
   }
-  
-  // If this is the first address, make it default
-  const makeDefault = user.addresses.length === 0 || isDefault;
-  
-  user.addresses.push({
-    fullName,
-    phone,
-    address,
-    ward,
-    district,
-    city: city || province, // Accept both city and province
-    isDefault: makeDefault,
+
+  // Check if this is the first address
+  const addressCount = await prisma.address.count({
+    where: { userId: req.user!.id }
   });
-  
-  await user.save();
-  
-  successResponse(res, user.addresses, 'Thêm địa chỉ thành công');
+
+  const newAddress = await prisma.address.create({
+    data: {
+      userId: req.user!.id,
+      fullName,
+      phone,
+      address,
+      ward,
+      district,
+      city: city || province, // Accept both city and province
+      isDefault: addressCount === 0 || isDefault
+    }
+  });
+
+  const addresses = await prisma.address.findMany({
+    where: { userId: req.user!.id }
+  });
+
+  successResponse(res, addresses, 'Thêm địa chỉ thành công');
 });
 
 // @desc    Update address
 // @route   PUT /api/users/addresses/:addressId
 // @access  Private
 export const updateAddress = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const user = await User.findById(req.user?._id);
-  
-  if (!user) {
-    throw NotFoundError('Không tìm thấy người dùng');
-  }
-  
-  const addressIndex = user.addresses.findIndex(
-    addr => (addr as any)._id.toString() === req.params.addressId
-  );
-  
-  if (addressIndex === -1) {
+  const { fullName, phone, address, ward, district, city, isDefault } = req.body;
+
+  const existingAddress = await prisma.address.findFirst({
+    where: {
+      id: req.params.addressId,
+      userId: req.user!.id
+    }
+  });
+
+  if (!existingAddress) {
     throw NotFoundError('Không tìm thấy địa chỉ');
   }
-  
-  const { fullName, phone, address, ward, district, city, isDefault } = req.body;
-  
+
   // If this is default, unset other default addresses
   if (isDefault) {
-    user.addresses.forEach(addr => {
-      addr.isDefault = false;
+    await prisma.address.updateMany({
+      where: {
+        userId: req.user!.id,
+        isDefault: true,
+        id: { not: req.params.addressId }
+      },
+      data: { isDefault: false }
     });
   }
-  
-  user.addresses[addressIndex] = {
-    ...user.addresses[addressIndex],
-    fullName: fullName || user.addresses[addressIndex].fullName,
-    phone: phone || user.addresses[addressIndex].phone,
-    address: address || user.addresses[addressIndex].address,
-    ward: ward !== undefined ? ward : user.addresses[addressIndex].ward,
-    district: district || user.addresses[addressIndex].district,
-    city: city || user.addresses[addressIndex].city,
-    isDefault: isDefault || user.addresses[addressIndex].isDefault,
-  };
-  
-  await user.save();
-  
-  successResponse(res, user.addresses, 'Cập nhật địa chỉ thành công');
+
+  const updateData: any = {};
+  if (fullName) updateData.fullName = fullName;
+  if (phone) updateData.phone = phone;
+  if (address) updateData.address = address;
+  if (ward !== undefined) updateData.ward = ward;
+  if (district) updateData.district = district;
+  if (city) updateData.city = city;
+  if (isDefault !== undefined) updateData.isDefault = isDefault;
+
+  await prisma.address.update({
+    where: { id: req.params.addressId },
+    data: updateData
+  });
+
+  const addresses = await prisma.address.findMany({
+    where: { userId: req.user!.id }
+  });
+
+  successResponse(res, addresses, 'Cập nhật địa chỉ thành công');
 });
 
 // @desc    Delete address
 // @route   DELETE /api/users/addresses/:addressId
 // @access  Private
 export const deleteAddress = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const user = await User.findById(req.user?._id);
-  
-  if (!user) {
-    throw NotFoundError('Không tìm thấy người dùng');
-  }
-  
-  const addressIndex = user.addresses.findIndex(
-    addr => (addr as any)._id.toString() === req.params.addressId
-  );
-  
-  if (addressIndex === -1) {
+  const address = await prisma.address.findFirst({
+    where: {
+      id: req.params.addressId,
+      userId: req.user!.id
+    }
+  });
+
+  if (!address) {
     throw NotFoundError('Không tìm thấy địa chỉ');
   }
-  
-  const wasDefault = user.addresses[addressIndex].isDefault;
-  user.addresses.splice(addressIndex, 1);
-  
+
+  const wasDefault = address.isDefault;
+
+  await prisma.address.delete({
+    where: { id: req.params.addressId }
+  });
+
   // If deleted address was default, set first remaining address as default
-  if (wasDefault && user.addresses.length > 0) {
-    user.addresses[0].isDefault = true;
+  if (wasDefault) {
+    const firstAddress = await prisma.address.findFirst({
+      where: { userId: req.user!.id },
+      orderBy: { createdAt: 'asc' }
+    });
+
+    if (firstAddress) {
+      await prisma.address.update({
+        where: { id: firstAddress.id },
+        data: { isDefault: true }
+      });
+    }
   }
-  
-  await user.save();
-  
-  successResponse(res, user.addresses, 'Xóa địa chỉ thành công');
+
+  const addresses = await prisma.address.findMany({
+    where: { userId: req.user!.id }
+  });
+
+  successResponse(res, addresses, 'Xóa địa chỉ thành công');
 });
 
 // @desc    Get wishlist
 // @route   GET /api/users/wishlist
 // @access  Private
 export const getWishlist = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const user = await User.findById(req.user?._id).populate({
-    path: 'wishlist',
-    select: 'name slug price comparePrice images rating numReviews isAvailable stock mainImage',
+  const user = await prisma.user.findUnique({
+    where: { id: req.user!.id },
+    include: {
+      wishlist: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          price: true,
+          comparePrice: true,
+          rating: true,
+          numReviews: true,
+          isAvailable: true,
+          stock: true,
+          images: {
+            where: { isMain: true },
+            take: 1
+          }
+        }
+      }
+    }
   });
-  
+
   if (!user) {
     throw NotFoundError('Không tìm thấy người dùng');
   }
-  
+
   // Transform wishlist to match expected format
   const wishlistItems = user.wishlist.map((product: any) => ({
-    _id: product._id.toString(),
+    _id: product.id,
     product: {
-      _id: product._id.toString(),
+      _id: product.id,
       name: product.name,
       slug: product.slug,
       price: product.price,
       comparePrice: product.comparePrice,
-      images: product.images,
-      mainImage: product.mainImage,
+      images: product.images.map((img: any) => img.url),
+      mainImage: product.images[0]?.url,
       rating: product.rating,
       numReviews: product.numReviews,
       stock: product.stock || 0,
@@ -221,7 +267,7 @@ export const getWishlist = asyncHandler(async (req: AuthRequest, res: Response, 
     },
     addedAt: new Date().toISOString()
   }));
-  
+
   successResponse(res, wishlistItems);
 });
 
@@ -230,27 +276,40 @@ export const getWishlist = asyncHandler(async (req: AuthRequest, res: Response, 
 // @access  Private
 export const addToWishlist = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   const { productId } = req.params;
-  
+
   // Check if product exists
-  const product = await Product.findById(productId);
+  const product = await prisma.product.findUnique({
+    where: { id: productId }
+  });
+
   if (!product) {
     throw NotFoundError('Không tìm thấy sản phẩm');
   }
-  
-  const user = await User.findById(req.user?._id);
-  
-  if (!user) {
-    throw NotFoundError('Không tìm thấy người dùng');
-  }
-  
+
   // Check if already in wishlist
-  if (user.wishlist.some(id => id.toString() === productId)) {
+  const user = await prisma.user.findUnique({
+    where: { id: req.user!.id },
+    include: {
+      wishlist: {
+        where: { id: productId }
+      }
+    }
+  });
+
+  if (user && user.wishlist.length > 0) {
     throw ConflictError('Sản phẩm đã có trong danh sách yêu thích');
   }
-  
-  user.wishlist.push(product._id);
-  await user.save();
-  
+
+  // Add to wishlist
+  await prisma.user.update({
+    where: { id: req.user!.id },
+    data: {
+      wishlist: {
+        connect: { id: productId }
+      }
+    }
+  });
+
   successResponse(res, null, 'Thêm vào danh sách yêu thích thành công');
 });
 
@@ -259,22 +318,31 @@ export const addToWishlist = asyncHandler(async (req: AuthRequest, res: Response
 // @access  Private
 export const removeFromWishlist = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   const { productId } = req.params;
-  
-  const user = await User.findById(req.user?._id);
-  
-  if (!user) {
-    throw NotFoundError('Không tìm thấy người dùng');
-  }
-  
-  const index = user.wishlist.findIndex(id => id.toString() === productId);
-  
-  if (index === -1) {
+
+  // Check if in wishlist
+  const user = await prisma.user.findUnique({
+    where: { id: req.user!.id },
+    include: {
+      wishlist: {
+        where: { id: productId }
+      }
+    }
+  });
+
+  if (!user || user.wishlist.length === 0) {
     throw NotFoundError('Sản phẩm không có trong danh sách yêu thích');
   }
-  
-  user.wishlist.splice(index, 1);
-  await user.save();
-  
+
+  // Remove from wishlist
+  await prisma.user.update({
+    where: { id: req.user!.id },
+    data: {
+      wishlist: {
+        disconnect: { id: productId }
+      }
+    }
+  });
+
   successResponse(res, null, 'Xóa khỏi danh sách yêu thích thành công');
 });
 
@@ -283,39 +351,42 @@ export const removeFromWishlist = asyncHandler(async (req: AuthRequest, res: Res
 // @route   GET /api/users
 // @access  Private/Admin
 export const getUsers = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const { skip, limit, page, sort } = parsePagination(req.query);
-  
-  const filter: Record<string, unknown> = {};
-  
+  const { skip, limit, page, sort, sortField } = parsePagination(req.query);
+
+  const filter: any = {};
+
   // Role filter
   if (req.query.role) {
-    filter.role = req.query.role;
+    filter.role = (req.query.role as string).toUpperCase() as Role;
   }
-  
+
   // Status filter
   if (req.query.isActive !== undefined) {
     filter.isActive = req.query.isActive === 'true';
   }
-  
+
   // Search
   if (req.query.search) {
-    filter.$or = [
-      { email: { $regex: req.query.search, $options: 'i' } },
-      { firstName: { $regex: req.query.search, $options: 'i' } },
-      { lastName: { $regex: req.query.search, $options: 'i' } },
+    const searchTerm = req.query.search as string;
+    filter.OR = [
+      { email: { contains: searchTerm, mode: 'insensitive' } },
+      { firstName: { contains: searchTerm, mode: 'insensitive' } },
+      { lastName: { contains: searchTerm, mode: 'insensitive' } },
     ];
   }
-  
+
   const [users, total] = await Promise.all([
-    User.find(filter)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit),
-    User.countDocuments(filter),
+    prisma.user.findMany({
+      where: filter,
+      orderBy: { [sortField]: sort },
+      skip,
+      take: limit,
+    }),
+    prisma.user.count({ where: filter }),
   ]);
-  
+
   const pagination = generatePaginationInfo(page, limit, total);
-  
+
   successResponse(res, users, undefined, 200, pagination);
 });
 
@@ -323,12 +394,21 @@ export const getUsers = asyncHandler(async (req: AuthRequest, res: Response, _ne
 // @route   GET /api/users/:id
 // @access  Private/Admin
 export const getUserById = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const user = await User.findById(req.params.id);
-  
+  const user = await prisma.user.findUnique({
+    where: { id: req.params.id },
+    include: {
+      addresses: true,
+      orders: {
+        take: 10,
+        orderBy: { createdAt: 'desc' }
+      }
+    }
+  });
+
   if (!user) {
     throw NotFoundError('Không tìm thấy người dùng');
   }
-  
+
   successResponse(res, user);
 });
 
@@ -337,19 +417,21 @@ export const getUserById = asyncHandler(async (req: AuthRequest, res: Response, 
 // @access  Private/Admin
 export const updateUser = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   const { role, isActive, isVerified } = req.body;
-  
-  const user = await User.findById(req.params.id);
-  
-  if (!user) {
-    throw NotFoundError('Không tìm thấy người dùng');
+
+  if (role && !Object.values(Role).includes(role.toUpperCase() as Role)) {
+    throw BadRequestError('Role không hợp lệ. Các role hợp lệ: ' + Object.values(Role).join(', '));
   }
-  
-  if (role) user.role = role;
-  if (isActive !== undefined) user.isActive = isActive;
-  if (isVerified !== undefined) user.isVerified = isVerified;
-  
-  await user.save();
-  
+
+  const updateData: any = {};
+  if (role) {\n    const upperRole = role.toUpperCase() as Role;\n    if (!Object.values(Role).includes(upperRole)) {\n      throw BadRequestError('Role không hợp lệ. Các role hợp lệ: ' + Object.values(Role).join(', '));\n    }\n    updateData.role = upperRole;\n  }\n
+  if (isActive !== undefined) updateData.isActive = isActive;
+  if (isVerified !== undefined) updateData.isVerified = isVerified;
+
+  const user = await prisma.user.update({
+    where: { id: req.params.id },
+    data: updateData
+  });
+
   successResponse(res, user, 'Cập nhật người dùng thành công');
 });
 
@@ -357,15 +439,19 @@ export const updateUser = asyncHandler(async (req: AuthRequest, res: Response, _
 // @route   DELETE /api/users/:id
 // @access  Private/Admin
 export const deleteUser = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const user = await User.findById(req.params.id);
-  
+  const user = await prisma.user.findUnique({
+    where: { id: req.params.id }
+  });
+
   if (!user) {
     throw NotFoundError('Không tìm thấy người dùng');
   }
-  
+
   // Soft delete - just deactivate
-  user.isActive = false;
-  await user.save();
-  
+  await prisma.user.update({
+    where: { id: req.params.id },
+    data: { isActive: false }
+  });
+
   successResponse(res, null, 'Xóa người dùng thành công');
 });
