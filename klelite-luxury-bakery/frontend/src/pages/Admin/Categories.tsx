@@ -16,7 +16,7 @@ import { toast } from 'react-hot-toast';
 import styles from './Admin.module.scss';
 
 interface Category {
-  _id: string;
+  id: string;
   name: string;
   slug: string;
   description?: string;
@@ -173,7 +173,7 @@ const AdminCategories: React.FC = () => {
         await categoryService.createCategory(formData);
         toast.success('Tạo danh mục thành công!');
       } else if (selectedCategory) {
-        await categoryService.updateCategory(selectedCategory._id, formData);
+        await categoryService.updateCategory(selectedCategory.id, formData);
         toast.success('Cập nhật danh mục thành công!');
       }
       handleCloseModal();
@@ -248,7 +248,7 @@ const AdminCategories: React.FC = () => {
           ) : (
             filteredCategories.map((category) => (
               <motion.div
-                key={category._id}
+                key={category.id}
                 className={styles.categoryCard}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -286,7 +286,7 @@ const AdminCategories: React.FC = () => {
                   </button>
                   <button
                     className={styles.deleteBtn}
-                    onClick={() => handleDeleteClick(category._id)}
+                    onClick={() => handleDeleteClick(category.id)}
                     title="Xóa"
                   >
                     <FiTrash2 />

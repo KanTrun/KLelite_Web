@@ -25,17 +25,10 @@ import AdminLayout from './AdminLayout';
 import { adminUserService } from '../../services/userService';
 import styles from './Admin.module.scss';
 import { toast } from 'react-hot-toast';
+import { User as BaseUser, UserRole } from '../../types/user.types';
 
-interface User {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone?: string;
-  role: 'user' | 'manager' | 'admin';
+interface User extends BaseUser {
   isActive: boolean;
-  isVerified: boolean;
-  createdAt: string;
   totalOrders?: number;
   totalSpent?: number;
 }
@@ -60,7 +53,7 @@ const AdminUsers: React.FC = () => {
     email: '',
     phone: '',
     password: '',
-    role: 'user' as 'user' | 'manager' | 'admin',
+    role: 'USER' as UserRole,
   });
   
   // Stats for quick overview
@@ -87,7 +80,7 @@ const AdminUsers: React.FC = () => {
         
         // Calculate stats
         const activeCount = usersList.filter((u: User) => u.isActive).length;
-        const adminCount = usersList.filter((u: User) => u.role === 'admin').length;
+        const adminCount = usersList.filter((u: User) => u.role === 'ADMIN').length;
         const thisMonth = new Date().getMonth();
         const newCount = usersList.filter((u: User) => new Date(u.createdAt).getMonth() === thisMonth).length;
         
@@ -144,7 +137,7 @@ const AdminUsers: React.FC = () => {
 
   const handleUpdateRole = async (userId: string, newRole: string) => {
     try {
-      await adminUserService.updateUser(userId, { role: newRole });
+      await adminUserService.updateUser(userId, { role: newRole as UserRole });
       toast.success('Cập nhật quyền thành công!');
       fetchUsers();
     } catch (error) {
@@ -173,7 +166,7 @@ const AdminUsers: React.FC = () => {
         email: '',
         phone: '',
         password: '',
-        role: 'user',
+        role: 'USER',
       });
       fetchUsers();
     } catch (error) {
@@ -332,7 +325,7 @@ const AdminUsers: React.FC = () => {
                 </tr>
               ) : (
                 filteredUsers.map((user) => (
-                  <tr key={user._id}>
+                  <tr key={user.id}>
                     <td>
                       <div className={styles.userCell}>
                         <div className={styles.userAvatar}>
@@ -349,9 +342,9 @@ const AdminUsers: React.FC = () => {
                     <td>{user.phone || 'Chưa cập nhật'}</td>
                     <td>
                       <span className={`${styles.roleBadge} ${styles[user.role]}`}>
-                        {user.role === 'admin'
+                        {user.role === 'ADMIN'
                           ? 'Admin'
-                          : user.role === 'manager'
+                          : user.role === 'MANAGER'
                           ? 'Quản lý'
                           : 'Khách hàng'}
                       </span>
@@ -379,15 +372,15 @@ const AdminUsers: React.FC = () => {
                         </button>
                         <button
                           className={styles.editBtn}
-                          onClick={() => handleToggleStatus(user._id, user.isActive)}
+                          onClick={() => handleToggleStatus(user.id, user.isActive)}
                           title={user.isActive ? 'Khóa tài khoản' : 'Mở khóa'}
                         >
                           {user.isActive ? <FiLock /> : <FiUnlock />}
                         </button>
-                        {user.role !== 'admin' && (
+                        {user.role !== 'ADMIN' && (
                           <button
                             className={styles.deleteBtn}
-                            onClick={() => handleDeleteClick(user._id)}
+                            onClick={() => handleDeleteClick(user.id)}
                             title="Xóa"
                           >
                             <FiTrash2 />
@@ -498,12 +491,12 @@ const AdminUsers: React.FC = () => {
                         <select
                           className={styles.statusSelect}
                           value={selectedUser.role}
-                          onChange={(e) => handleUpdateRole(selectedUser._id, e.target.value)}
-                          disabled={selectedUser.role === 'admin'}
+                          onChange={(e) => handleUpdateRole(selectedUser.id, e.target.value)}
+                          disabled={selectedUser.role === 'ADMIN'}
                         >
-                          <option value="user">Khách hàng</option>
-                          <option value="manager">Quản lý</option>
-                          <option value="admin">Admin</option>
+                          <option value="USER">Khách hàng</option>
+                          <option value="MANAGER">Quản lý</option>
+                          <option value="ADMIN">Admin</option>
                         </select>
                       </div>
                     </div>
@@ -588,11 +581,11 @@ const AdminUsers: React.FC = () => {
                     <label>Vai trò</label>
                     <select
                       value={newUser.role}
-                      onChange={(e) => setNewUser({ ...newUser, role: e.target.value as 'user' | 'manager' | 'admin' })}
+                      onChange={(e) => setNewUser({ ...newUser, role: e.target.value as UserRole })}
                     >
-                      <option value="user">Khách hàng</option>
-                      <option value="manager">Quản lý</option>
-                      <option value="admin">Admin</option>
+                      <option value="USER">Khách hàng</option>
+                      <option value="STAFF">Nhân viên</option>
+                      <option value="ADMIN">Admin</option>
                     </select>
                   </div>
                   <div className={styles.modalActions}>

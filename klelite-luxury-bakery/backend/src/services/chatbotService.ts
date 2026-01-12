@@ -1,7 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import FAQ from '../models/FAQ';
-import Order from '../models/Order';
-import Product from '../models/Product';
+import prisma from '../lib/prisma';
 
 let genAI: GoogleGenerativeAI | null = null;
 
@@ -52,8 +50,7 @@ export const chatbotService = {
     const lowerMessage = message.toLowerCase();
 
     // Keyword matching for FAQ
-    // Simple improved matching: check if any keyword from FAQ is present
-    const faqs = await FAQ.find({ isActive: true });
+    const faqs = await prisma.fAQ.findMany({ where: { isActive: true } });
 
     // Simple relevance scoring
     let bestMatch = null;
@@ -61,7 +58,8 @@ export const chatbotService = {
 
     for (const faq of faqs) {
       let score = 0;
-      for (const keyword of faq.keywords) {
+      const keywords = (faq.keywords as string[]) || [];
+      for (const keyword of keywords) {
         if (lowerMessage.includes(keyword.toLowerCase())) {
           score++;
         }
@@ -130,38 +128,52 @@ export const chatbotService = {
 
     if (!orderNumber) {
       // If no order number provided, show most recent order
-      const lastOrder = await Order.findOne({ user: userId }).sort({ createdAt: -1 });
+      const lastOrder = await prisma.order.findFirst({
+        where: { userId },
+        orderBy: { createdAt: 'desc' }
+      });
+
       if (!lastOrder) {
         return "You haven't placed any orders yet.";
       }
-      return `Your most recent order #${lastOrder._id} is currently **${lastOrder.status}**.`;
+      return `Your most recent order #${lastOrder.id} is currently **${lastOrder.status}**.`;
     }
 
-    const order = await Order.findOne({
-      user: userId,
-      $or: [{ _id: orderNumber }] // Assuming orderNumber is ID for simplicity, or could add custom orderId field
+    const order = await prisma.order.findFirst({
+      where: {
+        userId,
+        OR: [{ id: orderNumber }, { orderNumber }]
+      }
     });
 
     if (!order) {
       return `I couldn't find an order with ID #${orderNumber}. Please check the number and try again.`;
     }
 
-    return `Order #${order._id} is currently **${order.status}**. It was placed on ${new Date(order.createdAt).toLocaleDateString()}.`;
+    return `Order #${order.id} is currently **${order.status}**. It was placed on ${new Date(order.createdAt).toLocaleDateString()}.`;
   },
 
   async handleProductSearch(query: string) {
     // Extract keywords
     const keywords = query.replace(/find|search|looking for|buy|tìm|mua/gi, '').trim();
 
-    const products = await Product.find(
-      { $text: { $search: keywords }, isAvailable: true }
-    ).limit(3).select('name slug price');
+    const products = await prisma.product.findMany({
+      where: {
+        isAvailable: true,
+        OR: [
+          { name: { contains: keywords } },
+          { description: { contains: keywords } }
+        ]
+      },
+      select: { name: true, slug: true, price: true },
+      take: 3
+    });
 
     if (products.length === 0) {
       return "I couldn't find any products matching your description. Try browsing our categories!";
     }
 
-    const productLinks = products.map(p => `- [${p.name}](/products/${p.slug}) - ${p.price.toLocaleString()}đ`).join('\n');
+    const productLinks = products.map(p => `- [${p.name}](/products/${p.slug}) - ${Number(p.price).toLocaleString()}đ`).join('\n');
     return `Here are some products you might like:\n${productLinks}`;
   },
 

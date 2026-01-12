@@ -8,6 +8,7 @@ import { fetchCurrentTheme } from '@/store/slices/themeSlice';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { SearchBar } from '@/components/common/SearchBar';
 import NotificationBell from '@/components/Notifications/NotificationBell';
+import { SnowfallEffect, FireworksEffect, ValentineEffect } from '@/components/common/SeasonalEffects';
 import styles from './Header.module.scss';
 
 export const Header: React.FC = () => {
@@ -61,10 +62,38 @@ export const Header: React.FC = () => {
     { path: '/contact', label: 'Liên hệ' },
   ];
 
-  const headerClass = `${styles.header} ${isScrolled ? styles.scrolled : ''} ${currentTheme?.type === 'christmas' ? styles.christmas : ''} ${currentTheme?.type === 'tet' ? styles.tet : ''}`;
+  // Build header class based on theme type
+  const getHeaderClass = () => {
+    const classes = [styles.header];
+    if (isScrolled) classes.push(styles.scrolled);
+    if (currentTheme?.type === 'christmas') classes.push(styles.christmas);
+    if (currentTheme?.type === 'tet') classes.push(styles.tet);
+    if (currentTheme?.type === 'valentine') classes.push(styles.valentine);
+    return classes.join(' ');
+  };
+
+  // Render seasonal effect based on theme type
+  const renderSeasonalEffect = () => {
+    if (!currentTheme) return null;
+    
+    switch (currentTheme.type) {
+      case 'christmas':
+        return <SnowfallEffect intensity="light" />;
+      case 'tet':
+        return <FireworksEffect intensity="medium" />;
+      case 'valentine':
+        return <ValentineEffect intensity="light" />;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <header className={headerClass}>
+    <header className={getHeaderClass()}>
+      {/* Seasonal Effect Overlay - wrapped in container to not affect dropdowns */}
+      <div className={styles.seasonalEffectsWrapper}>
+        {renderSeasonalEffect()}
+      </div>
       <div className={styles.container}>
         {/* Logo */}
         <Link to="/" className={styles.logo}>
@@ -136,7 +165,7 @@ export const Header: React.FC = () => {
               >
                 <Link to="/profile" className={styles.dropdownItem} onClick={() => setIsDropdownOpen(false)} role="menuitem">Tài khoản</Link>
                 <Link to="/orders" className={styles.dropdownItem} onClick={() => setIsDropdownOpen(false)} role="menuitem">Đơn hàng</Link>
-                {user?.role === 'admin' && (
+                {user?.role === 'ADMIN' && (
                   <Link to="/admin" className={styles.dropdownItem} onClick={() => setIsDropdownOpen(false)} role="menuitem">Quản trị</Link>
                 )}
                 <div className={styles.dropdownDivider} role="separator" />

@@ -6,7 +6,7 @@ API server cho ứng dụng thương mại điện tử bánh ngọt cao cấp.
 
 - **Runtime**: Node.js 18+
 - **Framework**: Express.js
-- **Database**: MongoDB + Mongoose
+- **Database**: MySQL + Prisma ORM
 - **Authentication**: JWT (Access + Refresh Token)
 - **File Upload**: Multer + Cloudinary
 - **Email**: Nodemailer
@@ -16,7 +16,7 @@ API server cho ứng dụng thương mại điện tử bánh ngọt cao cấp.
 
 ### Yêu cầu
 - Node.js 18+
-- MongoDB 6+
+- MySQL 8+
 - npm hoặc yarn
 
 ### Bước 1: Cài đặt dependencies
@@ -34,23 +34,22 @@ cp .env.example .env
 ```
 
 Các biến môi trường cần thiết:
-- `MONGODB_URI`: Connection string MongoDB
+- `DATABASE_URL`: MySQL connection string
 - `JWT_SECRET`: Secret key cho access token
 - `JWT_REFRESH_SECRET`: Secret key cho refresh token
 - `CLOUDINARY_*`: Thông tin Cloudinary account
 - `SMTP_*`: Thông tin SMTP server
 
-### Bước 3: Khởi động MongoDB
+### Bước 3: Chạy Prisma migrations
 
 ```bash
-# Nếu sử dụng Docker
-docker-compose up -d mongodb
+npx prisma migrate dev
 ```
 
 ### Bước 4: Seed dữ liệu mẫu
 
 ```bash
-npm run seed
+npx prisma db seed
 ```
 
 ### Bước 5: Chạy server
@@ -62,6 +61,25 @@ npm run dev
 # Production mode
 npm run build
 npm start
+```
+
+## Prisma Commands
+
+```bash
+# Generate Prisma Client
+npx prisma generate
+
+# Run migrations
+npx prisma migrate dev
+
+# Reset database (warning: deletes all data)
+npx prisma migrate reset
+
+# Open Prisma Studio (database GUI)
+npx prisma studio
+
+# Seed database
+npx prisma db seed
 ```
 
 ## API Endpoints

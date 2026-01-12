@@ -92,7 +92,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title, subtitle, ac
               </div>
               <div>
                 <span className={styles.userName}>{displayName}</span>
-                <span className={styles.userRole}>{user?.role === 'admin' ? 'Quản trị viên' : 'Nhân viên'}</span>
+                <span className={styles.userRole}>{user?.role === 'ADMIN' ? 'Quản trị viên' : 'Nhân viên'}</span>
               </div>
             </div>
             <button className={styles.logoutBtn} onClick={handleLogout} title="Đăng xuất">

@@ -2,9 +2,9 @@ import api from './api';
 import type { ApiResponse } from '@/types';
 
 export interface Review {
-  _id: string;
+  id: string;
   user: {
-    _id: string;
+    id: string;
     firstName: string;
     lastName: string;
     avatar?: string;

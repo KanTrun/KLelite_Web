@@ -27,7 +27,7 @@ import { toast } from 'react-hot-toast';
 import styles from './Manager.module.scss';
 
 interface Category {
-  _id: string;
+  id: string;
   name: string;
   slug: string;
   description?: string;
@@ -91,7 +91,7 @@ const ManagerDashboard: React.FC = () => {
       navigate('/login');
       return;
     }
-    if (user?.role !== 'manager' && user?.role !== 'admin') {
+    if (user?.role !== 'MANAGER' && user?.role !== 'ADMIN') {
       navigate('/');
     }
   }, [isAuthenticated, user, navigate]);
@@ -114,7 +114,7 @@ const ManagerDashboard: React.FC = () => {
     }
   };
 
-  if (!user || (user.role !== 'manager' && user.role !== 'admin')) {
+  if (!user || (user.role !== 'MANAGER' && user.role !== 'ADMIN')) {
     return null;
   }
 
@@ -166,7 +166,7 @@ const ManagerDashboard: React.FC = () => {
         description: product.description,
         price: product.price,
         comparePrice: product.comparePrice || 0,
-        category: typeof product.category === 'object' ? product.category._id : product.category,
+        category: typeof product.category === 'object' ? product.category.id : product.category,
         sku: product.sku,
         stock: product.stock,
         isFeatured: product.isFeatured || false,
@@ -198,7 +198,7 @@ const ManagerDashboard: React.FC = () => {
         await productService.createProduct(productForm);
         toast.success('Tạo sản phẩm thành công!');
       } else {
-        await productService.updateProduct(selectedProduct._id, productForm);
+        await productService.updateProduct(selectedProduct.id, productForm);
         toast.success('Cập nhật sản phẩm thành công!');
       }
       setShowProductModal(false);
@@ -238,7 +238,7 @@ const ManagerDashboard: React.FC = () => {
         await categoryService.createCategory(categoryForm);
         toast.success('Tạo danh mục thành công!');
       } else if (selectedCategoryItem) {
-        await categoryService.updateCategory(selectedCategoryItem._id, categoryForm);
+        await categoryService.updateCategory(selectedCategoryItem.id, categoryForm);
         toast.success('Cập nhật danh mục thành công!');
       }
       setShowCategoryModal(false);
@@ -516,7 +516,7 @@ const ManagerDashboard: React.FC = () => {
                 {products
                   .filter((p) => p.stock <= 10)
                   .map((product) => (
-                    <div key={product._id} className={styles.alertItem}>
+                    <div key={product.id} className={styles.alertItem}>
                       <img 
                         src={product.mainImage || product.images?.[0]?.url || '/placeholder.png'} 
                         alt={product.name} 
@@ -567,7 +567,7 @@ const ManagerDashboard: React.FC = () => {
               >
                 <option value="all">Tất cả danh mục</option>
                 {storeCategories.map((cat) => (
-                  <option key={cat._id} value={cat.slug}>
+                  <option key={cat.id} value={cat.slug}>
                     {cat.name}
                   </option>
                 ))}
@@ -599,7 +599,7 @@ const ManagerDashboard: React.FC = () => {
                     </tr>
                   ) : (
                     filteredProducts.map((product) => (
-                      <tr key={product._id}>
+                      <tr key={product.id}>
                         <td className={styles.productCell}>
                           <img 
                             src={product.mainImage || product.images?.[0]?.url || '/placeholder.png'} 
@@ -632,7 +632,7 @@ const ManagerDashboard: React.FC = () => {
                         <td>
                           <div className={styles.ratingCell}>
                             <FiStar className={styles.starIcon} />
-                            <span>{product.rating?.toFixed(1) || '0.0'}</span>
+                            <span>{product.rating ? Number(product.rating).toFixed(1) : '0.0'}</span>
                           </div>
                         </td>
                         <td>
@@ -662,7 +662,7 @@ const ManagerDashboard: React.FC = () => {
                           <button 
                             className={styles.deleteBtn} 
                             title="Xóa"
-                            onClick={() => handleDeleteClick('product', product._id)}
+                            onClick={() => handleDeleteClick('product', product.id)}
                           >
                             <FiTrash2 />
                           </button>
@@ -705,7 +705,7 @@ const ManagerDashboard: React.FC = () => {
             ) : (
               <div className={styles.categoriesGrid}>
                 {categories.map((category) => (
-                  <div key={category._id} className={styles.categoryCard}>
+                  <div key={category.id} className={styles.categoryCard}>
                     <div className={styles.categoryImage}>
                       {category.image ? (
                         <img src={category.image} alt={category.name} />
@@ -729,7 +729,7 @@ const ManagerDashboard: React.FC = () => {
                       </button>
                       <button 
                         className={styles.deleteBtn}
-                        onClick={() => handleDeleteClick('category', category._id)}
+                        onClick={() => handleDeleteClick('category', category.id)}
                       >
                         <FiTrash2 />
                       </button>
@@ -799,7 +799,7 @@ const ManagerDashboard: React.FC = () => {
                     >
                       <option value="">Chọn danh mục</option>
                       {storeCategories.map((cat) => (
-                        <option key={cat._id} value={cat._id}>{cat.name}</option>
+                        <option key={cat.id} value={cat.id}>{cat.name}</option>
                       ))}
                     </select>
                   </div>

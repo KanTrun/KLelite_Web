@@ -9,7 +9,7 @@ This repository contains personal software projects.
 Premium e-commerce platform for a luxury bakery business.
 
 - **Frontend:** React 18 + TypeScript + Vite + Redux Toolkit
-- **Backend:** Node.js + Express + MongoDB + JWT
+- **Backend:** Node.js + Express + MySQL + Prisma + JWT
 - **Location:** `klelite-luxury-bakery/`
 
 [View Project README](./klelite-luxury-bakery/README.md)
@@ -19,7 +19,7 @@ Premium e-commerce platform for a luxury bakery business.
 ### Prerequisites
 
 - Node.js >= 18.x
-- MongoDB >= 6.x (local or Atlas)
+- MySQL >= 8.x (local or cloud)
 - npm or yarn
 
 ### Development Setup
@@ -51,14 +51,17 @@ docker-compose up
 Services:
 - Frontend: http://localhost:3000
 - Backend: http://localhost:5000
-- MongoDB: localhost:27017
+- MySQL: localhost:3306
 - Redis: localhost:6379
 
 ### Database Seeding
 
 ```bash
 cd klelite-luxury-bakery/backend
-npx ts-node src/scripts/seed.ts
+# Run Prisma migrations first
+npx prisma migrate dev
+# Then seed the database
+npx prisma db seed
 ```
 
 Test credentials:
@@ -115,15 +118,15 @@ npm run lint         # ESLint
 
 - **Frontend:** Deployed to Vercel (see `vercel.json`)
 - **Backend:** Deploy to Render, Railway, or similar
-- **Database:** MongoDB Atlas
+- **Database:** MySQL (PlanetScale, AWS RDS, or similar)
 
 ## Tech Stack
 
 | Layer | Technologies |
 |-------|-------------|
 | Frontend | React 18, TypeScript, Vite, Redux Toolkit, SCSS Modules |
-| Backend | Node.js, Express, TypeScript, JWT, Cloudinary, Stripe |
-| Database | MongoDB, Mongoose, Redis |
+| Backend | Node.js, Express, TypeScript, Prisma, JWT, Cloudinary, Stripe |
+| Database | MySQL, Prisma ORM, Redis |
 | DevOps | Docker, Vercel, GitHub Actions |
 
 ## License

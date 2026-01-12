@@ -1,10 +1,19 @@
-import Counter from '../models/Counter';
+import prisma from '../lib/prisma';
 
 export async function getNextSequence(name: string): Promise<number> {
-  const counter = await Counter.findByIdAndUpdate(
-    name,
-    { $inc: { seq: 1 } },
-    { new: true, upsert: true }
-  );
-  return counter!.seq;
+  // Use Prisma transaction to ensure atomic increment
+  const counter = await prisma.counter.upsert({
+    where: { entity: name },
+    update: {
+      seq: {
+        increment: 1
+      }
+    },
+    create: {
+      entity: name,
+      seq: 1
+    }
+  });
+
+  return counter.seq;
 }

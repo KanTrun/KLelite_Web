@@ -10,7 +10,7 @@ import { AuthRequest } from '../types';
  * @access Private
  */
 export const streamNotifications = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const userId = req.user!._id.toString();
+  const userId = req.user!.id;
 
   // Set SSE headers
   res.setHeader('Content-Type', 'text/event-stream');
@@ -42,7 +42,7 @@ export const streamNotifications = asyncHandler(async (req: AuthRequest, res: Re
  * @access Private
  */
 export const getNotifications = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const userId = req.user!._id;
+  const userId = req.user!.id;
   const limit = parseInt(req.query.limit as string) || 50;
   const skip = parseInt(req.query.skip as string) || 0;
 
@@ -61,7 +61,7 @@ export const getNotifications = asyncHandler(async (req: AuthRequest, res: Respo
  * @access Private
  */
 export const getUnreadCount = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const userId = req.user!._id;
+  const userId = req.user!.id;
   const count = await notificationService.getUnreadCount(userId);
 
   res.status(200).json({
@@ -76,7 +76,7 @@ export const getUnreadCount = asyncHandler(async (req: AuthRequest, res: Respons
  * @access Private
  */
 export const getUnreadNotifications = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const userId = req.user!._id;
+  const userId = req.user!.id;
   const limit = parseInt(req.query.limit as string) || 20;
 
   const notifications = await notificationService.getUnread(userId, limit);
@@ -94,7 +94,7 @@ export const getUnreadNotifications = asyncHandler(async (req: AuthRequest, res:
  * @access Private
  */
 export const markNotificationAsRead = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const userId = req.user!._id;
+  const userId = req.user!.id;
   const notificationId = req.params.id;
 
   const notification = await notificationService.markAsRead(userId, notificationId);
@@ -119,7 +119,7 @@ export const markNotificationAsRead = asyncHandler(async (req: AuthRequest, res:
  * @access Private
  */
 export const markAllAsRead = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const userId = req.user!._id;
+  const userId = req.user!.id;
   const modifiedCount = await notificationService.markAllAsRead(userId);
 
   res.status(200).json({
@@ -135,7 +135,7 @@ export const markAllAsRead = asyncHandler(async (req: AuthRequest, res: Response
  * @access Private
  */
 export const deleteNotification = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const userId = req.user!._id;
+  const userId = req.user!.id;
   const notificationId = req.params.id;
 
   const deleted = await notificationService.deleteNotification(userId, notificationId);

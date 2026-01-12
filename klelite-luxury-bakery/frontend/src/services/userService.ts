@@ -3,7 +3,8 @@ import type {
   User,
   Address,
   WishlistItem,
-  ApiResponse
+  ApiResponse,
+  UserRole
 } from '@/types';
 
 // User Service
@@ -84,7 +85,7 @@ export const userService = {
       const response = await api.get<ApiResponse<WishlistItem[]>>('/users/wishlist');
       const wishlist = response.data.data || [];
       return wishlist.some((item: any) =>
-        item._id === productId || item.id === productId
+        item.id === productId || item.id === productId
       );
     } catch {
       return false;
@@ -116,7 +117,7 @@ export const adminUserService = {
     email: string;
     phone?: string;
     password: string;
-    role: 'user' | 'manager' | 'admin';
+    role: UserRole;
   }): Promise<User> => {
     const response = await api.post<ApiResponse<User>>('/users', data);
     return response.data.data;
@@ -134,7 +135,7 @@ export const adminUserService = {
   },
 
   // Update user role
-  updateUserRole: async (id: string, role: 'user' | 'admin' | 'manager'): Promise<User> => {
+  updateUserRole: async (id: string, role: UserRole): Promise<User> => {
     const response = await api.put<ApiResponse<User>>(`/users/${id}`, { role });
     return response.data.data;
   },

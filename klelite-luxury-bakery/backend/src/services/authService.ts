@@ -2,6 +2,7 @@ import { User, Prisma } from '@prisma/client';
 import prisma from '../lib/prisma';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import { userService } from './userService';
 
 export interface RegisterDTO {

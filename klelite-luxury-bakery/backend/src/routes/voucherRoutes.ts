@@ -43,10 +43,10 @@ router.post('/validate', validate(validateVoucherValidation), validateVoucher);
 router.get('/available', getAvailableVouchers);
 
 // Admin routes
-router.get('/', authorize('admin'), getVouchers);
-router.get('/:id', authorize('admin'), getVoucher);
-router.post('/', authorize('admin'), validate(createVoucherValidation), createVoucher);
-router.put('/:id', authorize('admin'), updateVoucher);
-router.delete('/:id', authorize('admin'), deleteVoucher);
+router.get('/', authorize('ADMIN'), getVouchers);
+router.get('/:id', authorize('ADMIN'), getVoucher);
+router.post('/', authorize('ADMIN'), validate(createVoucherValidation), createVoucher);
+router.put('/:id', authorize('ADMIN'), updateVoucher);
+router.delete('/:id', authorize('ADMIN'), deleteVoucher);
 
 export default router;

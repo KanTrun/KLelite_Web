@@ -30,7 +30,7 @@ router.post(
 // Admin routes
 router.post(
   '/adjust',
-  authorize('admin'),
+  authorize('ADMIN'),
   validate([
     body('userId').notEmpty().withMessage('User ID is required'),
     body('amount').isInt().withMessage('Amount must be an integer'),

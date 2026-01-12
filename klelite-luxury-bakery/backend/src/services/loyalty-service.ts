@@ -1,237 +1,128 @@
-import { LoyaltyAccount, ILoyaltyAccount } from '../models';
+import prisma from '../lib/prisma';
+import { LoyaltyAccount } from '@prisma/client';
 import { AppError } from '../utils';
 
 export class LoyaltyService {
   /**
    * Get or create loyalty account for user
    */
-  async getOrCreateAccount(userId: string): Promise<ILoyaltyAccount> {
-    let account = await LoyaltyAccount.findOne({ userId });
+  async getOrCreateAccount(userId: string): Promise<LoyaltyAccount> {
+    let account = await prisma.loyaltyAccount.findUnique({
+      where: { userId }
+    });
 
     if (!account) {
-      account = await LoyaltyAccount.create({ userId });
+      account = await prisma.loyaltyAccount.create({
+        data: {
+          userId,
+          currentPoints: 0,
+          lifetimePoints: 0,
+          tier: 'BRONZE'
+        }
+      });
     }
 
     return account;
   }
 
   /**
-   * Earn points from completed order
+   * Award points for a purchase
+   * @param userId - User ID
+   * @param orderId - Order ID (for tracking)
+   * @param orderTotal - Order total amount
+   * @returns Points earned
    */
-  async earnPoints(
-    userId: string,
-    orderId: string,
-    orderTotal: number
-  ): Promise<number> {
+  async earnPoints(userId: string, orderId: string, orderTotal: number): Promise<number> {
     const account = await this.getOrCreateAccount(userId);
 
-    // Calculate points based on tier multiplier
-    const multiplier = this.getTierMultiplier(account.tier);
-    const points = Math.floor((orderTotal / 1000) * multiplier);
+    // Calculate points: 1 point per 1000 VND (configurable)
+    const pointsEarned = Math.floor(orderTotal / 1000);
 
-    // Set expiration date (12 months from now)
-    const expiresAt = new Date();
-    expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+    // Calculate tier bonus
+    const tierMultipliers: Record<string, number> = {
+      BRONZE: 1,
+      SILVER: 1.25,
+      GOLD: 1.5,
+      PLATINUM: 2
+    };
+
+    const multiplier = tierMultipliers[account.tier as string] || 1;
+    const finalPoints = Math.floor(pointsEarned * multiplier);
 
     // Update account
-    account.currentPoints += points;
-    account.lifetimePoints += points;
-    account.history.push({
-      type: 'earn',
-      amount: points,
-      orderId: orderId as any,
-      description: `Earned ${points} points from order`,
-      expiresAt,
-      createdAt: new Date(),
+    await prisma.loyaltyAccount.update({
+      where: { id: account.id },
+      data: {
+        currentPoints: { increment: finalPoints },
+        lifetimePoints: { increment: finalPoints }
+      }
     });
 
-    // Update tier based on lifetime points
-    account.tier = this.calculateTier(account.lifetimePoints);
+    // Update tier if needed
+    await this.updateTier(account.id);
 
-    await account.save();
-
-    return points;
+    return finalPoints;
   }
 
   /**
-   * Redeem points at checkout
+   * Redeem points for discount
+   * @param userId - User ID
+   * @param orderId - Order ID (for tracking)
+   * @param points - Points to redeem
    */
-  async redeemPoints(
-    userId: string,
-    orderId: string,
-    points: number
-  ): Promise<number> {
-    if (points <= 0) {
-      throw new AppError('Points must be greater than 0', 400);
-    }
-
+  async redeemPoints(userId: string, orderId: string, points: number): Promise<void> {
     const account = await this.getOrCreateAccount(userId);
 
     if (account.currentPoints < points) {
-      throw new AppError('Insufficient points', 400);
+      throw new AppError('Insufficient loyalty points', 400);
     }
 
-    // Deduct points
-    account.currentPoints -= points;
-    account.history.push({
-      type: 'redeem',
-      amount: -points,
-      orderId: orderId as any,
-      description: `Redeemed ${points} points on order`,
-      createdAt: new Date(),
-    });
-
-    await account.save();
-
-    // 1 point = 10 VND discount
-    return points * 10;
-  }
-
-  /**
-   * Adjust points (admin only)
-   */
-  async adjustPoints(
-    userId: string,
-    amount: number,
-    description: string
-  ): Promise<ILoyaltyAccount> {
-    const account = await this.getOrCreateAccount(userId);
-
-    account.currentPoints += amount;
-    if (amount > 0) {
-      account.lifetimePoints += amount;
-    }
-
-    account.history.push({
-      type: 'adjust',
-      amount,
-      description,
-      createdAt: new Date(),
-    });
-
-    // Update tier if points increased
-    if (amount > 0) {
-      account.tier = this.calculateTier(account.lifetimePoints);
-    }
-
-    // Prevent negative balance
-    if (account.currentPoints < 0) {
-      account.currentPoints = 0;
-    }
-
-    await account.save();
-
-    return account;
-  }
-
-  /**
-   * Expire points (cron job)
-   */
-  async expirePoints(): Promise<{ expired: number; total: number }> {
-    const now = new Date();
-    const accounts = await LoyaltyAccount.find({
-      'history.expiresAt': { $lt: now },
-    });
-
-    let totalExpired = 0;
-    let accountsAffected = 0;
-
-    for (const account of accounts) {
-      let accountExpired = 0;
-
-      // Find expired transactions that haven't been processed
-      for (const transaction of account.history) {
-        if (
-          transaction.type === 'earn' &&
-          transaction.expiresAt &&
-          transaction.expiresAt < now &&
-          transaction.amount > 0
-        ) {
-          accountExpired += transaction.amount;
-          // Mark as processed by setting amount to 0
-          transaction.amount = 0;
-        }
+    // Update account
+    await prisma.loyaltyAccount.update({
+      where: { id: account.id },
+      data: {
+        currentPoints: { decrement: points }
       }
+    });
+  }
 
-      if (accountExpired > 0) {
-        account.currentPoints = Math.max(0, account.currentPoints - accountExpired);
-        account.history.push({
-          type: 'expire',
-          amount: -accountExpired,
-          description: `${accountExpired} points expired`,
-          createdAt: new Date(),
-        });
+  /**
+   * Get loyalty account
+   */
+  async getAccount(userId: string): Promise<LoyaltyAccount> {
+    return this.getOrCreateAccount(userId);
+  }
 
-        await account.save();
+  /**
+   * Update tier based on lifetime points
+   */
+  private async updateTier(accountId: string): Promise<void> {
+    const account = await prisma.loyaltyAccount.findUnique({
+      where: { id: accountId }
+    });
 
-        totalExpired += accountExpired;
-        accountsAffected++;
+    if (!account) return;
+
+    const tierThresholds: Record<string, number> = {
+      BRONZE: 0,
+      SILVER: 10000,
+      GOLD: 50000,
+      PLATINUM: 100000
+    };
+
+    let newTier = 'BRONZE';
+    for (const [tier, threshold] of Object.entries(tierThresholds)) {
+      if (account.lifetimePoints >= threshold) {
+        newTier = tier;
       }
     }
 
-    return { expired: totalExpired, total: accountsAffected };
-  }
-
-  /**
-   * Get tier multiplier
-   */
-  getTierMultiplier(tier: string): number {
-    const multipliers: Record<string, number> = {
-      bronze: 1.0,
-      silver: 1.2,
-      gold: 1.5,
-      platinum: 2.0,
-    };
-    return multipliers[tier] || 1.0;
-  }
-
-  /**
-   * Calculate tier based on lifetime points
-   */
-  calculateTier(lifetimePoints: number): 'bronze' | 'silver' | 'gold' | 'platinum' {
-    if (lifetimePoints >= 50000) return 'platinum';
-    if (lifetimePoints >= 20000) return 'gold';
-    if (lifetimePoints >= 5000) return 'silver';
-    return 'bronze';
-  }
-
-  /**
-   * Get tier benefits
-   */
-  getTierBenefits(tier: string): {
-    name: string;
-    multiplier: number;
-    threshold: number;
-    benefits: string[];
-  } {
-    const tiers: Record<string, any> = {
-      bronze: {
-        name: 'Bronze',
-        multiplier: 1.0,
-        threshold: 0,
-        benefits: ['Base earning rate'],
-      },
-      silver: {
-        name: 'Silver',
-        multiplier: 1.2,
-        threshold: 5000,
-        benefits: ['1.2x points earning', 'Early access to new products'],
-      },
-      gold: {
-        name: 'Gold',
-        multiplier: 1.5,
-        threshold: 20000,
-        benefits: ['1.5x points earning', 'Free shipping', 'Birthday rewards'],
-      },
-      platinum: {
-        name: 'Platinum',
-        multiplier: 2.0,
-        threshold: 50000,
-        benefits: ['2x points earning', 'Free shipping', 'Exclusive offers', 'Priority support'],
-      },
-    };
-
-    return tiers[tier] || tiers.bronze;
+    if (newTier !== account.tier) {
+      await prisma.loyaltyAccount.update({
+        where: { id: accountId },
+        data: { tier: newTier as any }
+      });
+    }
   }
 }
 

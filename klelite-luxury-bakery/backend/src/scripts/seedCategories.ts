@@ -1,6 +1,8 @@
-import mongoose from 'mongoose';
-import { config } from '../config';
-import Category from '../models/Category';
+import slugify from 'slugify';
+import prisma from '../lib/prisma';
+
+const generateSlug = (name: string) =>
+  slugify(name, { lower: true, strict: true, locale: 'vi' });
 
 const categories = [
   {
@@ -39,19 +41,23 @@ const categories = [
     order: 6,
     isActive: true,
   },
-];
+].map(cat => ({ ...cat, slug: generateSlug(cat.name) }));
 
 const seedCategories = async () => {
   try {
-    await mongoose.connect(config.mongodbUri);
-    console.log('Connected to MongoDB');
+    console.log('Connecting to database...');
 
     // Clear existing categories
-    await Category.deleteMany({});
+    await prisma.category.deleteMany({});
     console.log('Cleared existing categories');
 
     // Insert new categories
-    const createdCategories = await Category.insertMany(categories);
+    // Prisma createMany is efficient for MySQL
+    await prisma.category.createMany({
+      data: categories,
+    });
+
+    const createdCategories = await prisma.category.findMany();
     console.log(`Created ${createdCategories.length} categories`);
 
     // Log created categories

@@ -1,14 +1,14 @@
 import redis, { isRedisAvailable } from '../config/redis';
-import { FlashSale, StockReservation, IFlashSale, IStockReservation } from '../models';
+import prisma from '../lib/prisma';
 import AppError from '../utils/AppError';
-import mongoose from 'mongoose';
+import { FlashSale, StockReservation } from '@prisma/client';
 
 class FlashSaleService {
   /**
    * Initialize stock in Redis for a flash sale
    * @param sale Flash sale document
    */
-  async initializeSaleStock(sale: IFlashSale): Promise<void> {
+  async initializeSaleStock(sale: FlashSale & { products: any[] }): Promise<void> {
     // Skip Redis operations if Redis is not available
     if (!isRedisAvailable) {
       console.warn(`⚠️  Skipping Redis stock initialization for: ${sale.name} (Redis unavailable)`);
@@ -19,7 +19,7 @@ class FlashSaleService {
       const pipeline = redis.pipeline();
 
       for (const product of sale.products) {
-        const stockKey = `flash:${sale._id}:product:${product.productId}:stock`;
+        const stockKey = `flash:${sale.id}:product:${product.productId}:stock`;
         pipeline.set(stockKey, product.stockLimit);
 
         // Set TTL to sale end time (in seconds)
@@ -53,7 +53,7 @@ class FlashSaleService {
     userId: string,
     quantity: number,
     loyaltyTier?: string
-  ): Promise<IStockReservation> {
+  ): Promise<StockReservation> {
     // Require Redis for flash sale stock management
     if (!isRedisAvailable) {
       throw new AppError('Flash sale feature requires Redis. Please contact support.', 503);
@@ -61,26 +61,37 @@ class FlashSaleService {
 
     try {
       // Fetch flash sale
-      const sale = await FlashSale.findById(saleId);
+      const sale = await prisma.flashSale.findUnique({
+        where: { id: saleId },
+        select: {
+          id: true,
+          name: true,
+          status: true,
+          startTime: true,
+          endTime: true,
+          earlyAccessMin: true,
+          earlyAccessTiers: true,
+          products: true
+        }
+      });
+
       if (!sale) {
         throw new AppError('Flash sale not found', 404);
       }
 
       // Check sale status and timing
       const now = new Date();
-      if (sale.status === 'cancelled') {
-        throw new AppError('Flash sale has been cancelled', 400);
-      }
-      if (sale.status === 'ended') {
+      if (sale.status === 'ENDED') {
         throw new AppError('Flash sale has ended', 400);
       }
 
       // Early access check
-      const earlyAccessStart = new Date(sale.startTime.getTime() - sale.earlyAccessMinutes * 60 * 1000);
+      const earlyAccessStart = new Date(sale.startTime.getTime() - sale.earlyAccessMin * 60 * 1000);
       const isEarlyAccessTime = now >= earlyAccessStart && now < sale.startTime;
 
       if (isEarlyAccessTime) {
-        if (!loyaltyTier || !sale.earlyAccessTiers.includes(loyaltyTier.toLowerCase())) {
+        const earlyAccessTiers = (sale.earlyAccessTiers as string[]) || [];
+        if (!loyaltyTier || !earlyAccessTiers.includes(loyaltyTier.toLowerCase())) {
           const minutesUntilPublic = Math.ceil((sale.startTime.getTime() - now.getTime()) / 60000);
           throw new AppError(
             `Early access only. Public sale starts in ${minutesUntilPublic} minutes`,
@@ -93,10 +104,12 @@ class FlashSaleService {
         throw new AppError('Flash sale has ended', 400);
       }
 
-      // Find product in flash sale
-      const product = sale.products.find(
-        (p) => p.productId.toString() === productId
+      // Find product in flash sale (products is JSON field)
+      const products = (sale.products as any[]) || [];
+      const product = products.find(
+        (p) => p.productId === productId
       );
+
       if (!product) {
         throw new AppError('Product not found in this flash sale', 404);
       }
@@ -138,13 +151,15 @@ class FlashSaleService {
       }
 
       // Create reservation (5 minutes expiry)
-      const reservation = await StockReservation.create({
-        flashSaleId: new mongoose.Types.ObjectId(saleId),
-        productId: new mongoose.Types.ObjectId(productId),
-        userId: new mongoose.Types.ObjectId(userId),
-        quantity,
-        expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
-        status: 'pending',
+      const reservation = await prisma.stockReservation.create({
+        data: {
+          flashSaleId: saleId,
+          productId,
+          userId,
+          quantity,
+          expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
+          status: 'ACTIVE' as any
+        }
       });
 
       console.log(`✅ Stock reserved: ${quantity} units for user ${userId}`);
@@ -164,39 +179,49 @@ class FlashSaleService {
    */
   async confirmReservation(reservationId: string): Promise<void> {
     try {
-      const reservation = await StockReservation.findById(reservationId);
+      const reservation = await prisma.stockReservation.findUnique({
+        where: { id: reservationId }
+      });
+
       if (!reservation) {
         throw new AppError('Reservation not found', 404);
       }
 
-      if (reservation.status !== 'pending') {
+      if (reservation.status !== 'ACTIVE' as any) {
         throw new AppError('Reservation already processed', 400);
       }
 
       // Update reservation status
-      reservation.status = 'completed';
-      await reservation.save();
+      await prisma.stockReservation.update({
+        where: { id: reservationId },
+        data: { status: 'COMPLETED' as any }
+      });
 
-      // Update soldCount in MongoDB
-      await FlashSale.updateOne(
-        {
-          _id: reservation.flashSaleId,
-          'products.productId': reservation.productId,
-        },
-        {
-          $inc: { 'products.$.soldCount': reservation.quantity },
+      // Update soldCount in FlashSale products JSON
+      const sale = await prisma.flashSale.findUnique({
+        where: { id: reservation.flashSaleId },
+        select: { products: true }
+      });
+
+      if (sale && sale.products) {
+        const products = (sale.products as any[]) || [];
+        const productIndex = products.findIndex(p => p.productId === reservation.productId);
+        if (productIndex !== -1) {
+          products[productIndex].soldCount = (products[productIndex].soldCount || 0) + reservation.quantity;
+          await prisma.flashSale.update({
+            where: { id: reservation.flashSaleId },
+            data: { products: products as any }
+          });
         }
-      );
+      }
 
       // Move from reserved to confirmed in Redis (atomic pipeline)
-      // Skip if Redis is not available
       if (isRedisAvailable) {
         const userReservedKey = `flash:${reservation.flashSaleId}:product:${reservation.productId}:user:${reservation.userId}:reserved`;
         const userConfirmedKey = `flash:${reservation.flashSaleId}:product:${reservation.productId}:user:${reservation.userId}:confirmed`;
 
-        // Get sale for TTL
-        const sale = await FlashSale.findById(reservation.flashSaleId);
-        const ttl = sale ? Math.ceil((sale.endTime.getTime() - Date.now()) / 1000) : 0;
+        const saleForTTL = await prisma.flashSale.findUnique({ where: { id: reservation.flashSaleId } });
+        const ttl = saleForTTL ? Math.ceil((saleForTTL.endTime.getTime() - Date.now()) / 1000) : 0;
 
         // Atomic pipeline for moving stock from reserved to confirmed
         const pipeline = redis.pipeline();
@@ -224,8 +249,11 @@ class FlashSaleService {
    */
   async releaseReservation(reservationId: string): Promise<void> {
     try {
-      const reservation = await StockReservation.findById(reservationId);
-      if (!reservation || reservation.status !== 'pending') {
+      const reservation = await prisma.stockReservation.findUnique({
+        where: { id: reservationId }
+      });
+
+      if (!reservation || reservation.status !== 'PENDING' as any) {
         return; // Already processed
       }
 
@@ -240,8 +268,10 @@ class FlashSaleService {
       }
 
       // Update reservation status
-      reservation.status = 'expired';
-      await reservation.save();
+      await prisma.stockReservation.update({
+        where: { id: reservationId },
+        data: { status: 'EXPIRED' as any }
+      });
 
       console.log(`✅ Reservation released: ${reservationId}`);
     } catch (error) {
@@ -284,15 +314,17 @@ class FlashSaleService {
    */
   async cleanupExpiredReservations(): Promise<void> {
     try {
-      const expired = await StockReservation.find({
-        status: 'pending',
-        expiresAt: { $lt: new Date() },
+      const expired = await prisma.stockReservation.findMany({
+        where: {
+          status: 'ACTIVE' as any,
+          expiresAt: { lt: new Date() }
+        }
       });
 
       console.log(`🧹 Cleaning up ${expired.length} expired reservations`);
 
       for (const reservation of expired) {
-        await this.releaseReservation(reservation._id.toString());
+        await this.releaseReservation(reservation.id);
       }
 
       console.log(`✅ Cleanup completed: ${expired.length} reservations released`);
@@ -309,28 +341,36 @@ class FlashSaleService {
       const now = new Date();
 
       // Activate scheduled sales
-      const toActivate = await FlashSale.find({
-        status: 'scheduled',
-        startTime: { $lte: now },
-        endTime: { $gt: now },
+      const toActivate = await prisma.flashSale.findMany({
+        where: {
+          status: 'UPCOMING' as any,
+          startTime: { lte: now },
+          endTime: { gt: now }
+        }
       });
 
       for (const sale of toActivate) {
-        sale.status = 'active';
-        await sale.save();
-        await this.initializeSaleStock(sale);
+        await prisma.flashSale.update({
+          where: { id: sale.id },
+          data: { status: 'ACTIVE' as any }
+        });
+        await this.initializeSaleStock(sale as any);
         console.log(`🚀 Flash sale activated: ${sale.name}`);
       }
 
       // End active sales
-      const toEnd = await FlashSale.find({
-        status: 'active',
-        endTime: { $lte: now },
+      const toEnd = await prisma.flashSale.findMany({
+        where: {
+          status: 'ACTIVE' as any,
+          endTime: { lte: now }
+        }
       });
 
       for (const sale of toEnd) {
-        sale.status = 'ended';
-        await sale.save();
+        await prisma.flashSale.update({
+          where: { id: sale.id },
+          data: { status: 'ENDED' as any }
+        });
         console.log(`🏁 Flash sale ended: ${sale.name}`);
       }
     } catch (error) {

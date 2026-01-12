@@ -61,10 +61,10 @@ router.get('/:id', getOrder);
 router.put('/:id/cancel', cancelOrder);
 
 // Admin routes
-router.get('/admin/all', authorize('admin', 'staff'), getAllOrders);
-router.get('/admin/stats', authorize('admin'), getOrderStats);
-router.get('/admin/recent', authorize('admin', 'staff'), getRecentOrders);
-router.put('/:id/status', authorize('admin', 'staff'), validate(updateStatusValidation), updateOrderStatus);
-router.put('/:id/payment', authorize('admin'), validate(updatePaymentValidation), updatePaymentStatus);
+router.get('/admin/all', authorize('ADMIN', 'STAFF'), getAllOrders);
+router.get('/admin/stats', authorize('ADMIN'), getOrderStats);
+router.get('/admin/recent', authorize('ADMIN', 'STAFF'), getRecentOrders);
+router.put('/:id/status', authorize('ADMIN', 'STAFF'), validate(updateStatusValidation), updateOrderStatus);
+router.put('/:id/payment', authorize('ADMIN'), validate(updatePaymentValidation), updatePaymentStatus);
 
 export default router;

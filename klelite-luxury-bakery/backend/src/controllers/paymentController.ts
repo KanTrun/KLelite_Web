@@ -1,10 +1,11 @@
 import { Response, NextFunction } from 'express';
+import prisma from '../lib/prisma';
 import crypto from 'crypto';
 import axios from 'axios';
 import { config } from '../config';
 import { asyncHandler, successResponse, BadRequestError } from '../utils';
 import { AuthRequest } from '../types';
-import Order from '../models/Order';
+import { PaymentMethod, PaymentStatus, OrderStatus } from '@prisma/client';
 
 // MoMo Payment Configuration
 const MOMO_CONFIG = {
@@ -48,11 +49,10 @@ export const createMoMoPayment = asyncHandler(async (req: AuthRequest, res: Resp
   const requestId = `${MOMO_CONFIG.partnerCode}${Date.now()}`;
   const momoOrderId = requestId;
   const extraData = '';
-  // Remove Vietnamese diacritics to avoid encoding issues
   const orderInfoText = `Payment for order ${orderId}`;
   const requestType = 'captureWallet';
 
-  // Build signature data object (để đảm bảo đúng thứ tự)
+  // Build signature data object
   const signatureData = {
     accessKey: MOMO_CONFIG.accessKey,
     amount: amountInt,
@@ -66,8 +66,8 @@ export const createMoMoPayment = asyncHandler(async (req: AuthRequest, res: Resp
     requestType: requestType,
   };
 
-  // Create raw signature string in EXACT alphabetical order
-  const rawSignature = 
+  // Create raw signature string
+  const rawSignature =
     `accessKey=${signatureData.accessKey}` +
     `&amount=${signatureData.amount}` +
     `&extraData=${signatureData.extraData}` +
@@ -78,22 +78,11 @@ export const createMoMoPayment = asyncHandler(async (req: AuthRequest, res: Resp
     `&redirectUrl=${signatureData.redirectUrl}` +
     `&requestId=${signatureData.requestId}` +
     `&requestType=${signatureData.requestType}`;
-  
-  console.log('=== MOMO PAYMENT DEBUG ===');
-  console.log('Partner Code:', MOMO_CONFIG.partnerCode);
-  console.log('Access Key:', MOMO_CONFIG.accessKey);
-  console.log('Secret Key (FULL - CHỈ DÙNG DEBUG):', MOMO_CONFIG.secretKey);
-  console.log('Secret Key Length:', MOMO_CONFIG.secretKey.length);
-  console.log('Endpoint:', MOMO_CONFIG.endpoint);
-  console.log('Raw signature:', rawSignature);
-  console.log('Raw signature (Buffer hex):', Buffer.from(rawSignature).toString('hex'));
-  
+
   const signature = crypto
     .createHmac('sha256', MOMO_CONFIG.secretKey)
     .update(rawSignature)
     .digest('hex');
-
-  console.log('Generated signature:', signature);
 
   const requestBody = {
     partnerCode: MOMO_CONFIG.partnerCode,
@@ -109,21 +98,20 @@ export const createMoMoPayment = asyncHandler(async (req: AuthRequest, res: Resp
     signature: signature,
   };
 
-  console.log('MoMo Request Body:', JSON.stringify(requestBody, null, 2));
-
   try {
     const response = await axios.post(MOMO_CONFIG.endpoint, requestBody, {
       headers: { 'Content-Type': 'application/json' },
       timeout: 30000,
     });
 
-    console.log('MoMo Response:', JSON.stringify(response.data, null, 2));
-
     if (response.data.resultCode === 0) {
       // Update order with payment info
-      await Order.findByIdAndUpdate(orderId, {
-        'payment.transactionId': momoOrderId,
-        'payment.status': 'pending',
+      await prisma.order.update({
+        where: { id: orderId },
+        data: {
+          transactionId: momoOrderId,
+          paymentStatus: PaymentStatus.PENDING
+        }
       });
 
       successResponse(res, {
@@ -152,7 +140,7 @@ export const momoIPN = async (req: AuthRequest, res: Response, _next: NextFuncti
 
     // Verify signature
     const rawSignature = `accessKey=${MOMO_CONFIG.accessKey}&amount=${amount}&extraData=${req.body.extraData}&message=${req.body.message}&orderId=${orderId}&orderInfo=${req.body.orderInfo}&orderType=${req.body.orderType}&partnerCode=${req.body.partnerCode}&payType=${req.body.payType}&requestId=${req.body.requestId}&responseTime=${req.body.responseTime}&resultCode=${resultCode}&transId=${transId}`;
-    
+
     const expectedSignature = crypto
       .createHmac('sha256', MOMO_CONFIG.secretKey)
       .update(rawSignature)
@@ -162,19 +150,23 @@ export const momoIPN = async (req: AuthRequest, res: Response, _next: NextFuncti
       return res.status(400).json({ message: 'Invalid signature' });
     }
 
-    // Extract original order ID from MoMo orderId (format: originalId-timestamp)
+    // Extract original order ID
     const originalOrderId = orderId.split('-')[0];
 
     if (resultCode === 0) {
-      await Order.findByIdAndUpdate(originalOrderId, {
-        'payment.status': 'paid',
-        'payment.transactionId': transId,
-        'payment.paidAt': new Date(),
-        status: 'confirmed',
+      await prisma.order.update({
+        where: { id: originalOrderId },
+        data: {
+          paymentStatus: PaymentStatus.PAID,
+          transactionId: transId,
+          paidAt: new Date(),
+          status: OrderStatus.CONFIRMED
+        }
       });
     } else {
-      await Order.findByIdAndUpdate(originalOrderId, {
-        'payment.status': 'failed',
+      await prisma.order.update({
+        where: { id: originalOrderId },
+        data: { paymentStatus: PaymentStatus.FAILED }
       });
     }
 
@@ -198,7 +190,7 @@ export const createVNPayPayment = asyncHandler(async (req: AuthRequest, res: Res
   const date = new Date();
   const createDate = date.toISOString().replace(/[-:T.Z]/g, '').slice(0, 14);
   const txnRef = `${orderId}-${Date.now()}`;
-  
+
   // Get client IP
   const ipAddr = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '127.0.0.1';
 
@@ -211,7 +203,7 @@ export const createVNPayPayment = asyncHandler(async (req: AuthRequest, res: Res
     vnp_TxnRef: txnRef,
     vnp_OrderInfo: orderInfo || `Thanh toan don hang ${orderId}`,
     vnp_OrderType: 'other',
-    vnp_Amount: String(amount * 100), // VNPay requires amount in VND without decimal
+    vnp_Amount: String(amount * 100),
     vnp_ReturnUrl: VNPAY_CONFIG.returnUrl,
     vnp_IpAddr: String(ipAddr),
     vnp_CreateDate: createDate,
@@ -232,9 +224,12 @@ export const createVNPayPayment = asyncHandler(async (req: AuthRequest, res: Res
   const paymentUrl = `${VNPAY_CONFIG.url}?${new URLSearchParams(vnpParams).toString()}`;
 
   // Update order with payment info
-  await Order.findByIdAndUpdate(orderId, {
-    'payment.transactionId': txnRef,
-    'payment.status': 'pending',
+  await prisma.order.update({
+    where: { id: orderId },
+    data: {
+      transactionId: txnRef,
+      paymentStatus: PaymentStatus.PENDING
+    }
   });
 
   successResponse(res, {
@@ -267,23 +262,27 @@ export const vnpayReturn = asyncHandler(async (req: AuthRequest, res: Response, 
     const responseCode = vnpParams['vnp_ResponseCode'];
 
     if (responseCode === '00') {
-      await Order.findByIdAndUpdate(originalOrderId, {
-        'payment.status': 'paid',
-        'payment.transactionId': vnpParams['vnp_TransactionNo'],
-        'payment.paidAt': new Date(),
-        status: 'confirmed',
+      await prisma.order.update({
+        where: { id: originalOrderId },
+        data: {
+          paymentStatus: PaymentStatus.PAID,
+          transactionId: vnpParams['vnp_TransactionNo'],
+          paidAt: new Date(),
+          status: OrderStatus.CONFIRMED
+        }
       });
-      
-      successResponse(res, { 
-        success: true, 
+
+      successResponse(res, {
+        success: true,
         message: 'Thanh toán thành công',
-        orderId: originalOrderId 
+        orderId: originalOrderId
       });
     } else {
-      await Order.findByIdAndUpdate(originalOrderId, {
-        'payment.status': 'failed',
+      await prisma.order.update({
+        where: { id: originalOrderId },
+        data: { paymentStatus: PaymentStatus.FAILED }
       });
-      
+
       throw BadRequestError('Thanh toán thất bại');
     }
   } else {
@@ -313,15 +312,19 @@ export const vnpayIPN = async (req: AuthRequest, res: Response, _next: NextFunct
       const responseCode = vnpParams['vnp_ResponseCode'];
 
       if (responseCode === '00') {
-        await Order.findByIdAndUpdate(originalOrderId, {
-          'payment.status': 'paid',
-          'payment.transactionId': vnpParams['vnp_TransactionNo'],
-          'payment.paidAt': new Date(),
-          status: 'confirmed',
+        await prisma.order.update({
+          where: { id: originalOrderId },
+          data: {
+            paymentStatus: PaymentStatus.PAID,
+            transactionId: vnpParams['vnp_TransactionNo'],
+            paidAt: new Date(),
+            status: OrderStatus.CONFIRMED
+          }
         });
       } else {
-        await Order.findByIdAndUpdate(originalOrderId, {
-          'payment.status': 'failed',
+        await prisma.order.update({
+          where: { id: originalOrderId },
+          data: { paymentStatus: PaymentStatus.FAILED }
         });
       }
 
@@ -339,11 +342,11 @@ export const vnpayIPN = async (req: AuthRequest, res: Response, _next: NextFunct
 function sortObject(obj: Record<string, string>): Record<string, string> {
   const sorted: Record<string, string> = {};
   const keys = Object.keys(obj).sort();
-  
+
   for (const key of keys) {
     sorted[key] = encodeURIComponent(obj[key]).replace(/%20/g, '+');
   }
-  
+
   return sorted;
 }
 
@@ -351,17 +354,26 @@ function sortObject(obj: Record<string, string>): Record<string, string> {
 // @route   GET /api/payments/status/:orderId
 // @access  Private
 export const getPaymentStatus = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const order = await Order.findById(req.params.orderId);
-  
+  const order = await prisma.order.findUnique({
+    where: { id: req.params.orderId },
+    select: {
+      id: true,
+      paymentStatus: true,
+      paymentMethod: true,
+      transactionId: true,
+      paidAt: true
+    }
+  });
+
   if (!order) {
     throw BadRequestError('Không tìm thấy đơn hàng');
   }
 
   successResponse(res, {
-    orderId: order._id,
-    paymentStatus: order.payment.status,
-    paymentMethod: order.payment.method,
-    transactionId: order.payment.transactionId,
-    paidAt: order.payment.paidAt,
+    orderId: order.id,
+    paymentStatus: order.paymentStatus,
+    paymentMethod: order.paymentMethod,
+    transactionId: order.transactionId,
+    paidAt: order.paidAt,
   });
 });

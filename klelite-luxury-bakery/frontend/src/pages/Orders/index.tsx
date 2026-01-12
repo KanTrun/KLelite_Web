@@ -102,7 +102,7 @@ const Orders: React.FC = () => {
   const handleReorder = async (order: Order) => {
     try {
       for (const item of order.items) {
-        const productId = typeof item.product === 'string' ? item.product : item.product._id;
+        const productId = typeof item.product === 'string' ? item.product : item.product.id;
         if (isAuthenticated) {
           await dispatch(addToCart({ productId, quantity: item.quantity })).unwrap();
         } else {
@@ -208,7 +208,7 @@ const Orders: React.FC = () => {
             <AnimatePresence mode="popLayout">
               {orders.map((order, index) => (
                 <motion.div
-                  key={order._id}
+                  key={order.id}
                   className={styles.orderCard}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -216,7 +216,7 @@ const Orders: React.FC = () => {
                   transition={{ delay: index * 0.05 }}
                 >
                   {/* Order Header */}
-                  <div className={styles.orderHeader} onClick={() => toggleOrderExpand(order._id)}>
+                  <div className={styles.orderHeader} onClick={() => toggleOrderExpand(order.id)}>
                     <div className={styles.orderInfo}>
                       <span className={styles.orderNumber}>#{order.orderNumber}</span>
                       <span className={styles.orderDate}>{formatDate(order.createdAt)}</span>
@@ -235,7 +235,7 @@ const Orders: React.FC = () => {
                       <span className={styles.orderTotal}>{formatPrice(order.total)}</span>
                       <motion.button
                         className={styles.expandButton}
-                        animate={{ rotate: expandedOrder === order._id ? 180 : 0 }}
+                        animate={{ rotate: expandedOrder === order.id ? 180 : 0 }}
                       >
                         <FiChevronDown />
                       </motion.button>
@@ -277,7 +277,7 @@ const Orders: React.FC = () => {
 
                   {/* Expanded Content */}
                   <AnimatePresence>
-                    {expandedOrder === order._id && (
+                    {expandedOrder === order.id && (
                       <motion.div
                         className={styles.expandedContent}
                         initial={{ height: 0, opacity: 0 }}
@@ -375,7 +375,7 @@ const Orders: React.FC = () => {
 
                   {/* Order Actions */}
                   <div className={styles.orderActions}>
-                    <Link to={`/orders/${order._id}`} className={styles.viewButton}>
+                    <Link to={`/orders/${order.id}`} className={styles.viewButton}>
                       <FiEye /> Chi tiết
                     </Link>
                     {(order.status === 'pending' || order.status === 'confirmed') && (
@@ -383,11 +383,11 @@ const Orders: React.FC = () => {
                         className={styles.cancelButton}
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleCancelOrder(order._id);
+                          handleCancelOrder(order.id);
                         }}
-                        disabled={cancellingOrder === order._id}
+                        disabled={cancellingOrder === order.id}
                       >
-                        {cancellingOrder === order._id ? (
+                        {cancellingOrder === order.id ? (
                           <span className={styles.buttonSpinner}></span>
                         ) : (
                           <>

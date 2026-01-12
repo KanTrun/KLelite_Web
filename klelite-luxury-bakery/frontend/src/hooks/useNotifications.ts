@@ -10,6 +10,8 @@ export const useNotifications = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
   const eventSourceRef = useRef<EventSource | null>(null);
+  const retryCountRef = useRef<number>(0);
+  const maxRetries = 5;
 
   useEffect(() => {
     if (!user) return;
@@ -26,6 +28,7 @@ export const useNotifications = () => {
 
         eventSource.onopen = () => {
           console.log('✅ SSE connection established');
+          retryCountRef.current = 0; // Reset retry counter on successful connection
         };
 
         eventSource.onmessage = (event) => {
@@ -53,15 +56,32 @@ export const useNotifications = () => {
         };
 
         eventSource.onerror = () => {
-          console.warn('SSE connection error, reconnecting...');
+          console.warn('SSE connection error, attempting to reconnect...');
           eventSource.close();
 
-          // Reconnect after 5 seconds
-          setTimeout(() => {
-            if (user) {
-              connectSSE();
-            }
-          }, 5000);
+          // Check if user is still authenticated
+          const hasToken = localStorage.getItem('accessToken');
+          if (!hasToken || !user) {
+            console.warn('SSE connection closed: Not authenticated');
+            retryCountRef.current = 0;
+            return;
+          }
+
+          // Implement exponential backoff with max retries
+          if (retryCountRef.current < maxRetries) {
+            retryCountRef.current += 1;
+            const retryDelay = Math.min(retryCountRef.current * 5000, 30000); // Max 30s
+            console.log(`Reconnecting in ${retryDelay / 1000}s (attempt ${retryCountRef.current}/${maxRetries})...`);
+
+            setTimeout(() => {
+              if (user && localStorage.getItem('accessToken')) {
+                connectSSE();
+              }
+            }, retryDelay);
+          } else {
+            console.error('Max SSE reconnection attempts reached. Please refresh the page.');
+            retryCountRef.current = 0;
+          }
         };
 
         eventSourceRef.current = eventSource;
@@ -78,6 +98,7 @@ export const useNotifications = () => {
         eventSourceRef.current.close();
         eventSourceRef.current = null;
       }
+      retryCountRef.current = 0;
     };
   }, [user, dispatch]);
 };

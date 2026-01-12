@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import mongoose from 'mongoose';
+import { Prisma } from '@prisma/client';
 import { config } from '../config';
 import AppError from '../utils/AppError';
 import { errorResponse } from '../utils/response';
 
-interface MongoError extends Error {
-  code?: number;
-  keyValue?: Record<string, unknown>;
+interface DatabaseError extends Error {
+  code?: string;
+  meta?: Record<string, unknown>;
 }
 
 interface ValidationError extends Error {
@@ -14,7 +14,7 @@ interface ValidationError extends Error {
 }
 
 const errorHandler = (
-  err: Error | AppError | MongoError | ValidationError,
+  err: Error | AppError | DatabaseError | ValidationError,
   _req: Request,
   res: Response,
   _next: NextFunction
@@ -36,23 +36,38 @@ const errorHandler = (
       errorDetails = JSON.stringify(err.errors);
     }
   }
-  // Handle Mongoose CastError (invalid ObjectId)
-  else if (err instanceof mongoose.Error.CastError) {
+  // Handle Prisma validation errors
+  else if (err instanceof Prisma.PrismaClientValidationError) {
     statusCode = 400;
-    message = 'ID không hợp lệ';
+    message = 'Dữ liệu không hợp lệ';
   }
-  // Handle Mongoose ValidationError
-  else if (err instanceof mongoose.Error.ValidationError) {
+  // Handle Prisma known request errors
+  else if (err instanceof Prisma.PrismaClientKnownRequestError) {
     statusCode = 400;
-    const messages = Object.values(err.errors).map((e) => e.message);
-    message = messages.join('. ');
+    // Handle unique constraint violation
+    if (err.code === 'P2002') {
+      statusCode = 409;
+      const meta = err.meta as { target?: string[] };
+      const field = meta?.target?.[0] || 'field';
+      message = `${field} đã tồn tại`;
+    }
+    // Handle foreign key constraint violation
+    else if (err.code === 'P2003') {
+      message = 'Dữ liệu liên kết không tồn tại';
+    }
+    // Handle record not found
+    else if (err.code === 'P2025') {
+      statusCode = 404;
+      message = 'Không tìm thấy dữ liệu';
+    }
+    else {
+      message = 'Lỗi cơ sở dữ liệu';
+    }
   }
-  // Handle MongoDB duplicate key error
-  else if ((err as MongoError).code === 11000) {
-    statusCode = 409;
-    const keyValue = (err as MongoError).keyValue;
-    const field = keyValue ? Object.keys(keyValue)[0] : 'field';
-    message = `${field} đã tồn tại`;
+  // Handle Prisma initialization errors
+  else if (err instanceof Prisma.PrismaClientInitializationError) {
+    statusCode = 500;
+    message = 'Không thể kết nối cơ sở dữ liệu';
   }
   // Handle JWT errors
   else if (err.name === 'JsonWebTokenError') {

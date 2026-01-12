@@ -31,7 +31,7 @@ interface ProductFormData {
   stock: number;
   isFeatured: boolean;
   isAvailable: boolean;
-  images: { url: string; isMain: boolean }[];
+  images: { url: string; publicId?: string; isMain: boolean }[];
 }
 
 const initialFormData: ProductFormData = {
@@ -87,7 +87,7 @@ const AdminProducts: React.FC = () => {
         description: product.description,
         price: product.price,
         comparePrice: product.comparePrice || 0,
-        category: typeof product.category === 'object' ? product.category._id : product.category,
+        category: typeof product.category === 'object' ? product.category.id : product.category,
         sku: product.sku,
         stock: product.stock,
         isFeatured: product.isFeatured || false,
@@ -211,7 +211,7 @@ const AdminProducts: React.FC = () => {
         await productService.createProduct(formData);
         toast.success('Tạo sản phẩm thành công!');
       } else {
-        await productService.updateProduct(selectedProduct._id, formData);
+        await productService.updateProduct(selectedProduct.id, formData);
         toast.success('Cập nhật sản phẩm thành công!');
       }
       handleCloseModal();
@@ -272,7 +272,7 @@ const AdminProducts: React.FC = () => {
           >
             <option value="all">Tất cả danh mục</option>
             {categories.map((cat) => (
-              <option key={cat._id} value={cat.slug}>
+              <option key={cat.id} value={cat.slug}>
                 {cat.name}
               </option>
             ))}
@@ -309,7 +309,7 @@ const AdminProducts: React.FC = () => {
                 </tr>
               ) : (
                 filteredProducts.map((product) => (
-                  <tr key={product._id}>
+                  <tr key={product.id}>
                     <td>
                       <div className={styles.productCell}>
                         <img
@@ -351,7 +351,7 @@ const AdminProducts: React.FC = () => {
                     <td>
                       <div className={styles.ratingCell}>
                         <FiStar className={styles.starIcon} />
-                        <span>{product.rating?.toFixed(1) || '0.0'}</span>
+                        <span>{product.rating ? Number(product.rating).toFixed(1) : '0.0'}</span>
                         <span className={styles.reviewCount}>({product.numReviews || 0})</span>
                       </div>
                     </td>
@@ -382,7 +382,7 @@ const AdminProducts: React.FC = () => {
                         </button>
                         <button
                           className={styles.deleteBtn}
-                          onClick={() => handleDeleteClick(product._id)}
+                          onClick={() => handleDeleteClick(product.id)}
                           title="Xóa"
                         >
                           <FiTrash2 />
@@ -486,7 +486,7 @@ const AdminProducts: React.FC = () => {
                       >
                         <option value="">Chọn danh mục</option>
                         {categories.map((cat) => (
-                          <option key={cat._id} value={cat._id}>
+                          <option key={cat.id} value={cat.id}>
                             {cat.name}
                           </option>
                         ))}

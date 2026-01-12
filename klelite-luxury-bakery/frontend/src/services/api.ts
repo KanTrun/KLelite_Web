@@ -5,6 +5,7 @@ import { config } from '@/config/config';
 const api = axios.create({
   baseURL: config.apiUrl,
   timeout: 30000,
+  withCredentials: true, // Enable sending cookies with cross-origin requests
   headers: {
     'Content-Type': 'application/json',
   },
@@ -31,7 +32,7 @@ api.interceptors.response.use(
   },
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
-    
+
     // Handle 401 Unauthorized - Token expired
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -46,6 +47,9 @@ api.interceptors.response.use(
           const { accessToken } = response.data.data;
           localStorage.setItem('accessToken', accessToken);
 
+          // Update cookie for SSE authentication
+          document.cookie = `accessToken=${accessToken}; path=/; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`;
+
           if (originalRequest.headers) {
             originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           }
@@ -56,6 +60,9 @@ api.interceptors.response.use(
         // Refresh token failed
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
+
+        // Clear cookie
+        document.cookie = 'accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax';
 
         // List of public endpoints that can be retried without auth
         const publicEndpoints = [
@@ -76,7 +83,7 @@ api.interceptors.response.use(
         return Promise.reject(refreshError);
       }
     }
-    
+
     return Promise.reject(error);
   }
 );

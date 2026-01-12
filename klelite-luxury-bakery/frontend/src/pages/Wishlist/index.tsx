@@ -64,7 +64,7 @@ const Wishlist: React.FC = () => {
     try {
       setRemoving(productId);
       await userService.removeFromWishlist(productId);
-      setWishlistItems((prev) => prev.filter((item) => item.product._id !== productId));
+      setWishlistItems((prev) => prev.filter((item) => item.product.id !== productId));
     } catch (error) {
       console.error('Error removing from wishlist:', error);
     } finally {
@@ -74,13 +74,13 @@ const Wishlist: React.FC = () => {
 
   const handleAddToCart = async (product: any) => {
     try {
-      setAddingToCart(product._id);
+      setAddingToCart(product.id);
       await dispatch(addToCart({ 
-        productId: product._id, 
+        productId: product.id, 
         quantity: 1 
       })).unwrap();
       // Optional: Remove from wishlist after adding to cart
-      // await handleRemoveItem(product._id);
+      // await handleRemoveItem(product.id);
     } catch (error) {
       console.error('Error adding to cart:', error);
     } finally {
@@ -96,7 +96,7 @@ const Wishlist: React.FC = () => {
       setLoading(true);
       // Remove all items one by one (could be optimized with batch API)
       await Promise.all(
-        wishlistItems.map((item) => userService.removeFromWishlist(item.product._id))
+        wishlistItems.map((item) => userService.removeFromWishlist(item.product.id))
       );
       setWishlistItems([]);
     } catch (error) {
@@ -197,7 +197,7 @@ const Wishlist: React.FC = () => {
             <AnimatePresence>
               {wishlistItems.map((item, index) => (
                 <motion.div
-                  key={item._id}
+                  key={item.id}
                   className={styles.wishlistCard}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -227,11 +227,11 @@ const Wishlist: React.FC = () => {
                     )}
                     <button
                       className={styles.removeBtn}
-                      onClick={() => handleRemoveItem(item.product._id)}
-                      disabled={removing === item.product._id}
+                      onClick={() => handleRemoveItem(item.product.id)}
+                      disabled={removing === item.product.id}
                       title="Xóa khỏi yêu thích"
                     >
-                      {removing === item.product._id ? (
+                      {removing === item.product.id ? (
                         <FiRefreshCw className={styles.spinning} />
                       ) : (
                         <FiTrash2 />
@@ -267,9 +267,9 @@ const Wishlist: React.FC = () => {
                       <button
                         className={styles.addToCartBtn}
                         onClick={() => handleAddToCart(item.product)}
-                        disabled={item.product.stock === 0 || addingToCart === item.product._id}
+                        disabled={item.product.stock === 0 || addingToCart === item.product.id}
                       >
-                        {addingToCart === item.product._id ? (
+                        {addingToCart === item.product.id ? (
                           <FiRefreshCw className={styles.spinning} />
                         ) : (
                           <FiShoppingCart />
@@ -298,7 +298,7 @@ const Wishlist: React.FC = () => {
             <div className={styles.recoGrid}>
               {recommendedProducts.map((product) => (
                 <Link 
-                  key={product._id} 
+                  key={product.id} 
                   to={`/products/${product.slug}`}
                   className={styles.recoCard}
                 >

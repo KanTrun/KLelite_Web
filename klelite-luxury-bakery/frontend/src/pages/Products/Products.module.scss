@@ -8,7 +8,7 @@
 // Page Container
 // ============================================
 .productsPage {
-  background: $dark-primary;
+  background: var(--color-bg);
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
@@ -177,7 +177,7 @@
     font-family: $font-heading;
     font-size: clamp(3rem, 8vw, 5.5rem);
     font-weight: 400;
-    color: $light-text;
+    color: var(--color-text);
     line-height: 1.05;
     letter-spacing: -0.02em;
     
@@ -206,7 +206,7 @@
 .heroBanner p {
   font-family: $font-accent;
   font-size: clamp(1rem, 2vw, 1.2rem);
-  color: rgba($light-text, 0.75);
+  color: var(--color-text-secondary);
   line-height: 1.9;
   max-width: 750px;
   margin: 0 auto $spacing-3xl;
@@ -220,7 +220,7 @@
   justify-content: center;
   gap: $spacing-2xl;
   padding: $spacing-xl $spacing-2xl;
-  background: rgba($light-text, 0.03);
+  background: var(--color-surface);
   border: 1px solid rgba($gold-primary, 0.15);
   border-radius: $radius-xl;
   backdrop-filter: blur(20px);
@@ -257,7 +257,7 @@
 .statLabel {
   font-family: $font-accent;
   font-size: 0.8rem;
-  color: rgba($light-text, 0.5);
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -296,7 +296,7 @@
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 3px;
-    color: rgba($light-text, 0.6);
+    color: var(--color-text-muted);
   }
   
   svg {
@@ -366,7 +366,7 @@
     font-family: $font-heading;
     font-size: 1.35rem;
     font-weight: 400;
-    color: $light-text;
+    color: var(--color-text);
     letter-spacing: 0.5px;
     
     svg {
@@ -405,7 +405,7 @@
 }
 
 .filterSection {
-  background: rgba($light-text, 0.02);
+  background: var(--color-surface);
   border: 1px solid rgba($gold-primary, 0.08);
   border-radius: $radius-xl;
   padding: $spacing-xl;
@@ -425,7 +425,7 @@
     font-family: $font-heading;
     font-size: 1rem;
     font-weight: 500;
-    color: $light-text;
+    color: var(--color-text);
     margin-bottom: $spacing-lg;
     padding-bottom: $spacing-sm;
     border-bottom: 1px solid rgba($gold-primary, 0.1);
@@ -456,7 +456,7 @@
     border: 1px solid transparent;
     border-radius: $radius-md;
     font-size: 0.9rem;
-    color: rgba($light-text, 0.65);
+    color: var(--color-text-muted);
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: left;
@@ -476,7 +476,7 @@
 
     &:hover {
       background: rgba($gold-primary, 0.04);
-      color: $light-text;
+      color: var(--color-text);
       border-color: rgba($gold-primary, 0.15);
       padding-left: $spacing-lg;
     }
@@ -532,7 +532,7 @@
     justify-content: center;
     width: 22px;
     height: 22px;
-    background: rgba($light-text, 0.03);
+    background: var(--color-surface);
     border: 1.5px solid rgba($gold-primary, 0.25);
     border-radius: $radius-sm;
     transition: all 0.3s ease;
@@ -548,7 +548,7 @@
   
   .labelText {
     font-size: 0.875rem;
-    color: rgba($light-text, 0.65);
+    color: var(--color-text-muted);
     transition: color 0.3s ease;
   }
   
@@ -569,7 +569,7 @@
     }
     
     .labelText {
-      color: $light-text;
+      color: var(--color-text);
     }
   }
 }
@@ -582,7 +582,7 @@
   svg {
     width: 15px;
     height: 15px;
-    color: rgba($light-text, 0.15);
+    color: var(--color-text-muted);
     transition: color 0.3s ease;
 
     &.filled {
@@ -594,7 +594,7 @@
   .ratingText {
     margin-left: $spacing-sm;
     font-size: 0.75rem;
-    color: rgba($light-text, 0.45);
+    color: var(--color-text-muted);
   }
 }
 
@@ -644,14 +644,14 @@
     font-family: $font-heading;
     font-size: 1.25rem;
     font-weight: 400;
-    color: $light-text;
+    color: var(--color-text);
     margin-bottom: $spacing-sm;
   }
   
   p {
     position: relative;
     font-size: 0.875rem;
-    color: rgba($light-text, 0.55);
+    color: var(--color-text-muted);
     margin-bottom: $spacing-lg;
     line-height: 1.6;
   }
@@ -698,7 +698,7 @@
   align-items: center;
   justify-content: space-between;
   gap: $spacing-lg;
-  background: rgba($light-text, 0.02);
+  background: var(--color-surface);
   border: 1px solid rgba($gold-primary, 0.08);
   padding: $spacing-md $spacing-xl;
   border-radius: $radius-xl;
@@ -749,7 +749,7 @@
   flex: 1;
   max-width: 450px;
   padding: $spacing-sm $spacing-lg;
-  background: rgba($light-text, 0.03);
+  background: var(--color-surface);
   border: 1px solid rgba($gold-primary, 0.1);
   border-radius: $radius-lg;
   transition: all 0.3s ease;
@@ -771,7 +771,7 @@
     border: none;
     background: transparent;
     font-size: 0.9rem;
-    color: $light-text;
+    color: var(--color-text);
     outline: none;
     font-family: $font-body;
 
@@ -789,7 +789,7 @@
 
 .resultCount {
   font-size: 0.875rem;
-  color: rgba($light-text, 0.5);
+  color: var(--color-text-muted);
   
   .countNumber {
     font-weight: 600;
@@ -808,11 +808,11 @@
   select {
     appearance: none;
     padding: $spacing-sm $spacing-2xl $spacing-sm $spacing-md;
-    background: rgba($light-text, 0.03);
+    background: var(--color-surface);
     border: 1px solid rgba($gold-primary, 0.15);
     border-radius: $radius-md;
     font-size: 0.875rem;
-    color: $light-text;
+    color: var(--color-text);
     cursor: pointer;
     outline: none;
     transition: all 0.3s ease;
@@ -820,8 +820,8 @@
     min-width: 160px;
 
     option {
-      background: $dark-primary;
-      color: $light-text;
+      background: var(--color-bg);
+      color: var(--color-text);
       padding: $spacing-sm;
     }
 
@@ -847,7 +847,7 @@
   border: 1px solid rgba($gold-primary, 0.15);
   border-radius: $radius-md;
   overflow: hidden;
-  background: rgba($light-text, 0.02);
+  background: var(--color-surface);
 
   @media (max-width: 576px) {
     display: none;
@@ -870,7 +870,7 @@
     }
 
     &:hover {
-      color: $light-text;
+      color: var(--color-text);
       background: rgba($gold-primary, 0.08);
     }
 
@@ -1084,7 +1084,7 @@
 .discountBadge {
   padding: $spacing-xs $spacing-md;
   background: linear-gradient(135deg, #dc3545, #c82333);
-  color: $light-text;
+  color: var(--color-text);
   font-size: 0.75rem;
   font-weight: 700;
   border-radius: $radius-sm;
@@ -1132,7 +1132,7 @@
   background: rgba($dark-primary, 0.92);
   border: 1px solid rgba($gold-primary, 0.25);
   border-radius: $radius-full;
-  color: $light-text;
+  color: var(--color-text);
   cursor: pointer;
   backdrop-filter: blur(15px);
   transition: all 0.3s ease;
@@ -1199,7 +1199,7 @@
   letter-spacing: -0.01em;
 
   a {
-    color: $light-text;
+    color: var(--color-text);
     text-decoration: none;
     transition: color 0.3s ease;
     display: -webkit-box;
@@ -1215,7 +1215,7 @@
 
 .productDescription {
   font-size: 0.9rem;
-  color: rgba($light-text, 0.55);
+  color: var(--color-text-muted);
   line-height: 1.7;
   margin: $spacing-sm 0;
   display: -webkit-box;
@@ -1237,7 +1237,7 @@
     svg {
       width: 15px;
       height: 15px;
-      color: rgba($light-text, 0.15);
+      color: var(--color-text-muted);
 
       &.filled {
         color: $gold-primary;
@@ -1333,7 +1333,7 @@
   span {
     font-family: $font-accent;
     font-size: 0.85rem;
-    color: rgba($light-text, 0.45);
+    color: var(--color-text-muted);
     letter-spacing: 3px;
     text-transform: uppercase;
   }
@@ -1349,7 +1349,7 @@
 .emptyState {
   text-align: center;
   padding: $spacing-4xl $spacing-xl;
-  background: rgba($light-text, 0.02);
+  background: var(--color-surface);
   border: 1px solid rgba($gold-primary, 0.08);
   border-radius: $radius-2xl;
 
@@ -1374,13 +1374,13 @@
   h3 {
     font-family: $font-heading;
     font-size: 1.75rem;
-    color: $light-text;
+    color: var(--color-text);
     margin-bottom: $spacing-sm;
     font-weight: 400;
   }
 
   p {
-    color: rgba($light-text, 0.5);
+    color: var(--color-text-muted);
     margin-bottom: $spacing-2xl;
     font-size: 1rem;
   }
@@ -1435,12 +1435,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba($light-text, 0.02);
+    background: var(--color-surface);
     border: 1px solid rgba($gold-primary, 0.12);
     border-radius: $radius-md;
     font-size: 0.95rem;
     font-weight: 500;
-    color: rgba($light-text, 0.55);
+    color: var(--color-text-muted);
     cursor: pointer;
     transition: all 0.3s ease;
 
@@ -1516,7 +1516,7 @@
   bottom: 0;
   width: 92%;
   max-width: 400px;
-  background: $dark-primary;
+  background: var(--color-bg);
   border-right: 1px solid rgba($gold-primary, 0.15);
   overflow-y: auto;
   z-index: 1001;
@@ -1531,7 +1531,7 @@
   border-bottom: 1px solid rgba($gold-primary, 0.15);
   position: sticky;
   top: 0;
-  background: $dark-primary;
+  background: var(--color-bg);
   z-index: 10;
 
   h3 {
@@ -1541,7 +1541,7 @@
     font-family: $font-heading;
     font-size: 1.2rem;
     font-weight: 400;
-    color: $light-text;
+    color: var(--color-text);
     margin: 0;
     
     svg {
@@ -1555,11 +1555,11 @@
     justify-content: center;
     width: 48px;
     height: 48px;
-    background: rgba($light-text, 0.03);
+    background: var(--color-surface);
     border: 1px solid rgba($gold-primary, 0.15);
     border-radius: $radius-md;
     font-size: 1.35rem;
-    color: $light-text;
+    color: var(--color-text);
     cursor: pointer;
     transition: all 0.3s ease;
     
@@ -1576,7 +1576,7 @@
   .filterSection {
     margin-bottom: $spacing-lg;
     padding: $spacing-lg;
-    background: rgba($light-text, 0.02);
+    background: var(--color-surface);
     border: 1px solid rgba($gold-primary, 0.08);
     border-radius: $radius-lg;
   }

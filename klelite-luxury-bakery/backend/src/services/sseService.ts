@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import Redis from 'ioredis';
 import { config } from '../config';
-import { INotification } from '../models/Notification';
+import { Notification } from '@prisma/client';
 
 // Map of userId to array of SSE response objects
 const connections = new Map<string, Response[]>();
@@ -123,7 +123,7 @@ export const removeUser = (userId: string): void => {
 /**
  * Publish notification to Redis Pub/Sub (for multi-server)
  */
-export const publish = async (userId: string, notification: INotification): Promise<void> => {
+export const publish = async (userId: string, notification: Notification): Promise<void> => {
   if (isRedisPubSubAvailable) {
     try {
       await redisPub.publish('notifications', JSON.stringify({

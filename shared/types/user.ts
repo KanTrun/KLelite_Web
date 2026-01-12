@@ -13,7 +13,7 @@ export interface User {
   updatedAt: string;
 }
 
-export type UserRole = 'customer' | 'admin';
+export type UserRole = 'USER' | 'ADMIN' | 'STAFF' | 'MANAGER';
 
 export interface Address {
   _id: string;

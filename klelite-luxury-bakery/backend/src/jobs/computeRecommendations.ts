@@ -1,7 +1,5 @@
 import cron from 'node-cron';
-import Product from '../models/Product';
-import UserActivity from '../models/UserActivity';
-import mongoose from 'mongoose';
+import prisma from '../lib/prisma';
 import redis, { isRedisAvailable } from '../config/redis';
 
 // Run daily at 3 AM
@@ -10,18 +8,30 @@ const scheduleRecommendations = () => {
     console.log('Starting recommendation computation job...');
 
     try {
-      // 1. Calculate Trending Products
-      const trending = await UserActivity.aggregate([
-        { $match: {
-          activityType: 'purchase',
-          createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
-        }},
-        { $group: { _id: '$productId', count: { $sum: 1 } }},
-        { $sort: { count: -1 } },
-        { $limit: 20 }
-      ]);
+      // 1. Calculate Trending Products (last 7 days)
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-      const trendingIds = trending.map(t => t._id);
+      const purchases = await prisma.userActivity.findMany({
+        where: {
+          activityType: 'PURCHASE',
+          createdAt: { gte: sevenDaysAgo }
+        },
+        select: { productId: true }
+      });
+
+      // Group and count in JS
+      const productCounts = purchases.reduce((acc, activity) => {
+        if (activity.productId) {
+          acc[activity.productId] = (acc[activity.productId] || 0) + 1;
+        }
+        return acc;
+      }, {} as Record<string, number>);
+
+      // Sort by count and get top 20
+      const trendingIds = Object.entries(productCounts)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 20)
+        .map(([id]) => id);
 
       // Cache trending products only if Redis is available
       if (isRedisAvailable) {
@@ -36,14 +46,13 @@ const scheduleRecommendations = () => {
         console.log(`Computed ${trendingIds.length} trending products (Redis unavailable, not cached)`);
       }
 
-      // 2. Pre-compute Item-based Similarity (Co-occurrence)
-      // This is heavy, so we might want to store it in a dedicated collection
-      // For now, let's just clean up old activity logs to keep queries fast
-
+      // 2. Clean up old activity logs (older than 90 days)
       const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
-      const result = await UserActivity.deleteMany({ createdAt: { $lt: ninetyDaysAgo } });
+      const result = await prisma.userActivity.deleteMany({
+        where: { createdAt: { lt: ninetyDaysAgo } }
+      });
 
-      console.log(`Cleaned up ${result.deletedCount} old activity logs`);
+      console.log(`Cleaned up ${result.count} old activity logs`);
 
     } catch (error) {
       console.error('Error in recommendation job:', error);

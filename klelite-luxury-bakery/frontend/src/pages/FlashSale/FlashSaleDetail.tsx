@@ -45,7 +45,7 @@ const FlashSaleDetail: React.FC = () => {
 
     try {
       setAddingToCart(productId);
-      const res = await flashSaleService.reserve(sale._id, productId, 1);
+      const res = await flashSaleService.reserve(sale.id, productId, 1);
 
       toast.success('Đã giữ hàng thành công! Vui lòng thanh toán trong 5 phút.');
 
@@ -129,7 +129,7 @@ const FlashSaleDetail: React.FC = () => {
         {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {sale.products.map((item) => (
-            <div key={item.productId._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full border border-gray-100 relative group">
+            <div key={item.productId.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full border border-gray-100 relative group">
 
               {/* Image Area */}
               <div className="relative aspect-square overflow-hidden bg-gray-100">
@@ -171,8 +171,8 @@ const FlashSaleDetail: React.FC = () => {
                   {isActive && (
                     <div className="mb-4">
                       <StockIndicator
-                        saleId={sale._id}
-                        productId={item.productId._id}
+                        saleId={sale.id}
+                        productId={item.productId.id}
                         initialStock={item.stockLimit - item.soldCount}
                         totalStock={item.stockLimit}
                       />
@@ -188,15 +188,15 @@ const FlashSaleDetail: React.FC = () => {
                     </Link>
 
                     <button
-                      onClick={() => handleReserve(item.productId._id)}
-                      disabled={!isActive || addingToCart === item.productId._id}
+                      onClick={() => handleReserve(item.productId.id)}
+                      disabled={!isActive || addingToCart === item.productId.id}
                       className={`py-2 px-4 rounded font-bold shadow-sm transition-all flex items-center justify-center ${
                         isActive
                           ? 'bg-amber-600 hover:bg-amber-700 text-white hover:shadow-md active:scale-95'
                           : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                       }`}
                     >
-                      {addingToCart === item.productId._id ? (
+                      {addingToCart === item.productId.id ? (
                         <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
                       ) : isActive ? (
                         'Mua ngay'

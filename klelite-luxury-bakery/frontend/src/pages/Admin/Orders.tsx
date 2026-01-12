@@ -66,8 +66,8 @@ const AdminOrders: React.FC = () => {
     try {
       setUpdating(true);
       await orderService.updateOrderStatus(orderId, newStatus as any);
-      setOrders(prev => prev.map(o => o._id === orderId ? { ...o, status: newStatus as any } : o));
-      if (selectedOrder?._id === orderId) {
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus as any } : o));
+      if (selectedOrder?.id === orderId) {
         setSelectedOrder({ ...selectedOrder, status: newStatus as any });
       }
     } catch (error) {
@@ -134,7 +134,7 @@ const AdminOrders: React.FC = () => {
               {orders.map((order) => {
                 const status = statusConfig[order.status] || statusConfig.pending;
                 return (
-                  <tr key={order._id}>
+                  <tr key={order.id}>
                     <td className={styles.orderNumber}>{order.orderNumber}</td>
                     <td>
                       <div className={styles.customerInfo}>
@@ -184,7 +184,7 @@ const AdminOrders: React.FC = () => {
               <div className={styles.modalBody}>
                 <div className={styles.orderSection}>
                   <h3>Cập nhật trạng thái</h3>
-                  <select value={selectedOrder.status} onChange={(e) => handleStatusChange(selectedOrder._id, e.target.value)}
+                  <select value={selectedOrder.status} onChange={(e) => handleStatusChange(selectedOrder.id, e.target.value)}
                     disabled={updating} className={styles.statusSelect}>
                     {Object.entries(statusConfig).map(([key, config]) => (
                       <option key={key} value={key}>{config.label}</option>

@@ -45,13 +45,13 @@ const ForYou: React.FC = () => {
       <div className={styles.productGrid}>
         {products.map((product) => (
           <ProductCard
-            key={product._id}
-            id={product._id}
+            key={product.id}
+            id={product.id}
             name={product.name}
             slug={product.slug}
             price={product.price}
             image={product.images[0]?.url || '/placeholder.png'}
-            rating={product.rating}
+            rating={product.rating ? Number(product.rating) : 0}
             reviewCount={product.numReviews}
             category={typeof product.category === 'object' ? product.category.name : undefined}
             isOutOfStock={!product.isAvailable}

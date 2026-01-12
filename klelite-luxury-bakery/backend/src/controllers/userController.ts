@@ -423,7 +423,9 @@ export const updateUser = asyncHandler(async (req: AuthRequest, res: Response, _
   }
 
   const updateData: any = {};
-  if (role) {\n    const upperRole = role.toUpperCase() as Role;\n    if (!Object.values(Role).includes(upperRole)) {\n      throw BadRequestError('Role không hợp lệ. Các role hợp lệ: ' + Object.values(Role).join(', '));\n    }\n    updateData.role = upperRole;\n  }\n
+  if (role) {
+    updateData.role = role.toUpperCase() as Role;
+  }
   if (isActive !== undefined) updateData.isActive = isActive;
   if (isVerified !== undefined) updateData.isVerified = isVerified;
 

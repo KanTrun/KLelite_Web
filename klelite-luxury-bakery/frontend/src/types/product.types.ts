@@ -3,11 +3,11 @@ export interface ProductImage {
   url: string;
   publicId: string;
   isMain: boolean;
-  _id?: string;
+  id?: string;
 }
 
 export interface Product {
-  _id: string;
+  id: string;
   name: string;
   slug: string;
   description: string;
@@ -43,11 +43,11 @@ export interface Product {
 export interface ProductSize {
   name: string;
   price: number;
-  _id?: string;
+  id?: string;
 }
 
 export interface ProductReview {
-  _id: string;
+  id: string;
   user: string | { firstName: string; lastName: string; avatar?: string };
   rating: number;
   comment: string;
@@ -56,7 +56,7 @@ export interface ProductReview {
 }
 
 export interface Category {
-  _id: string;
+  id: string;
   name: string;
   slug: string;
   description?: string;

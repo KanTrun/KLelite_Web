@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import asyncHandler from '../utils/asyncHandler';
 import flashSaleService from '../services/flashSaleService';
-import { FlashSale, LoyaltyAccount } from '../models';
+import prisma from '../lib/prisma';
+import { FlashSale, LoyaltyAccount } from '@prisma/client';
 import AppError from '../utils/AppError';
 
 // ============================================================================
@@ -16,13 +17,22 @@ import AppError from '../utils/AppError';
 export const getActiveFlashSales = asyncHandler(async (req: Request, res: Response) => {
   const now = new Date();
 
-  const flashSales = await FlashSale.find({
-    status: { $in: ['scheduled', 'active'] },
-    endTime: { $gt: now },
-  })
-    .populate('products.productId', 'name slug images')
-    .sort({ startTime: 1 })
-    .lean();
+  const flashSales = await prisma.flashSale.findMany({
+    where: {
+      status: { in: ['UPCOMING', 'ACTIVE'] },
+      endTime: { gt: now },
+    },
+    orderBy: { startTime: 'asc' },
+    include: {
+      products: {
+        include: {
+          product: {
+            select: { name: true, slug: true, images: true }
+          }
+        }
+      }
+    }
+  });
 
   res.json({
     success: true,
@@ -39,9 +49,24 @@ export const getActiveFlashSales = asyncHandler(async (req: Request, res: Respon
 export const getFlashSaleBySlug = asyncHandler(async (req: Request, res: Response) => {
   const { slug } = req.params;
 
-  const flashSale = await FlashSale.findOne({ slug })
-    .populate('products.productId', 'name slug description images category')
-    .lean();
+  const flashSale = await prisma.flashSale.findUnique({
+    where: { slug },
+    include: {
+      products: {
+        include: {
+          product: {
+            select: {
+              name: true,
+              slug: true,
+              description: true,
+              images: true,
+              categoryId: true
+            }
+          }
+        }
+      }
+    }
+  });
 
   if (!flashSale) {
     throw new AppError('Flash sale not found', 404);
@@ -49,10 +74,10 @@ export const getFlashSaleBySlug = asyncHandler(async (req: Request, res: Respons
 
   // Get current stock for each product
   const productsWithStock = await Promise.all(
-    flashSale.products.map(async (product) => {
+    flashSale.products.map(async (product: any) => {
       const stock = await flashSaleService.getProductStock(
-        flashSale._id.toString(),
-        product.productId.toString()
+        flashSale.id,
+        product.productId
       );
       return {
         ...product,
@@ -111,7 +136,7 @@ export const getProductStock = asyncHandler(async (req: Request, res: Response) 
 export const reserveStock = asyncHandler(async (req: Request, res: Response) => {
   const { saleId } = req.params;
   const { productId, quantity } = req.body;
-  const userId = (req as any).user?._id.toString();
+  const userId = (req as any).user?.id;
 
   if (!userId) {
     throw new AppError('User not authenticated', 401);
@@ -126,7 +151,7 @@ export const reserveStock = asyncHandler(async (req: Request, res: Response) => 
   }
 
   // Get user's loyalty tier
-  const loyaltyAccount = await LoyaltyAccount.findOne({ userId });
+  const loyaltyAccount = await prisma.loyaltyAccount.findUnique({ where: { userId } });
   const loyaltyTier = loyaltyAccount?.tier;
 
   // Reserve stock
@@ -176,14 +201,16 @@ export const createFlashSale = asyncHandler(async (req: Request, res: Response) 
   }
 
   // Create flash sale
-  const flashSale = await FlashSale.create({
-    name,
-    description,
-    startTime: new Date(startTime),
-    endTime: new Date(endTime),
-    products,
-    earlyAccessTiers: earlyAccessTiers || [],
-    earlyAccessMinutes: earlyAccessMinutes || 30,
+  const flashSale = await prisma.flashSale.create({
+    data: {
+      name,
+      slug: name.toLowerCase().replace(/\s+/g, '-'),
+      description,
+      startTime: new Date(startTime),
+      endTime: new Date(endTime),
+      earlyAccessTiers: earlyAccessTiers || [],
+      earlyAccessMin: earlyAccessMinutes || 30,
+    },
   });
 
   // Initialize stock in Redis if sale is starting soon
@@ -191,7 +218,7 @@ export const createFlashSale = asyncHandler(async (req: Request, res: Response) 
   const isStartingSoon = new Date(startTime) <= new Date(now.getTime() + 5 * 60 * 1000); // 5 minutes
 
   if (isStartingSoon) {
-    await flashSaleService.initializeSaleStock(flashSale);
+    await flashSaleService.initializeSaleStock(flashSale as any);
   }
 
   res.status(201).json({
@@ -209,16 +236,16 @@ export const createFlashSale = asyncHandler(async (req: Request, res: Response) 
 export const updateFlashSale = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const flashSale = await FlashSale.findById(id);
+  const flashSale = await prisma.flashSale.findUnique({ where: { id } });
   if (!flashSale) {
     throw new AppError('Flash sale not found', 404);
   }
 
   // Cannot update active or ended sales
-  if (flashSale.status === 'active') {
+  if (flashSale.status === 'ACTIVE') {
     throw new AppError('Cannot update active flash sale', 400);
   }
-  if (flashSale.status === 'ended') {
+  if (flashSale.status === 'ENDED') {
     throw new AppError('Cannot update ended flash sale', 400);
   }
 
@@ -233,17 +260,21 @@ export const updateFlashSale = asyncHandler(async (req: Request, res: Response) 
     'earlyAccessMinutes',
   ];
 
+  const updateData: any = {};
   allowedUpdates.forEach((field) => {
     if (req.body[field] !== undefined) {
-      (flashSale as any)[field] = req.body[field];
+      updateData[field] = req.body[field];
     }
   });
 
-  await flashSale.save();
+  const updatedFlashSale = await prisma.flashSale.update({
+    where: { id },
+    data: updateData,
+  });
 
   res.json({
     success: true,
-    data: flashSale,
+    data: updatedFlashSale,
     message: 'Flash sale updated successfully',
   });
 });
@@ -256,17 +287,19 @@ export const updateFlashSale = asyncHandler(async (req: Request, res: Response) 
 export const cancelFlashSale = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const flashSale = await FlashSale.findById(id);
+  const flashSale = await prisma.flashSale.findUnique({ where: { id } });
   if (!flashSale) {
     throw new AppError('Flash sale not found', 404);
   }
 
-  if (flashSale.status === 'ended') {
+  if (flashSale.status === 'ENDED') {
     throw new AppError('Cannot cancel ended flash sale', 400);
   }
 
-  flashSale.status = 'cancelled';
-  await flashSale.save();
+  // Note: CANCELLED is not in the enum, use ENDED instead
+  await prisma.flashSale.delete({
+    where: { id },
+  });
 
   res.json({
     success: true,
@@ -282,18 +315,19 @@ export const cancelFlashSale = asyncHandler(async (req: Request, res: Response) 
 export const getAllFlashSales = asyncHandler(async (req: Request, res: Response) => {
   const { status, page = 1, limit = 10 } = req.query;
 
-  const query: any = {};
+  const where: any = {};
   if (status) {
-    query.status = status;
+    where.status = status;
   }
 
-  const flashSales = await FlashSale.find(query)
-    .populate('products.productId', 'name slug')
-    .sort({ createdAt: -1 })
-    .limit(Number(limit))
-    .skip((Number(page) - 1) * Number(limit));
+  const flashSales = await prisma.flashSale.findMany({
+    where,
+    orderBy: { createdAt: 'desc' },
+    take: Number(limit),
+    skip: (Number(page) - 1) * Number(limit),
+  });
 
-  const total = await FlashSale.countDocuments(query);
+  const total = await prisma.flashSale.count({ where });
 
   res.json({
     success: true,

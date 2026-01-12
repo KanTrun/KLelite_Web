@@ -19,7 +19,7 @@ export interface TierInfo {
 }
 
 export interface LoyaltyAccount {
-  _id: string;
+  id: string;
   userId: string;
   currentPoints: number;
   lifetimePoints: number;

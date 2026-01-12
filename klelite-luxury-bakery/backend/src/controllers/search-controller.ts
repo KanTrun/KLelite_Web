@@ -18,7 +18,6 @@ export const searchProducts = asyncHandler(
 
     const results = await searchService.search(q, {
       limit: limit ? parseInt(limit as string, 10) : 10,
-      category: category as string,
       minPrice: minPrice ? parseFloat(minPrice as string) : undefined,
       maxPrice: maxPrice ? parseFloat(maxPrice as string) : undefined,
     });

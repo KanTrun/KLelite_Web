@@ -7,9 +7,6 @@ export const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   port: parseInt(process.env.PORT || '5000', 10),
 
-  // MongoDB (legacy - keeping for backward compatibility during migration)
-  mongodbUri: process.env.MONGODB_URI || 'mongodb://localhost:27017/klelite_bakery',
-
   // MySQL/Prisma
   databaseUrl: process.env.DATABASE_URL || 'mysql://root:@localhost:3306/klelite_bakery',
 
@@ -62,9 +59,8 @@ export const config = {
 
   // Search Configuration
   search: {
-    // Use MongoDB Atlas Search if available, fallback to text search
-    useAtlasSearch: process.env.USE_ATLAS_SEARCH === 'true',
-    indexName: process.env.ATLAS_SEARCH_INDEX_NAME || 'products_search',
+    // MySQL Full Text Search could be configured here if needed
+    // Removing Atlas Search config
   },
 
   // Redis

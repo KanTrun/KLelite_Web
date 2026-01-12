@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { 
-  FiPlus, FiEdit2, FiCheck, FiTrash2, FiArrowRight, 
+import {
+  FiPlus, FiEdit2, FiCheck, FiTrash2, FiArrowRight,
   FiUploadCloud, FiImage, FiX, FiLayout, FiMonitor,
   FiSmartphone, FiEye, FiSave, FiAlertCircle, FiChevronRight
 } from 'react-icons/fi';
@@ -14,9 +14,11 @@ import {
   deleteTheme,
 } from '@/store/slices/themeSlice';
 import AdminLayout from './AdminLayout';
-import styles from './ThemeManager.module.scss';
+import BannerGallery from './components/BannerGallery';
+import styles from './Admin.module.scss';
 import { IThemeConfig } from '@/types/theme.types';
 import axiosClient from '@/services/axiosClient';
+import { toast } from 'react-hot-toast';
 
 // Theme type labels
 const THEME_TYPES = {
@@ -37,6 +39,7 @@ const ThemeManager: React.FC = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [bannerTab, setBannerTab] = useState<'upload' | 'library'>('upload');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -66,23 +69,33 @@ const ThemeManager: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    await dispatch(deleteTheme(id));
-    setDeleteConfirm(null);
+    try {
+      await dispatch(deleteTheme(id));
+      toast.success('Đã xóa giao diện thành công!');
+      setDeleteConfirm(null);
+    } catch (error) {
+      toast.error('Xóa giao diện thất bại!');
+    }
   };
 
   const handleActivate = async (id: string) => {
-    await dispatch(activateTheme(id));
+    try {
+      await dispatch(activateTheme(id));
+      toast.success('Đã kích hoạt giao diện!');
+    } catch (error) {
+      toast.error('Kích hoạt thất bại!');
+    }
   };
 
   // Enhanced file upload with drag & drop
   const processFile = async (file: File) => {
     if (!file.type.startsWith('image/')) {
-      alert('Vui lòng chọn file hình ảnh');
+      toast.error('Vui lòng chọn file hình ảnh');
       return;
     }
-    
+
     if (file.size > 10 * 1024 * 1024) {
-      alert('Kích thước file không được vượt quá 10MB');
+      toast.error('Kích thước file không được vượt quá 10MB');
       return;
     }
 
@@ -91,27 +104,28 @@ const ThemeManager: React.FC = () => {
 
     setUploading(true);
     setUploadProgress(0);
-    
+
     try {
       const response = await axiosClient.post('/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: (progressEvent) => {
-          const percent = progressEvent.total 
+          const percent = progressEvent.total
             ? Math.round((progressEvent.loaded * 100) / progressEvent.total)
             : 0;
           setUploadProgress(percent);
         }
       });
-      
+
       if (response.data && response.data[0]) {
         setCurrentEdit(prev => ({
           ...prev,
           hero: { ...prev.hero!, backgroundImage: response.data[0].url }
         }));
+        toast.success('Tải ảnh lên thành công!');
       }
     } catch (error) {
       console.error('Upload failed', error);
-      alert('Tải ảnh lên thất bại. Vui lòng thử lại.');
+      toast.error('Tải ảnh lên thất bại. Vui lòng thử lại.');
     } finally {
       setUploading(false);
       setUploadProgress(0);
@@ -145,12 +159,16 @@ const ThemeManager: React.FC = () => {
     e.preventDefault();
     setSaving(true);
     try {
-      if (currentEdit._id) {
-        await dispatch(updateTheme({ id: currentEdit._id, data: currentEdit }));
+      if (currentEdit.id) {
+        await dispatch(updateTheme({ id: currentEdit.id, data: currentEdit }));
+        toast.success('Cập nhật giao diện thành công!');
       } else {
         await dispatch(createTheme(currentEdit));
+        toast.success('Tạo giao diện mới thành công!');
       }
       setIsEditing(false);
+    } catch (error) {
+      toast.error('Lưu giao diện thất bại!');
     } finally {
       setSaving(false);
     }
@@ -166,7 +184,7 @@ const ThemeManager: React.FC = () => {
   // ===== EDITOR VIEW =====
   if (isEditing) {
     return (
-      <AdminLayout title={currentEdit._id ? "Chỉnh sửa giao diện" : "Tạo giao diện mới"}>
+      <AdminLayout title={currentEdit.id ? "Chỉnh sửa giao diện" : "Tạo giao diện mới"}>
         <div className={styles.editorContainer}>
           {/* Editor Header */}
           <div className={styles.editorHeader}>
@@ -180,7 +198,7 @@ const ThemeManager: React.FC = () => {
               </button>
               <div className={styles.editorTitle}>
                 <FiLayout />
-                <span>{currentEdit._id ? 'Chỉnh sửa' : 'Tạo mới'}: {currentEdit.name || 'Giao diện'}</span>
+                <span>{currentEdit.id ? 'Chỉnh sửa' : 'Tạo mới'}: {currentEdit.name || 'Giao diện'}</span>
               </div>
             </div>
             <div className={styles.editorHeaderRight}>
@@ -320,65 +338,95 @@ const ThemeManager: React.FC = () => {
                     Hình nền & Hiệu ứng
                   </h3>
 
-                  {/* Image Upload Zone */}
+                  {/* Banner Tabs */}
                   <div className={styles.formGroup}>
                     <label>Hình nền Banner</label>
-                    <div 
-                      className={`${styles.uploadZone} ${isDragging ? styles.dragging : ''} ${currentEdit.hero?.backgroundImage ? styles.hasImage : ''}`}
-                      onDragOver={handleDragOver}
-                      onDragLeave={handleDragLeave}
-                      onDrop={handleDrop}
-                      onClick={() => fileInputRef.current?.click()}
-                    >
-                      {uploading ? (
-                        <div className={styles.uploadProgress}>
-                          <div className={styles.progressBar}>
-                            <div 
-                              className={styles.progressFill} 
-                              style={{ width: `${uploadProgress}%` }} 
-                            />
-                          </div>
-                          <span>Đang tải lên... {uploadProgress}%</span>
-                        </div>
-                      ) : currentEdit.hero?.backgroundImage ? (
-                        <div className={styles.uploadPreview}>
-                          <img 
-                            src={currentEdit.hero.backgroundImage} 
-                            alt="Background preview" 
-                          />
-                          <div className={styles.uploadOverlay}>
-                            <button 
-                              type="button" 
-                              className={styles.btnChangeImage}
-                              onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
-                            >
-                              <FiImage /> Đổi ảnh
-                            </button>
-                            <button 
-                              type="button" 
-                              className={styles.btnRemoveImage}
-                              onClick={(e) => { e.stopPropagation(); clearImage(); }}
-                            >
-                              <FiTrash2 /> Xóa
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className={styles.uploadPlaceholder}>
-                          <FiUploadCloud />
-                          <span>Kéo thả ảnh vào đây hoặc click để chọn</span>
-                          <small>PNG, JPG, WEBP (tối đa 10MB)</small>
-                        </div>
-                      )}
-                      <input 
-                        ref={fileInputRef}
-                        type="file" 
-                        onChange={handleImageUpload} 
-                        accept="image/*" 
-                        disabled={uploading} 
-                        hidden
-                      />
+                    <div className={styles.bannerTabs}>
+                      <button
+                        type="button"
+                        className={`${styles.tabBtn} ${bannerTab === 'upload' ? styles.active : ''}`}
+                        onClick={() => setBannerTab('upload')}
+                      >
+                        <FiUploadCloud /> Upload Mới
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.tabBtn} ${bannerTab === 'library' ? styles.active : ''}`}
+                        onClick={() => setBannerTab('library')}
+                      >
+                        <FiImage /> Thư viện
+                      </button>
                     </div>
+
+                    {/* Tab Content */}
+                    {bannerTab === 'upload' ? (
+                      <div
+                        className={`${styles.uploadZone} ${isDragging ? styles.dragging : ''} ${currentEdit.hero?.backgroundImage ? styles.hasImage : ''}`}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        {uploading ? (
+                          <div className={styles.uploadProgress}>
+                            <div className={styles.progressBar}>
+                              <div
+                                className={styles.progressFill}
+                                style={{ width: `${uploadProgress}%` }}
+                              />
+                            </div>
+                            <span>Đang tải lên... {uploadProgress}%</span>
+                          </div>
+                        ) : currentEdit.hero?.backgroundImage ? (
+                          <div className={styles.uploadPreview}>
+                            <img
+                              src={currentEdit.hero.backgroundImage}
+                              alt="Background preview"
+                            />
+                            <div className={styles.uploadOverlay}>
+                              <button
+                                type="button"
+                                className={styles.btnChangeImage}
+                                onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+                              >
+                                <FiImage /> Đổi ảnh
+                              </button>
+                              <button
+                                type="button"
+                                className={styles.btnRemoveImage}
+                                onClick={(e) => { e.stopPropagation(); clearImage(); }}
+                              >
+                                <FiTrash2 /> Xóa
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className={styles.uploadPlaceholder}>
+                            <FiUploadCloud />
+                            <span>Kéo thả ảnh vào đây hoặc click để chọn</span>
+                            <small>PNG, JPG, WEBP (tối đa 10MB)</small>
+                          </div>
+                        )}
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          onChange={handleImageUpload}
+                          accept="image/*"
+                          disabled={uploading}
+                          hidden
+                        />
+                      </div>
+                    ) : (
+                      <BannerGallery
+                        selectedImageUrl={currentEdit.hero?.backgroundImage || ''}
+                        onSelectImage={(url) => {
+                          setCurrentEdit(prev => ({
+                            ...prev,
+                            hero: { ...prev.hero!, backgroundImage: url }
+                          }));
+                        }}
+                      />
+                    )}
                   </div>
 
                   {/* Overlay Opacity Slider */}
@@ -516,7 +564,7 @@ const ThemeManager: React.FC = () => {
           <div className={styles.themeGrid}>
             {themes.map(theme => (
               <div 
-                key={theme._id} 
+                key={theme.id} 
                 className={`${styles.themeCard} ${theme.isActive ? styles.active : ''}`}
               >
                 {/* Card Preview */}
@@ -560,7 +608,7 @@ const ThemeManager: React.FC = () => {
                     {!theme.isActive && (
                       <button 
                         className={styles.btnActivate} 
-                        onClick={() => handleActivate(theme._id)}
+                        onClick={() => handleActivate(theme.id)}
                       >
                         <FiCheck /> Kích hoạt
                       </button>
@@ -574,12 +622,12 @@ const ThemeManager: React.FC = () => {
                     </button>
                     {!theme.isActive && (
                       <>
-                        {deleteConfirm === theme._id ? (
+                        {deleteConfirm === theme.id ? (
                           <div className={styles.deleteConfirm}>
                             <span>Xóa?</span>
                             <button 
                               className={styles.btnConfirmYes}
-                              onClick={() => handleDelete(theme._id)}
+                              onClick={() => handleDelete(theme.id)}
                             >
                               Có
                             </button>
@@ -593,7 +641,7 @@ const ThemeManager: React.FC = () => {
                         ) : (
                           <button 
                             className={`${styles.btnIconAction} ${styles.danger}`}
-                            onClick={() => setDeleteConfirm(theme._id)}
+                            onClick={() => setDeleteConfirm(theme.id)}
                             title="Xóa"
                           >
                             <FiTrash2 />

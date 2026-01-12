@@ -1,33 +1,30 @@
-import Notification, { INotification } from '../models/Notification';
+import prisma from '../lib/prisma';
 import * as sseService from './sseService';
-import { Types } from 'mongoose';
+import { Notification } from '@prisma/client';
 
 export interface CreateNotificationDTO {
-  type: 'order_status' | 'points_earned' | 'flash_sale' | 'promotion' | 'system';
+  type: 'ORDER_STATUS' | 'POINTS_EARNED' | 'FLASH_SALE' | 'PROMOTION' | 'SYSTEM';
   title: string;
   message: string;
-  data?: {
-    orderId?: Types.ObjectId;
-    productId?: Types.ObjectId;
-    url?: string;
-    [key: string]: any;
-  };
+  data?: any;
 }
 
 /**
  * Create a new notification and publish via SSE
  */
 export const create = async (
-  userId: string | Types.ObjectId,
+  userId: string,
   data: CreateNotificationDTO
-): Promise<INotification> => {
-  const notification = await Notification.create({
-    userId,
-    ...data
+): Promise<Notification> => {
+  const notification = await prisma.notification.create({
+    data: {
+      userId,
+      ...data
+    }
   });
 
   // Publish to SSE (handles both single-server and multi-server via Redis Pub/Sub)
-  await sseService.publish(userId.toString(), notification.toObject());
+  await sseService.publish(userId, notification);
 
   return notification;
 };
@@ -35,70 +32,74 @@ export const create = async (
 /**
  * Get unread notifications for a user
  */
-export const getUnread = async (userId: string | Types.ObjectId, limit: number = 20): Promise<any[]> => {
-  return Notification.find({ userId, read: false })
-    .sort({ createdAt: -1 })
-    .limit(limit)
-    .lean();
+export const getUnread = async (userId: string, limit: number = 20): Promise<Notification[]> => {
+  return prisma.notification.findMany({
+    where: { userId, read: false },
+    orderBy: { createdAt: 'desc' },
+    take: limit
+  });
 };
 
 /**
  * Get all notifications for a user (paginated)
  */
 export const getAll = async (
-  userId: string | Types.ObjectId,
+  userId: string,
   limit: number = 50,
   skip: number = 0
-): Promise<any[]> => {
-  return Notification.find({ userId })
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .lean();
+): Promise<Notification[]> => {
+  return prisma.notification.findMany({
+    where: { userId },
+    orderBy: { createdAt: 'desc' },
+    skip,
+    take: limit
+  });
 };
 
 /**
  * Mark a specific notification as read
  */
 export const markAsRead = async (
-  userId: string | Types.ObjectId,
-  notificationId: string | Types.ObjectId
-): Promise<INotification | null> => {
-  return Notification.findOneAndUpdate(
-    { _id: notificationId, userId },
-    { read: true, readAt: new Date() },
-    { new: true }
-  );
+  userId: string,
+  notificationId: string
+): Promise<Notification | null> => {
+  return prisma.notification.update({
+    where: { id: notificationId, userId },
+    data: { read: true, readAt: new Date() }
+  });
 };
 
 /**
  * Mark all notifications as read for a user
  */
-export const markAllAsRead = async (userId: string | Types.ObjectId): Promise<number> => {
-  const result = await Notification.updateMany(
-    { userId, read: false },
-    { read: true, readAt: new Date() }
-  );
+export const markAllAsRead = async (userId: string): Promise<number> => {
+  const result = await prisma.notification.updateMany({
+    where: { userId, read: false },
+    data: { read: true, readAt: new Date() }
+  });
 
-  return result.modifiedCount;
+  return result.count;
 };
 
 /**
  * Get unread notification count
  */
-export const getUnreadCount = async (userId: string | Types.ObjectId): Promise<number> => {
-  return Notification.countDocuments({ userId, read: false });
+export const getUnreadCount = async (userId: string): Promise<number> => {
+  return prisma.notification.count({ where: { userId, read: false } });
 };
 
 /**
  * Delete a notification
  */
 export const deleteNotification = async (
-  userId: string | Types.ObjectId,
-  notificationId: string | Types.ObjectId
+  userId: string,
+  notificationId: string
 ): Promise<boolean> => {
-  const result = await Notification.deleteOne({ _id: notificationId, userId });
-  return result.deletedCount > 0;
+  const result = await prisma.notification.deleteMany({
+    where: { id: notificationId, userId }
+  });
+
+  return result.count > 0;
 };
 
 /**
@@ -108,37 +109,45 @@ export const cleanupOldNotifications = async (daysOld: number = 30): Promise<num
   const cutoffDate = new Date();
   cutoffDate.setDate(cutoffDate.getDate() - daysOld);
 
-  const result = await Notification.deleteMany({
-    read: true,
-    createdAt: { $lt: cutoffDate }
+  const result = await prisma.notification.deleteMany({
+    where: {
+      read: true,
+      createdAt: { lt: cutoffDate }
+    }
   });
 
-  return result.deletedCount;
+  return result.count;
 };
 
 /**
  * Batch create notifications for multiple users (e.g., promotions, flash sale alerts)
  */
 export const createBatch = async (
-  userIds: (string | Types.ObjectId)[],
+  userIds: string[],
   data: CreateNotificationDTO
-): Promise<any[]> => {
-  const notifications = await Notification.insertMany(
-    userIds.map(userId => ({
-      userId: new Types.ObjectId(userId.toString()),
+): Promise<Notification[]> => {
+  const notifications = await prisma.notification.createMany({
+    data: userIds.map(userId => ({
+      userId,
       ...data
     }))
-  );
+  });
+
+  // Fetch created notifications to publish to SSE
+  const createdNotifications = await prisma.notification.findMany({
+    where: {
+      userId: { in: userIds },
+      createdAt: { gte: new Date(Date.now() - 1000) } // Created in last second
+    },
+    orderBy: { createdAt: 'desc' }
+  });
 
   // Publish to SSE for each user
-  for (let i = 0; i < notifications.length; i++) {
-    await sseService.publish(
-      userIds[i].toString(),
-      notifications[i].toObject()
-    );
+  for (const notification of createdNotifications) {
+    await sseService.publish(notification.userId, notification);
   }
 
-  return notifications;
+  return createdNotifications;
 };
 
 export default {

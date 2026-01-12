@@ -4,23 +4,24 @@ export interface PaginationResult {
   skip: number;
   limit: number;
   page: number;
-  sort: Record<string, 1 | -1>;
+  sort: 'asc' | 'desc';
+  sortField: string;
 }
 
 /**
  * Parse pagination query parameters
+ * Returns Prisma-compatible format
  */
 export const parsePagination = (query: PaginationQuery): PaginationResult => {
   const page = Math.max(1, parseInt(query.page || '1', 10));
   const limit = Math.min(100, Math.max(1, parseInt(query.limit || '12', 10)));
   const skip = (page - 1) * limit;
-  
-  // Parse sort
+
+  // Parse sort - Prisma expects 'asc' | 'desc' strings
   const sortField = query.sort || 'createdAt';
-  const sortOrder = query.order === 'asc' ? 1 : -1;
-  const sort: Record<string, 1 | -1> = { [sortField]: sortOrder };
-  
-  return { skip, limit, page, sort };
+  const sort = query.order === 'asc' ? 'asc' : 'desc';
+
+  return { skip, limit, page, sort, sortField };
 };
 
 /**

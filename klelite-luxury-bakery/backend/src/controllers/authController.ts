@@ -1,6 +1,9 @@
 import { Response, NextFunction } from 'express';
 import crypto from 'crypto';
-import User from '../models/User';
+import prisma from '../lib/prisma';
+import bcrypt from 'bcryptjs';
+import { authService } from '../services/authService';
+import { userService } from '../services/userService';
 import { config } from '../config';
 import { asyncHandler, successResponse, createdResponse, UnauthorizedError, BadRequestError, NotFoundError, ConflictError } from '../utils';
 import { sendEmail, emailTemplates } from '../utils/email';
@@ -17,28 +20,33 @@ export const register = asyncHandler(async (req: AuthRequest, res: Response, _ne
   const { email, password, firstName, lastName, phone } = req.body;
 
   // Check if user exists
-  const existingUser = await User.findOne({ email });
+  const existingUser = await prisma.user.findUnique({ where: { email } });
   if (existingUser) {
     throw ConflictError('Email đã được sử dụng');
   }
 
+  // Hash password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
   // Create user
-  const user = await User.create({
-    email,
-    password,
-    firstName,
-    lastName,
-    phone,
+  const user = await prisma.user.create({
+    data: {
+      email,
+      password: hashedPassword,
+      firstName,
+      lastName,
+      phone,
+    },
   });
 
   // Generate verification token
-  const verificationToken = user.generateVerificationToken();
-  await user.save();
+  const verificationToken = await authService.generateVerificationToken(user.id);
 
   // Send verification email
   const verificationUrl = `${config.frontendUrl}/verify-email/${verificationToken}`;
   const emailContent = emailTemplates.verification(user.firstName, verificationUrl);
-  
+
   try {
     await sendEmail({
       to: user.email,
@@ -51,20 +59,18 @@ export const register = asyncHandler(async (req: AuthRequest, res: Response, _ne
   }
 
   // Generate tokens
-  const accessToken = user.generateAccessToken();
-  const refreshToken = user.generateRefreshToken();
-  await user.save();
+  const accessToken = authService.generateToken(user.id);
+  const refreshToken = await authService.generateRefreshToken(user.id);
 
   // Set cookies
   setTokenCookies(res, accessToken, refreshToken);
 
   // Remove sensitive data
   const userResponse = {
-    _id: user._id,
+    id: user.id,
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
-    fullName: user.fullName,
     phone: user.phone,
     role: user.role,
     isVerified: user.isVerified,
@@ -80,13 +86,13 @@ export const login = asyncHandler(async (req: AuthRequest, res: Response, _next:
   const { email, password } = req.body;
 
   // Check for user
-  const user = await User.findOne({ email }).select('+password');
+  const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
     throw UnauthorizedError('Email hoặc mật khẩu không đúng');
   }
 
   // Check if password matches
-  const isMatch = await user.comparePassword(password);
+  const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     throw UnauthorizedError('Email hoặc mật khẩu không đúng');
   }
@@ -97,28 +103,28 @@ export const login = asyncHandler(async (req: AuthRequest, res: Response, _next:
   }
 
   // Update last login
-  user.lastLogin = new Date();
-  
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { lastLogin: new Date() }
+  });
+
   // Generate tokens
-  const accessToken = user.generateAccessToken();
-  const refreshToken = user.generateRefreshToken();
-  await user.save();
+  const accessToken = authService.generateToken(user.id);
+  const refreshToken = await authService.generateRefreshToken(user.id);
 
   // Set cookies
   setTokenCookies(res, accessToken, refreshToken);
 
   // User response
   const userResponse = {
-    _id: user._id,
+    id: user.id,
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
-    fullName: user.fullName,
     phone: user.phone,
     avatar: user.avatar,
     role: user.role,
     isVerified: user.isVerified,
-    addresses: user.addresses,
   };
 
   successResponse(res, { user: userResponse, accessToken, refreshToken }, 'Đăng nhập thành công');
@@ -130,7 +136,10 @@ export const login = asyncHandler(async (req: AuthRequest, res: Response, _next:
 export const logout = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   // Clear refresh token in database
   if (req.user) {
-    await User.findByIdAndUpdate(req.user._id, { refreshToken: undefined });
+    await prisma.user.update({
+      where: { id: req.user.id },
+      data: { refreshToken: null }
+    });
   }
 
   // Clear cookies
@@ -159,15 +168,14 @@ export const refreshToken = asyncHandler(async (req: AuthRequest, res: Response,
   }
 
   // Find user with matching refresh token
-  const user = await User.findById(decoded.id).select('+refreshToken');
+  const user = await prisma.user.findUnique({ where: { id: decoded.id } });
   if (!user || user.refreshToken !== token) {
     throw UnauthorizedError('Refresh token không hợp lệ');
   }
 
   // Generate new tokens
-  const accessToken = user.generateAccessToken();
-  const newRefreshToken = user.generateRefreshToken();
-  await user.save();
+  const accessToken = authService.generateToken(user.id);
+  const newRefreshToken = await authService.generateRefreshToken(user.id);
 
   // Set cookies
   setTokenCookies(res, accessToken, newRefreshToken);
@@ -179,8 +187,11 @@ export const refreshToken = asyncHandler(async (req: AuthRequest, res: Response,
 // @route   GET /api/auth/me
 // @access  Private
 export const getMe = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const user = await User.findById(req.user?._id).populate('wishlist');
-  
+  const user = await prisma.user.findUnique({
+    where: { id: req.user?.id },
+    include: { wishlist: true }
+  });
+
   if (!user) {
     throw NotFoundError('Người dùng không tồn tại');
   }
@@ -197,9 +208,11 @@ export const verifyEmail = asyncHandler(async (req: AuthRequest, res: Response, 
     .update(req.params.token)
     .digest('hex');
 
-  const user = await User.findOne({
-    verificationToken: hashedToken,
-    verificationExpire: { $gt: Date.now() },
+  const user = await prisma.user.findFirst({
+    where: {
+      verificationToken: hashedToken,
+      verificationExpire: { gt: new Date() },
+    },
   });
 
   if (!user) {
@@ -207,10 +220,14 @@ export const verifyEmail = asyncHandler(async (req: AuthRequest, res: Response, 
   }
 
   // Verify user
-  user.isVerified = true;
-  user.verificationToken = undefined;
-  user.verificationExpire = undefined;
-  await user.save();
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      isVerified: true,
+      verificationToken: null,
+      verificationExpire: null,
+    }
+  });
 
   successResponse(res, null, 'Email đã được xác thực thành công');
 });
@@ -221,7 +238,7 @@ export const verifyEmail = asyncHandler(async (req: AuthRequest, res: Response, 
 export const forgotPassword = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   const { email } = req.body;
 
-  const user = await User.findOne({ email });
+  const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
     // Don't reveal if email exists
     successResponse(res, null, 'Nếu email tồn tại, bạn sẽ nhận được link đặt lại mật khẩu');
@@ -229,8 +246,7 @@ export const forgotPassword = asyncHandler(async (req: AuthRequest, res: Respons
   }
 
   // Generate reset token
-  const resetToken = user.generateResetPasswordToken();
-  await user.save();
+  const resetToken = await authService.generateResetPasswordToken(user.id);
 
   // Send email
   const resetUrl = `${config.frontendUrl}/reset-password/${resetToken}`;
@@ -243,9 +259,13 @@ export const forgotPassword = asyncHandler(async (req: AuthRequest, res: Respons
       html: emailContent.html,
     });
   } catch {
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
-    await user.save();
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        resetPasswordToken: null,
+        resetPasswordExpire: null,
+      }
+    });
     throw BadRequestError('Không thể gửi email. Vui lòng thử lại sau');
   }
 
@@ -261,25 +281,34 @@ export const resetPassword = asyncHandler(async (req: AuthRequest, res: Response
     .update(req.params.token)
     .digest('hex');
 
-  const user = await User.findOne({
-    resetPasswordToken: hashedToken,
-    resetPasswordExpire: { $gt: Date.now() },
+  const user = await prisma.user.findFirst({
+    where: {
+      resetPasswordToken: hashedToken,
+      resetPasswordExpire: { gt: new Date() },
+    },
   });
 
   if (!user) {
     throw BadRequestError('Token đặt lại mật khẩu không hợp lệ hoặc đã hết hạn');
   }
 
+  // Hash new password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
   // Set new password
-  user.password = req.body.password;
-  user.resetPasswordToken = undefined;
-  user.resetPasswordExpire = undefined;
-  await user.save();
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      password: hashedPassword,
+      resetPasswordToken: null,
+      resetPasswordExpire: null,
+    }
+  });
 
   // Generate new tokens
-  const accessToken = user.generateAccessToken();
-  const refreshToken = user.generateRefreshToken();
-  await user.save();
+  const accessToken = authService.generateToken(user.id);
+  const refreshToken = await authService.generateRefreshToken(user.id);
 
   setTokenCookies(res, accessToken, refreshToken);
 
@@ -292,25 +321,30 @@ export const resetPassword = asyncHandler(async (req: AuthRequest, res: Response
 export const updatePassword = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   const { currentPassword, newPassword } = req.body;
 
-  const user = await User.findById(req.user?._id).select('+password');
+  const user = await prisma.user.findUnique({ where: { id: req.user?.id } });
   if (!user) {
     throw NotFoundError('Người dùng không tồn tại');
   }
 
   // Check current password
-  const isMatch = await user.comparePassword(currentPassword);
+  const isMatch = await bcrypt.compare(currentPassword, user.password);
   if (!isMatch) {
     throw UnauthorizedError('Mật khẩu hiện tại không đúng');
   }
 
+  // Hash new password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(newPassword, salt);
+
   // Update password
-  user.password = newPassword;
-  await user.save();
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { password: hashedPassword }
+  });
 
   // Generate new tokens
-  const accessToken = user.generateAccessToken();
-  const refreshToken = user.generateRefreshToken();
-  await user.save();
+  const accessToken = authService.generateToken(user.id);
+  const refreshToken = await authService.generateRefreshToken(user.id);
 
   setTokenCookies(res, accessToken, refreshToken);
 
@@ -346,47 +380,59 @@ export const googleAuth = asyncHandler(async (req: AuthRequest, res: Response, _
   const { email, given_name, family_name, picture, sub: googleId } = payload;
 
   // Handle cases where Google doesn't provide name parts
-  // Some Google accounts may not have family_name or given_name
   let firstName = given_name || '';
   let lastName = family_name || '';
-  
-  // If both are empty, try to extract from email
+
   if (!firstName && !lastName) {
     const emailName = email.split('@')[0];
     firstName = emailName;
     lastName = 'User';
   } else if (!firstName) {
-    // If only firstName is empty, use lastName as firstName
     firstName = lastName;
     lastName = 'User';
   } else if (!lastName) {
-    // If only lastName is empty, set a default
     lastName = 'User';
   }
 
   // Find or create user
-  let user = await User.findOne({ $or: [{ email }, { googleId }] });
+  let user = await prisma.user.findFirst({
+    where: {
+      OR: [{ email }, { googleId }]
+    }
+  });
 
   if (user) {
     // Update Google ID if not set
+    const updateData: any = { lastLogin: new Date() };
     if (!user.googleId) {
-      user.googleId = googleId;
+      updateData.googleId = googleId;
     }
     // Update avatar if user doesn't have one
     if (!user.avatar && picture) {
-      user.avatar = picture;
+      updateData.avatar = picture;
     }
-    user.lastLogin = new Date();
+
+    user = await prisma.user.update({
+      where: { id: user.id },
+      data: updateData
+    });
   } else {
+    // Hash random password
+    const salt = await bcrypt.genSalt(10);
+    const randomPassword = crypto.randomBytes(20).toString('hex');
+    const hashedPassword = await bcrypt.hash(randomPassword, salt);
+
     // Create new user
-    user = await User.create({
-      email,
-      googleId,
-      firstName: firstName,
-      lastName: lastName,
-      avatar: picture,
-      isVerified: true, // Google accounts are already verified
-      password: crypto.randomBytes(20).toString('hex'), // Random password for Google users
+    user = await prisma.user.create({
+      data: {
+        email,
+        googleId,
+        firstName,
+        lastName,
+        avatar: picture,
+        isVerified: true, // Google accounts are already verified
+        password: hashedPassword,
+      }
     });
   }
 
@@ -396,25 +442,22 @@ export const googleAuth = asyncHandler(async (req: AuthRequest, res: Response, _
   }
 
   // Generate tokens
-  const accessToken = user.generateAccessToken();
-  const refreshToken = user.generateRefreshToken();
-  await user.save();
+  const accessToken = authService.generateToken(user.id);
+  const refreshToken = await authService.generateRefreshToken(user.id);
 
   // Set cookies
   setTokenCookies(res, accessToken, refreshToken);
 
   // User response
   const userResponse = {
-    _id: user._id,
+    id: user.id,
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
-    fullName: user.fullName,
     phone: user.phone,
     avatar: user.avatar,
     role: user.role,
     isVerified: user.isVerified,
-    addresses: user.addresses,
   };
 
   successResponse(res, { user: userResponse, accessToken, refreshToken }, 'Đăng nhập thành công');
@@ -425,7 +468,7 @@ const setTokenCookies = (res: Response, accessToken: string, refreshToken: strin
   const cookieOptions = {
     httpOnly: true,
     secure: config.nodeEnv === 'production',
-    sameSite: 'strict' as const,
+    sameSite: 'lax' as const, // Changed from 'strict' to 'lax' for cross-origin requests (different ports)
   };
 
   res.cookie('accessToken', accessToken, {

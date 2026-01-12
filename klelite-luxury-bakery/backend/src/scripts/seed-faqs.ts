@@ -1,9 +1,4 @@
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import FAQ from '../models/FAQ';
-import connectDB from '../config/database';
-
-dotenv.config();
+import prisma from '../lib/prisma';
 
 const faqs = [
   {
@@ -52,10 +47,14 @@ const faqs = [
 
 const seedFAQs = async () => {
   try {
-    await connectDB();
+    console.log('Connecting to database...');
 
-    await FAQ.deleteMany({});
-    await FAQ.insertMany(faqs);
+    await prisma.fAQ.deleteMany({});
+
+    // Prisma createMany is efficient
+    await prisma.fAQ.createMany({
+      data: faqs,
+    });
 
     console.log('FAQs seeded successfully');
     process.exit(0);

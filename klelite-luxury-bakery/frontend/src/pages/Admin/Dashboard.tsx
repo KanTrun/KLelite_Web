@@ -411,7 +411,7 @@ const Dashboard: React.FC = () => {
                       const status = order.status as keyof typeof statusConfig;
                       const config = statusConfig[status] || statusConfig.pending;
                       return (
-                        <tr key={order._id}>
+                        <tr key={order.id}>
                           <td className={styles.orderNumber}>{order.orderNumber}</td>
                           <td>{order.shippingAddress?.fullName || 'N/A'}</td>
                           <td className={styles.amount}>{formatCurrency(order.total)}</td>
@@ -429,7 +429,7 @@ const Dashboard: React.FC = () => {
                           </td>
                           <td className={styles.time}>{formatRelativeTime(order.createdAt)}</td>
                           <td>
-                            <Link to={`/admin/orders?id=${order._id}`} className={styles.actionBtn}>
+                            <Link to={`/admin/orders?id=${order.id}`} className={styles.actionBtn}>
                               <FiEye />
                             </Link>
                           </td>

@@ -41,7 +41,7 @@ const NotificationBell: React.FC = () => {
 
   const handleNotificationClick = (notification: any) => {
     if (!notification.read) {
-      dispatch(markAsRead(notification._id));
+      dispatch(markAsRead(notification.id));
     }
 
     if (notification.data?.url) {
@@ -109,7 +109,7 @@ const NotificationBell: React.FC = () => {
             ) : (
               items.slice(0, 10).map((notification) => (
                 <div
-                  key={notification._id}
+                  key={notification.id}
                   className={`notification-item ${!notification.read ? 'notification-item--unread' : ''}`}
                   onClick={() => handleNotificationClick(notification)}
                 >
@@ -129,7 +129,7 @@ const NotificationBell: React.FC = () => {
                         className="notification-item__mark-read"
                         onClick={(e) => {
                           e.stopPropagation();
-                          dispatch(markAsRead(notification._id));
+                          dispatch(markAsRead(notification.id));
                         }}
                         title="Đánh dấu đã đọc"
                       >
@@ -138,7 +138,7 @@ const NotificationBell: React.FC = () => {
                     )}
                     <button
                       className="notification-item__delete"
-                      onClick={(e) => handleDelete(e, notification._id)}
+                      onClick={(e) => handleDelete(e, notification.id)}
                       title="Xóa"
                     >
                       <FaTimes />

@@ -15,10 +15,14 @@ export const authService = {
   login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
     const response = await api.post<ApiResponse<AuthResponse>>('/auth/login', credentials);
     const { accessToken, refreshToken } = response.data.data;
-    
+
+    // Store tokens in localStorage
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
-    
+
+    // Set cookie for SSE authentication (EventSource cannot send headers)
+    document.cookie = `accessToken=${accessToken}; path=/; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`;
+
     return response.data.data;
   },
 
@@ -26,10 +30,14 @@ export const authService = {
   register: async (data: RegisterData): Promise<AuthResponse> => {
     const response = await api.post<ApiResponse<AuthResponse>>('/auth/register', data);
     const { accessToken, refreshToken } = response.data.data;
-    
+
+    // Store tokens in localStorage
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
-    
+
+    // Set cookie for SSE authentication (EventSource cannot send headers)
+    document.cookie = `accessToken=${accessToken}; path=/; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`;
+
     return response.data.data;
   },
 
@@ -37,10 +45,14 @@ export const authService = {
   googleLogin: async (credential: string): Promise<AuthResponse> => {
     const response = await api.post<ApiResponse<AuthResponse>>('/auth/google', { credential });
     const { accessToken, refreshToken } = response.data.data;
-    
+
+    // Store tokens in localStorage
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
-    
+
+    // Set cookie for SSE authentication (EventSource cannot send headers)
+    document.cookie = `accessToken=${accessToken}; path=/; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`;
+
     return response.data.data;
   },
 
@@ -49,8 +61,12 @@ export const authService = {
     try {
       await api.post('/auth/logout');
     } finally {
+      // Clear localStorage
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
+
+      // Clear cookie (set expiry to past date)
+      document.cookie = 'accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax';
     }
   },
 

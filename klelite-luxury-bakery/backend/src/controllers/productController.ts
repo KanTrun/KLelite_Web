@@ -1,81 +1,114 @@
 import { Response, NextFunction } from 'express';
-import Product from '../models/Product';
-import Category from '../models/Category';
+import prisma from '../lib/prisma';
 import { asyncHandler, successResponse, createdResponse, NotFoundError, BadRequestError, parsePagination, generatePaginationInfo } from '../utils';
 import { AuthRequest, ProductFilters } from '../types';
 import cloudinary from '../config/cloudinary';
+import { ActivityType } from '@prisma/client';
 
 // @desc    Get all products
 // @route   GET /api/products
 // @access  Public
 export const getProducts = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const { skip, limit, page, sort } = parsePagination(req.query);
-  
+  const { skip, limit, page, sort, sortField } = parsePagination(req.query);
+
   // Build filter query
-  // isAvailable: true means the product is "Published".
-  // We do NOT filter by stock here, so out-of-stock items (stock: 0) will still appear
-  // as long as they are published. Frontend should handle "Out of Stock" display.
-  const filter: Record<string, unknown> = { isAvailable: true };
-  
+  const filter: any = { isAvailable: true };
+
   // Category filter
   if (req.query.category) {
-    const category = await Category.findOne({ slug: req.query.category });
+    const category = await prisma.category.findUnique({
+      where: { slug: req.query.category as string }
+    });
     if (category) {
-      filter.category = category._id;
+      filter.categoryId = category.id;
     }
   }
-  
+
   // Price range filter
   if (req.query.minPrice || req.query.maxPrice) {
     filter.price = {};
     if (req.query.minPrice) {
-      (filter.price as Record<string, number>).$gte = Number(req.query.minPrice);
+      filter.price.gte = Number(req.query.minPrice);
     }
     if (req.query.maxPrice) {
-      (filter.price as Record<string, number>).$lte = Number(req.query.maxPrice);
+      filter.price.lte = Number(req.query.maxPrice);
     }
   }
-  
-  // Search filter
+
+  // Search filter (MySQL full-text search or LIKE)
   if (req.query.search) {
-    filter.$text = { $search: req.query.search as string };
+    const searchTerm = req.query.search as string;
+    filter.OR = [
+      { name: { contains: searchTerm, mode: 'insensitive' } },
+      { description: { contains: searchTerm, mode: 'insensitive' } },
+    ];
   }
-  
+
   // Featured filter
   if (req.query.featured === 'true') {
     filter.isFeatured = true;
   }
-  
-  // Tags filter
-  if (req.query.tags) {
-    const tags = (req.query.tags as string).split(',');
-    filter.tags = { $in: tags };
-  }
-  
+
   // Execute query
   const [products, total] = await Promise.all([
-    Product.find(filter)
-      .populate('category', 'name slug')
-      .sort(sort)
-      .skip(skip)
-      .limit(limit),
-    Product.countDocuments(filter),
+    prisma.product.findMany({
+      where: filter,
+      orderBy: { [sortField]: sort },
+      skip,
+      take: limit,
+      include: {
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true
+          }
+        },
+        images: {
+          where: { isMain: true },
+          take: 1
+        }
+      }
+    }),
+    prisma.product.count({ where: filter }),
   ]);
-  
+
   const pagination = generatePaginationInfo(page, limit, total);
-  
+
   successResponse(res, products, undefined, 200, pagination);
 });
-
-import UserActivity from '../models/UserActivity';
 
 // @desc    Get single product
 // @route   GET /api/products/:slug
 // @access  Public
 export const getProduct = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const product = await Product.findOne({ slug: req.params.slug })
-    .populate('category', 'name slug')
-    .populate('relatedProducts', 'name slug price images rating');
+  const product = await prisma.product.findUnique({
+    where: { slug: req.params.slug },
+    include: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true
+        }
+      },
+      images: true,
+      sizes: true,
+      reviews: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              avatar: true
+            }
+          }
+        },
+        orderBy: { createdAt: 'desc' }
+      }
+    }
+  });
 
   if (!product) {
     throw NotFoundError('Không tìm thấy sản phẩm');
@@ -83,10 +116,12 @@ export const getProduct = asyncHandler(async (req: AuthRequest, res: Response, _
 
   // Track user activity
   if (req.user) {
-    await UserActivity.create({
-      userId: req.user._id,
-      productId: product._id,
-      activityType: 'view'
+    await prisma.userActivity.create({
+      data: {
+        userId: req.user.id,
+        productId: product.id,
+        activityType: ActivityType.VIEW_PRODUCT
+      }
     }).catch(err => console.error('Error tracking user activity:', err));
   }
 
@@ -97,14 +132,25 @@ export const getProduct = asyncHandler(async (req: AuthRequest, res: Response, _
 // @route   GET /api/products/id/:id
 // @access  Public
 export const getProductById = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const product = await Product.findById(req.params.id)
-    .populate('category', 'name slug')
-    .populate('relatedProducts', 'name slug price images rating');
-  
+  const product = await prisma.product.findUnique({
+    where: { id: req.params.id },
+    include: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true
+        }
+      },
+      images: true,
+      sizes: true
+    }
+  });
+
   if (!product) {
     throw NotFoundError('Không tìm thấy sản phẩm');
   }
-  
+
   successResponse(res, product);
 });
 
@@ -113,12 +159,26 @@ export const getProductById = asyncHandler(async (req: AuthRequest, res: Respons
 // @access  Public
 export const getFeaturedProducts = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   const limit = parseInt(req.query.limit as string) || 8;
-  
-  const products = await Product.find({ isFeatured: true, isAvailable: true })
-    .populate('category', 'name slug')
-    .sort({ createdAt: -1 })
-    .limit(limit);
-  
+
+  const products = await prisma.product.findMany({
+    where: { isFeatured: true, isAvailable: true },
+    orderBy: { createdAt: 'desc' },
+    take: limit,
+    include: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true
+        }
+      },
+      images: {
+        where: { isMain: true },
+        take: 1
+      }
+    }
+  });
+
   successResponse(res, products);
 });
 
@@ -127,12 +187,26 @@ export const getFeaturedProducts = asyncHandler(async (req: AuthRequest, res: Re
 // @access  Public
 export const getNewProducts = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   const limit = parseInt(req.query.limit as string) || 8;
-  
-  const products = await Product.find({ isNew: true, isAvailable: true })
-    .populate('category', 'name slug')
-    .sort({ createdAt: -1 })
-    .limit(limit);
-  
+
+  const products = await prisma.product.findMany({
+    where: { isNewProduct: true, isAvailable: true },
+    orderBy: { createdAt: 'desc' },
+    take: limit,
+    include: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true
+        }
+      },
+      images: {
+        where: { isMain: true },
+        take: 1
+      }
+    }
+  });
+
   successResponse(res, products);
 });
 
@@ -141,12 +215,26 @@ export const getNewProducts = asyncHandler(async (req: AuthRequest, res: Respons
 // @access  Public
 export const getBestsellerProducts = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   const limit = parseInt(req.query.limit as string) || 8;
-  
-  const products = await Product.find({ isAvailable: true })
-    .populate('category', 'name slug')
-    .sort({ sold: -1 })
-    .limit(limit);
-  
+
+  const products = await prisma.product.findMany({
+    where: { isAvailable: true },
+    orderBy: { sold: 'desc' },
+    take: limit,
+    include: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true
+        }
+      },
+      images: {
+        where: { isMain: true },
+        take: 1
+      }
+    }
+  });
+
   successResponse(res, products);
 });
 
@@ -154,8 +242,18 @@ export const getBestsellerProducts = asyncHandler(async (req: AuthRequest, res: 
 // @route   POST /api/products
 // @access  Private/Admin
 export const createProduct = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const product = await Product.create(req.body);
-  
+  // Destructure to exclude relation fields that can't be set directly
+  const { images, category, reviews, ...productData } = req.body;
+
+  // Handle category connection if provided
+  if (category) {
+    productData.categoryId = typeof category === 'object' ? category.id : category;
+  }
+
+  const product = await prisma.product.create({
+    data: productData
+  });
+
   createdResponse(res, product, 'Tạo sản phẩm thành công');
 });
 
@@ -163,39 +261,68 @@ export const createProduct = asyncHandler(async (req: AuthRequest, res: Response
 // @route   PUT /api/products/:id
 // @access  Private/Admin
 export const updateProduct = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  let product = await Product.findById(req.params.id);
-  
+  const product = await prisma.product.findUnique({
+    where: { id: req.params.id }
+  });
+
   if (!product) {
     throw NotFoundError('Không tìm thấy sản phẩm');
   }
-  
-  product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
+
+  // Destructure to exclude relation fields
+  const { images, category, reviews, sizes, ...updateData } = req.body;
+
+  // Map category to categoryId if present
+  if (category) {
+    updateData.categoryId = typeof category === 'object' ? category.id : category;
+  }
+
+  // Update product with scalar fields only
+  const updatedProduct = await prisma.product.update({
+    where: { id: req.params.id },
+    data: updateData,
+    include: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true
+        }
+      },
+      images: true,
+      sizes: true
+    }
   });
-  
-  successResponse(res, product, 'Cập nhật sản phẩm thành công');
+
+  successResponse(res, updatedProduct, 'Cập nhật sản phẩm thành công');
 });
 
 // @desc    Delete product
 // @route   DELETE /api/products/:id
 // @access  Private/Admin
 export const deleteProduct = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const product = await Product.findById(req.params.id);
-  
+  const product = await prisma.product.findUnique({
+    where: { id: req.params.id },
+    include: {
+      images: true
+    }
+  });
+
   if (!product) {
     throw NotFoundError('Không tìm thấy sản phẩm');
   }
-  
+
   // Delete images from cloudinary
   for (const image of product.images) {
     if (image.publicId) {
       await cloudinary.uploader.destroy(image.publicId);
     }
   }
-  
-  await product.deleteOne();
-  
+
+  await prisma.product.delete({
+    where: { id: req.params.id }
+  });
+
   successResponse(res, null, 'Xóa sản phẩm thành công');
 });
 
@@ -203,16 +330,19 @@ export const deleteProduct = asyncHandler(async (req: AuthRequest, res: Response
 // @route   POST /api/products/:id/images
 // @access  Private/Admin
 export const uploadProductImages = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const product = await Product.findById(req.params.id);
-  
+  const product = await prisma.product.findUnique({
+    where: { id: req.params.id },
+    include: { images: true }
+  });
+
   if (!product) {
     throw NotFoundError('Không tìm thấy sản phẩm');
   }
-  
+
   if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
     throw BadRequestError('Vui lòng chọn ảnh để upload');
   }
-  
+
   const uploadPromises = (req.files as Express.Multer.File[]).map(async (file) => {
     const result = await cloudinary.uploader.upload(
       `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
@@ -224,53 +354,64 @@ export const uploadProductImages = asyncHandler(async (req: AuthRequest, res: Re
         ],
       }
     );
-    
-    return {
-      url: result.secure_url,
-      publicId: result.public_id,
-      isMain: product.images.length === 0,
-    };
+
+    return prisma.productImage.create({
+      data: {
+        productId: product.id,
+        url: result.secure_url,
+        publicId: result.public_id,
+        isMain: product.images.length === 0
+      }
+    });
   });
-  
+
   const newImages = await Promise.all(uploadPromises);
-  product.images.push(...newImages);
-  await product.save();
-  
-  successResponse(res, product.images, 'Upload ảnh thành công');
+
+  successResponse(res, newImages, 'Upload ảnh thành công');
 });
 
 // @desc    Delete product image
 // @route   DELETE /api/products/:id/images/:imageId
 // @access  Private/Admin
 export const deleteProductImage = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const product = await Product.findById(req.params.id);
-  
-  if (!product) {
-    throw NotFoundError('Không tìm thấy sản phẩm');
-  }
-  
-  const image = product.images.find(img => img._id?.toString() === req.params.imageId);
-  
-  if (!image) {
+  const image = await prisma.productImage.findUnique({
+    where: { id: req.params.imageId }
+  });
+
+  if (!image || image.productId !== req.params.id) {
     throw NotFoundError('Không tìm thấy ảnh');
   }
-  
+
   // Delete from cloudinary
   if (image.publicId) {
     await cloudinary.uploader.destroy(image.publicId);
   }
-  
-  // Remove from product
-  product.images = product.images.filter(img => img._id?.toString() !== req.params.imageId);
-  
+
+  // Delete from database
+  await prisma.productImage.delete({
+    where: { id: req.params.imageId }
+  });
+
   // Set new main image if needed
-  if (image.isMain && product.images.length > 0) {
-    product.images[0].isMain = true;
+  if (image.isMain) {
+    const firstImage = await prisma.productImage.findFirst({
+      where: { productId: req.params.id },
+      orderBy: { createdAt: 'asc' }
+    });
+
+    if (firstImage) {
+      await prisma.productImage.update({
+        where: { id: firstImage.id },
+        data: { isMain: true }
+      });
+    }
   }
-  
-  await product.save();
-  
-  successResponse(res, product.images, 'Xóa ảnh thành công');
+
+  const images = await prisma.productImage.findMany({
+    where: { productId: req.params.id }
+  });
+
+  successResponse(res, images, 'Xóa ảnh thành công');
 });
 
 // @desc    Add product review
@@ -278,39 +419,56 @@ export const deleteProductImage = asyncHandler(async (req: AuthRequest, res: Res
 // @access  Private
 export const addProductReview = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   const { rating, comment } = req.body;
-  
-  const product = await Product.findById(req.params.id);
-  
+
+  const product = await prisma.product.findUnique({
+    where: { id: req.params.id },
+    include: {
+      reviews: true
+    }
+  });
+
   if (!product) {
     throw NotFoundError('Không tìm thấy sản phẩm');
   }
-  
+
   // Check if user already reviewed
   const alreadyReviewed = product.reviews.find(
-    (review) => review.user.toString() === req.user?._id.toString()
+    (review) => review.userId === req.user!.id
   );
-  
+
   if (alreadyReviewed) {
     throw BadRequestError('Bạn đã đánh giá sản phẩm này rồi');
   }
-  
-  const review = {
-    user: req.user!._id,
-    rating: Number(rating),
-    comment,
-    isVerified: false,
-  };
-  
-  product.reviews.push(review as any);
-  
-  // Update rating
-  const totalRating = product.reviews.reduce((sum, r) => sum + r.rating, 0);
-  product.rating = Math.round((totalRating / product.reviews.length) * 10) / 10;
-  product.numReviews = product.reviews.length;
-  
-  await product.save();
-  
-  createdResponse(res, product.reviews[product.reviews.length - 1], 'Đánh giá thành công');
+
+  // Create review
+  const review = await prisma.review.create({
+    data: {
+      userId: req.user!.id,
+      productId: product.id,
+      rating: Number(rating),
+      comment,
+      isVerified: false
+    }
+  });
+
+  // Update product rating
+  const allReviews = await prisma.review.findMany({
+    where: { productId: product.id },
+    select: { rating: true }
+  });
+
+  const totalRating = allReviews.reduce((sum, r) => sum + r.rating, 0);
+  const avgRating = Math.round((totalRating / allReviews.length) * 10) / 10;
+
+  await prisma.product.update({
+    where: { id: product.id },
+    data: {
+      rating: avgRating,
+      numReviews: allReviews.length
+    }
+  });
+
+  createdResponse(res, review, 'Đánh giá thành công');
 });
 
 // @desc    Get product reviews
@@ -318,21 +476,30 @@ export const addProductReview = asyncHandler(async (req: AuthRequest, res: Respo
 // @access  Public
 export const getProductReviews = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   const { skip, limit, page } = parsePagination(req.query);
-  
-  const product = await Product.findById(req.params.id);
-  
-  if (!product) {
-    throw NotFoundError('Không tìm thấy sản phẩm');
-  }
-  
-  const total = product.reviews.length;
-  const reviews = product.reviews
-    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-    .slice(skip, skip + limit);
-  
-  await Product.populate(reviews, { path: 'user', select: 'firstName lastName avatar' });
-  
+
+  const [reviews, total] = await Promise.all([
+    prisma.review.findMany({
+      where: { productId: req.params.id },
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            avatar: true
+          }
+        }
+      }
+    }),
+    prisma.review.count({
+      where: { productId: req.params.id }
+    })
+  ]);
+
   const pagination = generatePaginationInfo(page, limit, total);
-  
+
   successResponse(res, reviews, undefined, 200, pagination);
 });

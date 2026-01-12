@@ -15,6 +15,7 @@ import recommendationRoutes from './recommendationRoutes';
 import chatbotRoutes from './chatbotRoutes';
 import notificationRoutes from './notificationRoutes';
 import themeRoutes from './themeRoutes';
+import mediaLibraryRoutes from './mediaLibraryRoutes';
 
 const router = Router();
 
@@ -44,5 +45,6 @@ router.use('/recommendations', recommendationRoutes);
 router.use('/chat', chatbotRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/themes', themeRoutes);
+router.use('/admin/media-library', mediaLibraryRoutes);
 
 export default router;

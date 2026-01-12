@@ -110,7 +110,7 @@ const FlashSaleList: React.FC = () => {
 
       <div className="container mx-auto px-4">
         {activeSales.map((sale) => (
-          <div key={sale._id} className="mb-16">
+          <div key={sale.id} className="mb-16">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 border-b border-gray-200 pb-4">
               <div>
                 <div className="flex items-center gap-3 mb-2">
@@ -144,7 +144,7 @@ const FlashSaleList: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {sale.products.slice(0, 4).map((item) => (
-                <div key={item.productId._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full border border-gray-100">
+                <div key={item.productId.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full border border-gray-100">
                   <div className="relative aspect-square overflow-hidden group">
                     <img
                       src={item.productId.images[0] || '/placeholder.jpg'}
@@ -188,8 +188,8 @@ const FlashSaleList: React.FC = () => {
                       {sale.status === 'active' && (
                         <div className="mb-3">
                           <StockIndicator
-                            saleId={sale._id}
-                            productId={item.productId._id}
+                            saleId={sale.id}
+                            productId={item.productId.id}
                             initialStock={item.stockLimit - item.soldCount}
                             totalStock={item.stockLimit}
                           />

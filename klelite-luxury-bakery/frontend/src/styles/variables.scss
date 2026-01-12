@@ -385,8 +385,8 @@ $product-card-radius: $radius-lg;
 
   // Text colors
   --color-text: #{$gray-900};
-  --color-text-secondary: #{$gray-600};
-  --color-text-muted: #{$gray-500};
+  --color-text-secondary: #{$gray-700};    // Changed: #616161 (7.0:1 contrast - WCAG AAA)
+  --color-text-muted: #{$gray-600};        // Changed: #757575 (4.6:1 contrast - WCAG AA)
   --color-text-inverse: #{$white};
   --color-text-rgb: 255, 255, 255; /* RGB for $white */
 

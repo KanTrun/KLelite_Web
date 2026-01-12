@@ -8,7 +8,7 @@
 // Main Page Container
 // ============================================
 .productDetailPage {
-  background: $dark-primary;
+  background: var(--color-bg);
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
@@ -103,7 +103,7 @@
     }
 
     p {
-      color: rgba($light-text, 0.5);
+      color: var(--color-text-muted);
       font-family: $font-accent;
       font-size: 0.9rem;
       letter-spacing: 3px;
@@ -132,13 +132,13 @@
   h2 {
     font-family: $font-heading;
     font-size: 2.5rem;
-    color: $light-text;
+    color: var(--color-text);
     margin-bottom: 1rem;
     font-weight: 400;
   }
 
   p {
-    color: rgba($light-text, 0.55);
+    color: var(--color-text-muted);
     margin-bottom: 2.5rem;
     font-size: 1.05rem;
   }
@@ -181,7 +181,7 @@
   font-size: 0.875rem;
 
   a {
-    color: rgba($light-text, 0.45);
+    color: var(--color-text-muted);
     text-decoration: none;
     transition: color 0.3s ease;
     font-family: $font-accent;
@@ -261,7 +261,7 @@
 
 .imageFrame {
   position: relative;
-  background: rgba($light-text, 0.02);
+  background: var(--color-surface);
   border-radius: $radius-2xl;
   overflow: hidden;
   border: 1px solid rgba($gold-primary, 0.1);
@@ -336,13 +336,13 @@
 
 .discountBadge {
   background: linear-gradient(135deg, #dc3545, #c82333);
-  color: $light-text;
+  color: var(--color-text);
   box-shadow: 0 6px 20px rgba(220, 53, 69, 0.45);
 }
 
 .newBadge {
   background: linear-gradient(135deg, #28a745, #20923d);
-  color: $light-text;
+  color: var(--color-text);
   box-shadow: 0 6px 20px rgba(40, 167, 69, 0.45);
 }
 
@@ -367,7 +367,7 @@
   background: rgba($dark-primary, 0.88);
   backdrop-filter: blur(15px);
   border: 1px solid rgba($gold-primary, 0.2);
-  color: rgba($light-text, 0.75);
+  color: var(--color-text-secondary);
   padding: 0.6rem 1.25rem;
   border-radius: $radius-md;
   font-size: 0.75rem;
@@ -404,7 +404,7 @@
   border: 2px solid transparent;
   cursor: pointer;
   transition: all 0.4s ease;
-  background: rgba($light-text, 0.02);
+  background: var(--color-surface);
 
   img {
     width: 100%;
@@ -442,7 +442,7 @@
 // Info Section - World-Class Design
 // ============================================
 .infoSection {
-  background: rgba($light-text, 0.015);
+  background: var(--color-surface);
   border: 1px solid rgba($gold-primary, 0.08);
   border-radius: $radius-2xl;
   padding: $spacing-3xl;
@@ -489,7 +489,7 @@
   font-family: $font-heading;
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 400;
-  color: $light-text;
+  color: var(--color-text);
   line-height: 1.15;
   margin-bottom: $spacing-lg;
   letter-spacing: -0.02em;
@@ -526,7 +526,7 @@
     svg {
       width: 20px;
       height: 20px;
-      color: rgba($light-text, 0.15);
+      color: var(--color-text-muted);
       stroke-width: 1.5;
 
       &.filled {
@@ -539,12 +539,12 @@
 
   .ratingValue {
     font-weight: 700;
-    color: $light-text;
+    color: var(--color-text);
     font-size: 1.05rem;
   }
 
   .reviewCount {
-    color: rgba($light-text, 0.45);
+    color: var(--color-text-muted);
     font-size: 0.9rem;
   }
 
@@ -554,7 +554,7 @@
   }
 
   .soldCount {
-    color: rgba($light-text, 0.35);
+    color: var(--color-text-muted);
     font-size: 0.9rem;
   }
 }
@@ -581,9 +581,9 @@
 
   .originalPrice {
     font-size: 1.35rem;
-    color: rgba($light-text, 0.35);
+    color: var(--color-text-muted);
     text-decoration: line-through;
-    text-decoration-color: rgba($light-text, 0.5);
+    text-decoration-color: var(--color-text-muted);
   }
 
   .savingText {
@@ -604,7 +604,7 @@
 .shortDescription {
   font-family: $font-accent;
   font-size: 1.05rem;
-  color: rgba($light-text, 0.65);
+  color: var(--color-text-muted);
   line-height: 2;
   margin-bottom: $spacing-xl;
   position: relative;
@@ -644,7 +644,7 @@
   span:first-child {
     font-family: $font-accent;
     font-weight: 600;
-    color: $light-text;
+    color: var(--color-text);
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 1.5px;
@@ -661,7 +661,7 @@
     align-items: center;
     gap: 0.6rem;
     font-size: 0.85rem;
-    color: rgba($light-text, 0.5);
+    color: var(--color-text-muted);
 
     .inStock {
       width: 10px;
@@ -698,7 +698,7 @@
   flex-direction: column;
   align-items: center;
   padding: 1.25rem 1.75rem;
-  background: rgba($light-text, 0.02);
+  background: var(--color-surface);
   border: 1.5px solid rgba($gold-primary, 0.12);
   border-radius: $radius-lg;
   cursor: pointer;
@@ -721,7 +721,7 @@
 
   .sizeName {
     font-weight: 600;
-    color: $light-text;
+    color: var(--color-text);
     font-size: 1rem;
     margin-bottom: 0.35rem;
   }
@@ -737,7 +737,7 @@
 .quantitySelector {
   display: inline-flex;
   align-items: center;
-  background: rgba($light-text, 0.02);
+  background: var(--color-surface);
   border: 1.5px solid rgba($gold-primary, 0.12);
   border-radius: $radius-lg;
   padding: 0.35rem;
@@ -752,7 +752,7 @@
     border: none;
     border-radius: $radius-md;
     cursor: pointer;
-    color: rgba($light-text, 0.55);
+    color: var(--color-text-muted);
     transition: all 0.3s ease;
 
     &:hover:not(:disabled) {
@@ -776,7 +776,7 @@
     text-align: center;
     font-size: 1.35rem;
     font-weight: 600;
-    color: $light-text;
+    color: var(--color-text);
     font-family: $font-heading;
   }
 }
@@ -816,9 +816,9 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(
-      90deg, 
-      transparent, 
-      rgba($light-text, 0.35), 
+      90deg,
+      transparent,
+      var(--color-text-muted),
       transparent
     );
     transition: left 0.6s ease;
@@ -857,7 +857,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba($light-text, 0.02);
+  background: var(--color-surface);
   border: 1.5px solid rgba($gold-primary, 0.15);
   border-radius: $radius-lg;
   cursor: pointer;
@@ -866,7 +866,7 @@
   svg {
     width: 24px;
     height: 24px;
-    color: rgba($light-text, 0.55);
+    color: var(--color-text-muted);
     transition: all 0.3s ease;
   }
 
@@ -917,7 +917,7 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   padding: $spacing-xl;
-  background: rgba($light-text, 0.015);
+  background: var(--color-surface);
   border: 1px solid rgba($gold-primary, 0.08);
   border-radius: $radius-xl;
   margin-bottom: $spacing-xl;
@@ -964,13 +964,13 @@
     strong {
       font-size: 0.9rem;
       font-weight: 600;
-      color: $light-text;
+      color: var(--color-text);
       margin-bottom: 0.2rem;
     }
 
     span {
       font-size: 0.75rem;
-      color: rgba($light-text, 0.45);
+      color: var(--color-text-muted);
     }
   }
 }
@@ -983,11 +983,11 @@
   padding-top: $spacing-xl;
   border-top: 1px solid rgba($gold-primary, 0.08);
   font-size: 0.85rem;
-  color: rgba($light-text, 0.45);
+  color: var(--color-text-muted);
 
   span {
     strong {
-      color: $light-text;
+      color: var(--color-text);
       font-weight: 500;
     }
 
@@ -1010,7 +1010,7 @@
 // ============================================
 .tabsSection {
   margin-top: $spacing-4xl;
-  background: rgba($light-text, 0.015);
+  background: var(--color-surface);
   border: 1px solid rgba($gold-primary, 0.08);
   border-radius: $radius-2xl;
   overflow: hidden;
@@ -1020,7 +1020,7 @@
 
 .tabHeaders {
   display: flex;
-  background: rgba($light-text, 0.015);
+  background: var(--color-surface);
   border-bottom: 1px solid rgba($gold-primary, 0.08);
 
   @media (max-width: 576px) {
@@ -1036,7 +1036,7 @@
   font-family: $font-accent;
   font-size: 0.9rem;
   font-weight: 500;
-  color: rgba($light-text, 0.45);
+  color: var(--color-text-muted);
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
@@ -1061,7 +1061,7 @@
   }
 
   &:hover {
-    color: $light-text;
+    color: var(--color-text);
     background: rgba($gold-primary, 0.02);
   }
 
@@ -1088,12 +1088,12 @@
 .descriptionTab {
   .descriptionContent {
     font-size: 1.05rem;
-    color: rgba($light-text, 0.7);
+    color: var(--color-text-secondary);
     line-height: 2;
 
     h2, h3, h4 {
       font-family: $font-heading;
-      color: $light-text;
+      color: var(--color-text);
       margin: 2rem 0 1.25rem;
       font-weight: 400;
     }
@@ -1120,7 +1120,7 @@
     }
     
     strong {
-      color: $light-text;
+      color: var(--color-text);
       font-weight: 600;
     }
   }
@@ -1140,7 +1140,7 @@
     h4 {
       font-family: $font-heading;
       font-size: 1.35rem;
-      color: $light-text;
+      color: var(--color-text);
       margin-bottom: 1.25rem;
       font-weight: 400;
     }
@@ -1158,11 +1158,11 @@
       align-items: center;
       gap: 0.85rem;
       padding: 1rem 1.25rem;
-      background: rgba($light-text, 0.02);
+      background: var(--color-surface);
       border: 1px solid rgba($gold-primary, 0.08);
       border-radius: $radius-lg;
       font-size: 0.95rem;
-      color: rgba($light-text, 0.65);
+      color: var(--color-text-muted);
       transition: all 0.3s ease;
 
       &:hover {
@@ -1183,7 +1183,7 @@
     background: rgba(#dc3545, 0.08);
     border: 1px solid rgba(#dc3545, 0.15);
     border-radius: $radius-lg;
-    color: rgba($light-text, 0.7);
+    color: var(--color-text-secondary);
     font-size: 0.95rem;
     line-height: 1.7;
 
@@ -1224,7 +1224,7 @@
 
     .nutritionLabel {
       font-size: 0.75rem;
-      color: rgba($light-text, 0.45);
+      color: var(--color-text-muted);
       text-transform: uppercase;
       letter-spacing: 1px;
     }
@@ -1234,7 +1234,7 @@
 .emptyContent {
   text-align: center;
   padding: 4rem;
-  color: rgba($light-text, 0.35);
+  color: var(--color-text-muted);
   font-style: italic;
 }
 
@@ -1264,7 +1264,7 @@
 
   // Review Form
   .reviewForm {
-    background: rgba($light-text, 0.02);
+    background: var(--color-surface);
     border: 1px solid rgba($gold-primary, 0.15);
     border-radius: $radius-xl;
     padding: $spacing-2xl;
@@ -1284,7 +1284,7 @@
 
       label {
         display: block;
-        color: rgba($light-text, 0.7);
+        color: var(--color-text-secondary);
         font-size: 0.9rem;
         margin-bottom: 0.75rem;
       }
@@ -1304,7 +1304,7 @@
           svg {
             width: 32px;
             height: 32px;
-            color: rgba($light-text, 0.2);
+            color: var(--color-text-muted);
             transition: all 0.2s ease;
           }
 
@@ -1330,7 +1330,7 @@
 
       label {
         display: block;
-        color: rgba($light-text, 0.7);
+        color: var(--color-text-secondary);
         font-size: 0.9rem;
         margin-bottom: 0.75rem;
       }
@@ -1341,7 +1341,7 @@
         border: 1px solid rgba($gold-primary, 0.15);
         border-radius: $radius-lg;
         padding: 1rem 1.25rem;
-        color: $light-text;
+        color: var(--color-text);
         font-size: 1rem;
         font-family: inherit;
         resize: vertical;
@@ -1349,7 +1349,7 @@
         transition: all 0.3s ease;
 
         &::placeholder {
-          color: rgba($light-text, 0.35);
+          color: var(--color-text-muted);
         }
 
         &:focus {
@@ -1363,7 +1363,7 @@
         display: block;
         text-align: right;
         font-size: 0.8rem;
-        color: rgba($light-text, 0.4);
+        color: var(--color-text-muted);
         margin-top: 0.5rem;
       }
     }
@@ -1386,16 +1386,16 @@
       .cancelBtn {
         padding: 0.75rem 1.5rem;
         background: transparent;
-        border: 1px solid rgba($light-text, 0.2);
+        border: 1px solid var(--color-border);
         border-radius: $radius-full;
-        color: rgba($light-text, 0.7);
+        color: var(--color-text-secondary);
         font-weight: 500;
         cursor: pointer;
         transition: all 0.3s ease;
 
         &:hover {
-          border-color: rgba($light-text, 0.4);
-          color: $light-text;
+          border-color: var(--color-text-muted);
+          color: var(--color-text);
         }
       }
 
@@ -1444,7 +1444,7 @@
     text-align: center;
 
     p {
-      color: rgba($light-text, 0.7);
+      color: var(--color-text-secondary);
       font-size: 0.95rem;
       margin: 0;
 
@@ -1476,7 +1476,7 @@
     }
 
     p {
-      color: rgba($light-text, 0.5);
+      color: var(--color-text-muted);
     }
   }
 
@@ -1485,7 +1485,7 @@
     align-items: center;
     gap: 4rem;
     padding: $spacing-2xl;
-    background: rgba($light-text, 0.015);
+    background: var(--color-surface);
     border: 1px solid rgba($gold-primary, 0.08);
     border-radius: $radius-xl;
     margin-bottom: $spacing-2xl;
@@ -1504,7 +1504,7 @@
       font-family: $font-heading;
       font-size: 5rem;
       font-weight: 500;
-      color: $light-text;
+      color: var(--color-text);
       line-height: 1;
       margin-bottom: 0.75rem;
       text-shadow: 0 0 30px rgba($gold-primary, 0.2);
@@ -1519,7 +1519,7 @@
       svg {
         width: 22px;
         height: 22px;
-        color: rgba($light-text, 0.15);
+        color: var(--color-text-muted);
 
         &.filled {
           color: $gold-primary;
@@ -1529,7 +1529,7 @@
     }
 
     .totalReviews {
-      color: rgba($light-text, 0.45);
+      color: var(--color-text-muted);
       font-size: 0.9rem;
     }
   }
@@ -1542,7 +1542,7 @@
 
   .reviewCard {
     padding: $spacing-xl;
-    background: rgba($light-text, 0.015);
+    background: var(--color-surface);
     border: 1px solid rgba($gold-primary, 0.08);
     border-radius: $radius-xl;
     transition: all 0.3s ease;
@@ -1587,13 +1587,13 @@
       strong {
         display: block;
         font-size: 1.05rem;
-        color: $light-text;
+        color: var(--color-text);
         margin-bottom: 0.35rem;
       }
 
       .reviewDate {
         font-size: 0.85rem;
-        color: rgba($light-text, 0.35);
+        color: var(--color-text-muted);
       }
     }
 
@@ -1604,7 +1604,7 @@
       svg {
         width: 17px;
         height: 17px;
-        color: rgba($light-text, 0.15);
+        color: var(--color-text-muted);
 
         &.filled {
           color: $gold-primary;
@@ -1616,7 +1616,7 @@
 
   .reviewComment {
     font-size: 1rem;
-    color: rgba($light-text, 0.65);
+    color: var(--color-text-muted);
     line-height: 1.85;
   }
 
@@ -1633,13 +1633,13 @@
     h4 {
       font-family: $font-heading;
       font-size: 1.75rem;
-      color: $light-text;
+      color: var(--color-text);
       margin-bottom: 0.75rem;
       font-weight: 400;
     }
 
     p {
-      color: rgba($light-text, 0.45);
+      color: var(--color-text-muted);
       margin-bottom: $spacing-xl;
       font-size: 1rem;
     }

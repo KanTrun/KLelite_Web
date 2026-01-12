@@ -28,7 +28,7 @@ router.get('/current', getPublicConfig);
 
 // Protected routes (Admin only)
 router.use(protect);
-router.use(authorize('admin'));
+router.use(authorize('ADMIN'));
 
 router.get('/', getAllConfigs);
 router.post('/', validate(themeValidation), createConfig);

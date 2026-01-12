@@ -2,7 +2,7 @@ import api from './api';
 import type { ApiResponse } from '@/types';
 
 export interface Voucher {
-  _id: string;
+  id: string;
   code: string;
   description: string;
   type: 'percentage' | 'fixed';

@@ -48,10 +48,16 @@ export const commonValidations = {
       .withMessage('Thứ tự sắp xếp phải là asc hoặc desc'),
   ],
 
-  // MongoDB ObjectId
-  objectId: (field: string, location: 'param' | 'body' | 'query' = 'param') => {
+  // UUID validation (for Prisma)
+  uuid: (field: string, location: 'param' | 'body' | 'query' = 'param') => {
     const validator = location === 'param' ? param(field) : location === 'body' ? body(field) : query(field);
-    return validator.isMongoId().withMessage(`${field} không hợp lệ`);
+    return validator.isUUID().withMessage(`${field} không hợp lệ`);
+  },
+
+  // Integer ID validation (for MySQL auto-increment)
+  id: (field: string, location: 'param' | 'body' | 'query' = 'param') => {
+    const validator = location === 'param' ? param(field) : location === 'body' ? body(field) : query(field);
+    return validator.isInt({ min: 1 }).withMessage(`${field} không hợp lệ`);
   },
 
   // Email

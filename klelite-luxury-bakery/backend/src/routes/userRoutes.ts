@@ -67,9 +67,9 @@ router.post('/wishlist/:productId', addToWishlist);
 router.delete('/wishlist/:productId', removeFromWishlist);
 
 // Admin routes
-router.get('/', authorize('admin'), getUsers);
-router.get('/:id', authorize('admin'), getUserById);
-router.put('/:id', authorize('admin'), updateUser);
-router.delete('/:id', authorize('admin'), deleteUser);
+router.get('/', authorize('ADMIN'), getUsers);
+router.get('/:id', authorize('ADMIN'), getUserById);
+router.put('/:id', authorize('ADMIN'), updateUser);
+router.delete('/:id', authorize('ADMIN'), deleteUser);
 
 export default router;

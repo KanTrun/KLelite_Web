@@ -51,7 +51,12 @@ const App: React.FC = () => {
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <Provider store={store}>
         <ThemeProvider>
-          <BrowserRouter>
+          <BrowserRouter
+            future={{
+              v7_startTransition: true,
+              v7_relativeSplatPath: true,
+            }}
+          >
             <AppLayout>
               <AppRoutes />
             </AppLayout>

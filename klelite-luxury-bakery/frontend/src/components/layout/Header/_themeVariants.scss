@@ -90,5 +90,43 @@
 
 // Valentine Theme
 .valentine {
-    // Add logic later
+  &.header {
+    background: color-mix(in srgb, #c2185b, transparent 10%);
+    border-bottom-color: rgba(255, 182, 193, 0.3);
+
+    &.scrolled {
+      background: color-mix(in srgb, #ad1457, transparent 2%);
+      box-shadow: 0 4px 12px rgba(173, 20, 87, 0.3);
+    }
+  }
+
+  .navLink {
+    color: rgba(255, 255, 255, 0.95);
+
+    &:hover, &.active {
+      color: #ffb6c1; // Light pink text
+      &::after {
+        background: #ffb6c1;
+      }
+    }
+  }
+
+  .logoText {
+    background: linear-gradient(to right, #ffffff, #ffb6c1); // White to pink logo
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .logoSubtext {
+    color: rgba(255, 182, 193, 0.9);
+  }
+
+  .iconButton {
+    color: rgba(255, 255, 255, 0.95);
+
+    &:hover {
+      background: rgba(255, 182, 193, 0.2);
+      color: #ffb6c1;
+    }
+  }
 }

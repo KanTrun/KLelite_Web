@@ -26,9 +26,9 @@ router.get('/:slug', getCategory);
 router.get('/id/:id', getCategoryById);
 
 // Admin routes
-router.get('/admin/all', protect, authorize('admin'), getAllCategories);
-router.post('/', protect, authorize('admin'), validate(createCategoryValidation), createCategory);
-router.put('/:id', protect, authorize('admin'), updateCategory);
-router.delete('/:id', protect, authorize('admin'), deleteCategory);
+router.get('/admin/all', protect, authorize('ADMIN'), getAllCategories);
+router.post('/', protect, authorize('ADMIN'), validate(createCategoryValidation), createCategory);
+router.put('/:id', protect, authorize('ADMIN'), updateCategory);
+router.delete('/:id', protect, authorize('ADMIN'), deleteCategory);
 
 export default router;

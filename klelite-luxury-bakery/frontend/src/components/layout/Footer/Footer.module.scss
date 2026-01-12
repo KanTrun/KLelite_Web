@@ -5,8 +5,12 @@
 // ============================================
 
 .footer {
-  background: linear-gradient(180deg, $dark-primary 0%, #050508 100%);
-  color: $light-text;
+  background: linear-gradient(
+    180deg,
+    var(--color-bg-secondary) 0%,
+    var(--color-bg-tertiary) 100%
+  );
+  color: var(--color-text);
   padding-top: $spacing-3xl;
   position: relative;
   overflow: hidden;
@@ -123,7 +127,7 @@
 .description {
   font-family: $font-body;
   font-size: $text-sm;
-  color: rgba($light-text, 0.7);
+  color: var(--color-text-secondary);
   line-height: 1.8;
   margin-bottom: $spacing-lg;
   max-width: 280px;
@@ -142,10 +146,10 @@
     justify-content: center;
     width: 44px;
     height: 44px;
-    background: rgba($light-text, 0.05);
-    border: 1px solid rgba($light-text, 0.1);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: $radius-full;
-    color: $light-text;
+    color: var(--color-text);
     transition: all $transition-fast $ease-out;
     position: relative;
     overflow: hidden;
@@ -197,7 +201,7 @@
     font-family: $font-heading;
     font-size: $text-lg;
     font-weight: $font-semibold;
-    color: $light-text;
+    color: var(--color-text);
     margin-bottom: $spacing-lg;
     position: relative;
     padding-bottom: $spacing-sm;
@@ -232,7 +236,7 @@
   a {
     font-family: $font-body;
     font-size: $text-sm;
-    color: rgba($light-text, 0.6);
+    color: var(--color-text-muted);
     text-decoration: none;
     display: inline-block;
     padding: $spacing-2xs 0;
@@ -284,7 +288,7 @@
     a {
       font-family: $font-body;
       font-size: $text-sm;
-      color: rgba($light-text, 0.7);
+      color: var(--color-text-secondary);
       line-height: 1.6;
       text-decoration: none;
       transition: color $transition-micro $ease-out;
@@ -308,13 +312,13 @@
     font-family: $font-heading;
     font-size: $text-lg;
     font-weight: $font-semibold;
-    color: $light-text;
+    color: var(--color-text);
     margin-bottom: $spacing-sm;
   }
   
   p {
     font-size: $text-sm;
-    color: rgba($light-text, 0.6);
+    color: var(--color-text-muted);
     margin-bottom: $spacing-md;
   }
 }
@@ -329,20 +333,20 @@
   padding: $spacing-sm $spacing-md;
   font-family: $font-body;
   font-size: $text-sm;
-  color: $light-text;
-  background: rgba($light-text, 0.05);
-  border: 1px solid rgba($light-text, 0.15);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: $radius-md;
   outline: none;
   transition: all $transition-micro $ease-out;
   
   &::placeholder {
-    color: rgba($light-text, 0.4);
+    color: var(--color-text-muted);
   }
   
   &:focus {
     border-color: $gold-primary;
-    background: rgba($light-text, 0.08);
+    background: var(--color-surface);
     box-shadow: 0 0 0 3px rgba($gold-primary, 0.15);
   }
 }
@@ -373,7 +377,7 @@
 // Footer Bottom Bar
 // ============================================
 .bottom {
-  border-top: 1px solid rgba($light-text, 0.08);
+  border-top: 1px solid var(--color-border);
   padding: $spacing-lg 0;
   display: flex;
   flex-direction: column;
@@ -388,7 +392,7 @@
   p {
     font-family: $font-body;
     font-size: $text-xs;
-    color: rgba($light-text, 0.5);
+    color: var(--color-text-muted);
     margin: 0;
     text-align: center;
     
@@ -404,7 +408,7 @@
   
   a {
     font-size: $text-xs;
-    color: rgba($light-text, 0.5);
+    color: var(--color-text-muted);
     text-decoration: none;
     transition: color $transition-micro $ease-out;
     

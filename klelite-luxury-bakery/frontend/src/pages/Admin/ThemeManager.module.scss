@@ -743,6 +743,48 @@ $transition-slow: 300ms ease;
 // UPLOAD ZONE
 // ============================================
 
+.bannerTabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  background: $gray-100;
+  padding: 4px;
+  border-radius: $border-radius;
+
+  .tabBtn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: transparent;
+    border: none;
+    border-radius: calc(#{$border-radius} - 2px);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: $gray-600;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    &:hover {
+      color: $gray-900;
+      background: rgba($gray-900, 0.05);
+    }
+
+    &.active {
+      background: white;
+      color: $gray-900;
+      box-shadow: $shadow-sm;
+    }
+  }
+}
+
 .uploadZone {
   border: 2px dashed $gray-300;
   border-radius: $border-radius-lg;

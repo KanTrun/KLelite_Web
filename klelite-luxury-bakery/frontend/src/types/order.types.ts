@@ -3,7 +3,7 @@ import type { Address, User } from './user.types';
 
 // Order Types
 export interface Order {
-  _id: string;
+  id: string;
   orderNumber: string;
   user: User | string;
   items: OrderItem[];
@@ -40,7 +40,7 @@ export interface Order {
 }
 
 export interface OrderItem {
-  _id?: string;
+  id?: string;
   product: Product | string;
   name: string;
   price: number;
@@ -69,7 +69,7 @@ export interface CreateOrderData {
     product: string;
     quantity: number;
   }[];
-  shippingAddress: Omit<Address, '_id'>;
+  shippingAddress: Omit<Address, 'id'>;
   paymentMethod: PaymentMethod;
   notes?: string;
   voucher?: string;

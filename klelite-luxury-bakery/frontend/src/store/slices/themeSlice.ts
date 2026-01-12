@@ -131,11 +131,11 @@ const themeSlice = createSlice({
     // updateTheme
     builder
       .addCase(updateTheme.fulfilled, (state, action: PayloadAction<IThemeConfig>) => {
-        const index = state.themes.findIndex((t) => t._id === action.payload._id);
+        const index = state.themes.findIndex((t) => t.id === action.payload.id);
         if (index !== -1) {
           state.themes[index] = action.payload;
         }
-        if (state.currentTheme?._id === action.payload._id && state.currentTheme.isActive) {
+        if (state.currentTheme?.id === action.payload.id && state.currentTheme.isActive) {
           state.currentTheme = action.payload;
         }
       });
@@ -146,14 +146,14 @@ const themeSlice = createSlice({
         state.currentTheme = action.payload;
         state.themes = state.themes.map((t) => ({
           ...t,
-          isActive: t._id === action.payload._id,
+          isActive: t.id === action.payload.id,
         }));
       });
 
     // deleteTheme
     builder
       .addCase(deleteTheme.fulfilled, (state, action: PayloadAction<string>) => {
-        state.themes = state.themes.filter((t) => t._id !== action.payload);
+        state.themes = state.themes.filter((t) => t.id !== action.payload);
       });
   },
 });

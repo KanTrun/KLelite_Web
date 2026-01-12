@@ -86,7 +86,7 @@ export default defineConfig({
         // Silence deprecation warnings
         silenceDeprecations: ['legacy-js-api', 'import', 'slash-div'],
         // Auto-inject variables and mixins into every SCSS file using absolute path
-        additionalData: `@import "${path.resolve(__dirname, './src/styles/variables').replace(/\\/g, '/')}"; @import "${path.resolve(__dirname, './src/styles/mixins').replace(/\\/g, '/')}";`,
+        additionalData: `@use "sass:color"; @import "${path.resolve(__dirname, './src/styles/variables').replace(/\\/g, '/')}"; @import "${path.resolve(__dirname, './src/styles/mixins').replace(/\\/g, '/')}";`,
       },
     },
   },

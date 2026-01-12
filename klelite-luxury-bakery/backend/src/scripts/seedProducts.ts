@@ -1,18 +1,18 @@
-import mongoose from 'mongoose';
-import { config } from '../config';
-import Category from '../models/Category';
-import Product from '../models/Product';
+import slugify from 'slugify';
+import prisma from '../lib/prisma';
+
+const generateSlug = (name: string) =>
+  slugify(name, { lower: true, strict: true, locale: 'vi' });
 
 const seedProducts = async () => {
   try {
-    await mongoose.connect(config.mongodbUri);
-    console.log('Connected to MongoDB');
+    console.log('Connecting to database...');
 
     // Get categories
-    const categories = await Category.find();
-    const categoryMap = new Map(categories.map((cat) => [cat.slug, cat._id]));
+    const categories = await prisma.category.findMany();
+    const categoryMap = new Map(categories.map((cat) => [cat.slug, cat.id]));
 
-    const products = [
+    const productsData = [
       // Bánh Sinh Nhật
       {
         name: 'Royal Chocolate Dream',
@@ -20,7 +20,7 @@ const seedProducts = async () => {
         shortDescription: 'Bánh chocolate cao cấp với ganache Valrhona',
         price: 1200000,
         comparePrice: 1500000,
-        category: categoryMap.get('banh-sinh-nhat'),
+        categoryId: categoryMap.get('banh-sinh-nhat'),
         images: [
           { url: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800', publicId: 'chocolate-cake-1', isMain: true },
         ],
@@ -38,8 +38,8 @@ const seedProducts = async () => {
         numReviews: 128,
         isFeatured: true,
         isAvailable: true,
-        isNew: false,
-        preparationTime: '24 giờ',
+        isNewProduct: false,
+        preparationTime: 24,
         shelfLife: '3 ngày (bảo quản lạnh)',
         storageInstructions: 'Bảo quản trong tủ lạnh 2-4°C',
         customizable: true,
@@ -50,7 +50,7 @@ const seedProducts = async () => {
         description: 'Bánh vanilla mềm mịn với lớp kem bơ nhẹ nhàng, được trang trí với các loại berry tươi theo mùa và hoa ăn được.',
         shortDescription: 'Bánh vanilla với berry tươi theo mùa',
         price: 980000,
-        category: categoryMap.get('banh-sinh-nhat'),
+        categoryId: categoryMap.get('banh-sinh-nhat'),
         images: [
           { url: 'https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=800', publicId: 'vanilla-cake-1', isMain: true },
         ],
@@ -68,8 +68,8 @@ const seedProducts = async () => {
         numReviews: 95,
         isFeatured: true,
         isAvailable: true,
-        isNew: true,
-        preparationTime: '24 giờ',
+        isNewProduct: true,
+        preparationTime: 24,
         shelfLife: '2 ngày (bảo quản lạnh)',
         storageInstructions: 'Bảo quản trong tủ lạnh 2-4°C',
         customizable: true,
@@ -82,7 +82,7 @@ const seedProducts = async () => {
         description: 'Croissant truyền thống với 81 lớp bơ Pháp Isigny, giòn xốp bên ngoài và mềm mịn bên trong.',
         shortDescription: 'Croissant 81 lớp bơ Isigny',
         price: 65000,
-        category: categoryMap.get('banh-ngot'),
+        categoryId: categoryMap.get('banh-ngot'),
         images: [
           { url: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=800', publicId: 'croissant-1', isMain: true },
         ],
@@ -95,8 +95,8 @@ const seedProducts = async () => {
         numReviews: 256,
         isFeatured: true,
         isAvailable: true,
-        isNew: false,
-        preparationTime: '2 giờ',
+        isNewProduct: false,
+        preparationTime: 2,
         shelfLife: '1 ngày',
         storageInstructions: 'Sử dụng trong ngày để đạt hương vị tốt nhất',
       },
@@ -105,7 +105,7 @@ const seedProducts = async () => {
         description: 'Bánh sừng bò chocolate với 2 thanh chocolate Valrhona bên trong, lớp vỏ giòn xốp.',
         shortDescription: 'Croissant với chocolate Valrhona',
         price: 75000,
-        category: categoryMap.get('banh-ngot'),
+        categoryId: categoryMap.get('banh-ngot'),
         images: [
           { url: 'https://images.unsplash.com/photo-1530610476181-d83430b64dcd?w=800', publicId: 'pain-chocolat-1', isMain: true },
         ],
@@ -118,14 +118,14 @@ const seedProducts = async () => {
         numReviews: 189,
         isFeatured: false,
         isAvailable: true,
-        isNew: false,
+        isNewProduct: false,
       },
       {
         name: 'Éclair Caramel Bơ Mặn',
         description: 'Éclair với lớp kem caramel bơ mặn Bretagne, phủ chocolate đen bóng.',
         shortDescription: 'Éclair caramel bơ mặn cao cấp',
         price: 85000,
-        category: categoryMap.get('banh-ngot'),
+        categoryId: categoryMap.get('banh-ngot'),
         images: [
           { url: 'https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=800', publicId: 'eclair-1', isMain: true },
         ],
@@ -138,14 +138,14 @@ const seedProducts = async () => {
         numReviews: 112,
         isFeatured: true,
         isAvailable: true,
-        isNew: true,
+        isNewProduct: true,
       },
       {
         name: 'Macaron Box 12',
         description: 'Hộp 12 macaron với các vị đặc trưng: Vanilla, Chocolate, Raspberry, Pistachio, Caramel, Lemon.',
         shortDescription: 'Hộp 12 macaron nhiều vị',
         price: 420000,
-        category: categoryMap.get('banh-ngot'),
+        categoryId: categoryMap.get('banh-ngot'),
         images: [
           { url: 'https://images.unsplash.com/photo-1569864358642-9d1684040f43?w=800', publicId: 'macaron-box-1', isMain: true },
         ],
@@ -158,7 +158,7 @@ const seedProducts = async () => {
         numReviews: 78,
         isFeatured: true,
         isAvailable: true,
-        isNew: false,
+        isNewProduct: false,
       },
 
       // Bánh Mì
@@ -167,7 +167,7 @@ const seedProducts = async () => {
         description: 'Bánh mì men tự nhiên truyền thống, lên men 48 giờ, vỏ giòn, ruột xốp với hương vị chua nhẹ đặc trưng.',
         shortDescription: 'Bánh mì sourdough lên men 48h',
         price: 95000,
-        category: categoryMap.get('banh-mi'),
+        categoryId: categoryMap.get('banh-mi'),
         images: [
           { url: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800', publicId: 'sourdough-1', isMain: true },
         ],
@@ -180,14 +180,14 @@ const seedProducts = async () => {
         numReviews: 145,
         isFeatured: false,
         isAvailable: true,
-        isNew: false,
+        isNewProduct: false,
       },
       {
         name: 'Baguette Tradition',
         description: 'Baguette truyền thống Pháp với vỏ giòn tan, ruột mềm với nhiều lỗ khí.',
         shortDescription: 'Baguette Pháp truyền thống',
         price: 45000,
-        category: categoryMap.get('banh-mi'),
+        categoryId: categoryMap.get('banh-mi'),
         images: [
           { url: 'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=800', publicId: 'baguette-1', isMain: true },
         ],
@@ -200,7 +200,7 @@ const seedProducts = async () => {
         numReviews: 203,
         isFeatured: false,
         isAvailable: true,
-        isNew: false,
+        isNewProduct: false,
       },
 
       // Chocolate
@@ -209,7 +209,7 @@ const seedProducts = async () => {
         description: 'Bộ sưu tập 16 viên truffle chocolate thủ công với các vị: Dark, Milk, Champagne, Matcha, Earl Grey.',
         shortDescription: 'Hộp 16 truffle chocolate cao cấp',
         price: 580000,
-        category: categoryMap.get('chocolate'),
+        categoryId: categoryMap.get('chocolate'),
         images: [
           { url: 'https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=800', publicId: 'truffle-1', isMain: true },
         ],
@@ -222,14 +222,14 @@ const seedProducts = async () => {
         numReviews: 42,
         isFeatured: true,
         isAvailable: true,
-        isNew: true,
+        isNewProduct: true,
       },
       {
         name: 'Bonbon Signature Box',
-        description: 'Hộp 9 bonbon chocolate với các vị đặc trưng của KL\'élite, được trang trí thủ công.',
+        description: 'Hộp 9 bonbon chocolate with các vị đặc trưng of KL\'élite, được trang trí thủ công.',
         shortDescription: 'Hộp 9 bonbon chocolate signature',
         price: 380000,
-        category: categoryMap.get('chocolate'),
+        categoryId: categoryMap.get('chocolate'),
         images: [
           { url: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=800', publicId: 'bonbon-1', isMain: true },
         ],
@@ -242,7 +242,7 @@ const seedProducts = async () => {
         numReviews: 67,
         isFeatured: true,
         isAvailable: true,
-        isNew: false,
+        isNewProduct: false,
       },
 
       // Quà Tặng
@@ -251,7 +251,7 @@ const seedProducts = async () => {
         description: 'Hộp quà tặng sang trọng bao gồm: 6 macaron, 6 truffle, 1 bánh nhỏ, được đóng gói trong hộp thiết kế cao cấp.',
         shortDescription: 'Hộp quà tặng cao cấp đầy đủ',
         price: 1280000,
-        category: categoryMap.get('qua-tang'),
+        categoryId: categoryMap.get('qua-tang'),
         images: [
           { url: 'https://images.unsplash.com/photo-1513135065346-a098a63a71ee?w=800', publicId: 'gift-box-1', isMain: true },
         ],
@@ -262,19 +262,38 @@ const seedProducts = async () => {
         numReviews: 35,
         isFeatured: true,
         isAvailable: true,
-        isNew: true,
+        isNewProduct: true,
       },
     ];
 
     // Clear existing products
-    await Product.deleteMany({});
+    await prisma.product.deleteMany({});
     console.log('Cleared existing products');
 
-    // Insert products
-    const createdProducts = await Product.insertMany(products);
-    console.log(`Created ${createdProducts.length} products`);
+    // Insert products one by one to handle relations (images and sizes)
+    for (const prodData of productsData) {
+      const { images, sizes, ...rest } = prodData;
+      await prisma.product.create({
+        data: {
+          ...rest,
+          slug: generateSlug(rest.name),
+          images: {
+            create: images,
+          },
+          ...(sizes && {
+            sizes: {
+              create: sizes,
+            },
+          }),
+        },
+      });
+    }
 
-    createdProducts.forEach((prod) => {
+    const createdCount = await prisma.product.count();
+    console.log(`Created ${createdCount} products`);
+
+    const allProducts = await prisma.product.findMany();
+    allProducts.forEach((prod) => {
       console.log(`  - ${prod.name} (${prod.sku})`);
     });
 

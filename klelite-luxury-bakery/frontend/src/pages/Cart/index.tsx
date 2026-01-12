@@ -166,7 +166,7 @@ const Cart: React.FC = () => {
             <AnimatePresence>
               {cart.items.map((item) => (
                 <motion.div
-                  key={item._id}
+                  key={item.id}
                   className={styles.cartItem}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -203,14 +203,14 @@ const Cart: React.FC = () => {
 
                   <div className={styles.itemQuantity}>
                     <button
-                      onClick={() => handleUpdateQuantity(item._id, item.quantity - 1)}
+                      onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
                       disabled={item.quantity <= 1 || isLoading}
                     >
                       <FiMinus />
                     </button>
                     <span>{item.quantity}</span>
                     <button
-                      onClick={() => handleUpdateQuantity(item._id, item.quantity + 1)}
+                      onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
                       disabled={isLoading}
                     >
                       <FiPlus />
@@ -223,7 +223,7 @@ const Cart: React.FC = () => {
 
                   <button
                     className={styles.removeBtn}
-                    onClick={() => handleRemoveItem(item._id)}
+                    onClick={() => handleRemoveItem(item.id)}
                     disabled={isLoading}
                     title="Xóa sản phẩm"
                   >
@@ -303,7 +303,7 @@ const Cart: React.FC = () => {
                         <div className={styles.voucherList}>
                           {availableVouchers.map((voucher) => (
                             <div 
-                              key={voucher._id} 
+                              key={voucher.id} 
                               className={styles.voucherItem}
                               onClick={() => handleSelectVoucher(voucher)}
                             >

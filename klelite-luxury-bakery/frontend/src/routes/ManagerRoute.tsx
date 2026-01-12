@@ -16,7 +16,7 @@ const ManagerRoute: React.FC<ManagerRouteProps> = ({ children }) => {
   }
 
   // Allow both manager and admin roles
-  if (user?.role !== 'manager' && user?.role !== 'admin') {
+  if (user?.role !== 'MANAGER' && user?.role !== 'ADMIN') {
     return <Navigate to="/" replace />;
   }
 

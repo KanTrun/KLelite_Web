@@ -97,7 +97,7 @@ const ProductList: React.FC = () => {
     if (!isAuthenticated) return;
     try {
       const wishlist = await userService.getWishlist();
-      setWishlistIds(wishlist.map(item => item.product._id));
+      setWishlistIds(wishlist.map(item => item.product.id));
     } catch (error) {
       console.error('Error fetching wishlist:', error);
     }
@@ -394,7 +394,7 @@ const ProductList: React.FC = () => {
                     </button>
                   </li>
                   {categoryList.map((category) => (
-                    <li key={category._id}>
+                    <li key={category.id}>
                       <button
                         className={categorySlug === category.slug ? styles.active : ''}
                         onClick={() => handleCategoryChange(category.slug)}
@@ -573,7 +573,7 @@ const ProductList: React.FC = () => {
                 <AnimatePresence mode="wait">
                   {productList.map((product, index) => (
                     <motion.article
-                      key={product._id}
+                      key={product.id}
                       className={styles.productCard}
                       variants={cardVariant}
                       layout
@@ -613,7 +613,7 @@ const ProductList: React.FC = () => {
                             className={styles.actionBtn}
                             onClick={(e) => {
                               e.preventDefault();
-                              handleAddToCart(product._id);
+                              handleAddToCart(product.id);
                             }}
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
@@ -622,12 +622,12 @@ const ProductList: React.FC = () => {
                             <FiShoppingCart />
                           </motion.button>
                           <motion.button
-                            className={`${styles.actionBtn} ${wishlistIds.includes(product._id) ? styles.wishlisted : ''}`}
-                            onClick={(e) => handleToggleWishlist(product._id, e)}
-                            disabled={addingToWishlist === product._id}
+                            className={`${styles.actionBtn} ${wishlistIds.includes(product.id) ? styles.wishlisted : ''}`}
+                            onClick={(e) => handleToggleWishlist(product.id, e)}
+                            disabled={addingToWishlist === product.id}
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
-                            title={wishlistIds.includes(product._id) ? 'Xóa khỏi yêu thích' : 'Thêm vào yêu thích'}
+                            title={wishlistIds.includes(product.id) ? 'Xóa khỏi yêu thích' : 'Thêm vào yêu thích'}
                           >
                             <FiHeart />
                           </motion.button>
@@ -665,7 +665,7 @@ const ProductList: React.FC = () => {
                               <FiStar
                                 key={i}
                                 className={
-                                  i < Math.floor(product.rating) ? styles.filled : ''
+                                  i < Math.floor(product.rating ? Number(product.rating) : 0) ? styles.filled : ''
                                 }
                               />
                             ))}
@@ -687,7 +687,7 @@ const ProductList: React.FC = () => {
                         {viewMode === 'list' && (
                           <motion.button
                             className={styles.addToCartBtn}
-                            onClick={() => handleAddToCart(product._id)}
+                            onClick={() => handleAddToCart(product.id)}
                             whileHover={buttonHover}
                             whileTap={buttonTap}
                           >
@@ -816,7 +816,7 @@ const ProductList: React.FC = () => {
                       </button>
                     </li>
                     {categoryList.map((category) => (
-                      <li key={category._id}>
+                      <li key={category.id}>
                         <button
                           className={categorySlug === category.slug ? styles.active : ''}
                           onClick={() => handleCategoryChange(category.slug)}

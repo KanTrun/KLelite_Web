@@ -1,5 +1,5 @@
 export interface INotification {
-  _id: string;
+  id: string;
   userId: string;
   type: 'order_status' | 'points_earned' | 'flash_sale' | 'promotion' | 'system';
   title: string;

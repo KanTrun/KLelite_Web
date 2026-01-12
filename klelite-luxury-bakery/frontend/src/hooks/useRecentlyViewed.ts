@@ -22,7 +22,7 @@ export const useRecentlyViewed = () => {
   const addToRecent = (product: Product) => {
     setRecentProducts(prev => {
       // Remove if exists (to move to front)
-      const filtered = prev.filter(p => p._id !== product._id);
+      const filtered = prev.filter(p => p.id !== product.id);
 
       // Add to front
       const updated = [product, ...filtered].slice(0, MAX_ITEMS);

@@ -96,7 +96,7 @@ const notificationSlice = createSlice({
       }
     },
     updateNotificationRead: (state, action: PayloadAction<string>) => {
-      const notification = state.items.find(n => n._id === action.payload);
+      const notification = state.items.find(n => n.id === action.payload);
       if (notification && !notification.read) {
         notification.read = true;
         notification.readAt = new Date().toISOString();
@@ -131,7 +131,7 @@ const notificationSlice = createSlice({
 
     // Mark as read
     builder.addCase(markAsRead.fulfilled, (state, action) => {
-      const notification = state.items.find(n => n._id === action.payload._id);
+      const notification = state.items.find(n => n.id === action.payload.id);
       if (notification && !notification.read) {
         notification.read = true;
         notification.readAt = action.payload.readAt;
@@ -152,7 +152,7 @@ const notificationSlice = createSlice({
 
     // Delete notification
     builder.addCase(deleteNotification.fulfilled, (state, action) => {
-      const index = state.items.findIndex(n => n._id === action.payload);
+      const index = state.items.findIndex(n => n.id === action.payload);
       if (index !== -1) {
         const wasUnread = !state.items[index].read;
         state.items.splice(index, 1);

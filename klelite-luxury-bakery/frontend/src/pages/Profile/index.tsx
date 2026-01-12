@@ -332,7 +332,7 @@ const Profile: React.FC = () => {
                 <div className={styles.addressList}>
                   {user.addresses && user.addresses.length > 0 ? (
                     user.addresses.map((address: Address, index: number) => (
-                      <div key={address._id || index} className={styles.addressCard}>
+                      <div key={address.id || index} className={styles.addressCard}>
                         {address.isDefault && (
                           <span className={styles.defaultBadge}>Mặc định</span>
                         )}
@@ -383,7 +383,7 @@ const Profile: React.FC = () => {
                 ) : userOrders.length > 0 ? (
                   <div className={styles.orderList}>
                     {userOrders.map((order) => (
-                      <div key={order._id} className={styles.orderCard}>
+                      <div key={order.id} className={styles.orderCard}>
                         <div className={styles.orderHeader}>
                           <span className={styles.orderNumber}>
                             <FiPackage /> {order.orderNumber}
@@ -454,7 +454,7 @@ const Profile: React.FC = () => {
                             <span>Tổng tiền:</span>
                             <strong>{formatCurrency(order.total)}</strong>
                           </div>
-                          <Link to={`/orders/${order._id}`} className={styles.viewOrderBtn}>
+                          <Link to={`/orders/${order.id}`} className={styles.viewOrderBtn}>
                             Xem chi tiết
                             <FiChevronRight />
                           </Link>
@@ -496,7 +496,7 @@ const Profile: React.FC = () => {
                 ) : availableVouchers.length > 0 ? (
                   <div className={styles.voucherGrid}>
                     {availableVouchers.map((voucher) => (
-                      <div key={voucher._id} className={styles.voucherCard}>
+                      <div key={voucher.id} className={styles.voucherCard}>
                         <div className={styles.voucherLeft}>
                           <div className={styles.voucherIcon}>
                             <FiPercent />

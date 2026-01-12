@@ -1,11 +1,12 @@
 // User Types
 export interface User {
-  _id: string;
+  id: string;
   email: string;
   firstName: string;
   lastName: string;
   phone?: string;
   role: UserRole;
+  isActive: boolean;
   isVerified: boolean;
   avatar?: string;
   addresses: Address[];
@@ -13,10 +14,10 @@ export interface User {
   updatedAt: string;
 }
 
-export type UserRole = 'customer' | 'admin';
+export type UserRole = 'USER' | 'ADMIN' | 'STAFF' | 'MANAGER';
 
 export interface Address {
-  _id: string;
+  id: string;
   fullName: string;
   phone: string;
   address: string;

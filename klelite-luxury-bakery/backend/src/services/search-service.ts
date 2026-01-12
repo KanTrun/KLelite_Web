@@ -1,55 +1,83 @@
-import Product, { IProduct } from '../models/Product';
+import prisma from '../lib/prisma';
+import { Product } from '@prisma/client';
 import { config } from '../config';
-import mongoose from 'mongoose';
 
 export interface SearchOptions {
   limit?: number;
-  category?: string;
+  categoryId?: number;
   minPrice?: number;
   maxPrice?: number;
 }
 
 export interface SearchResult {
-  hits: IProduct[];
+  hits: Product[];
   total: number;
   query: string;
   took: number;
 }
 
 /**
- * Search service supporting both MongoDB Atlas Search and fallback text search
+ * Search service using MySQL full-text search with Prisma
  */
 export class SearchService {
   /**
-   * Main search method - uses Atlas Search if enabled, fallback to text search
+   * Main search method - uses MySQL full-text search
    */
   async search(query: string, options: SearchOptions = {}): Promise<SearchResult> {
     const startTime = Date.now();
     const limit = options.limit || 10;
 
     try {
-      let results: IProduct[];
-      let total: number;
+      // Build WHERE clause for filters
+      const where: any = {
+        isAvailable: true,
+      };
 
-      if (config.search.useAtlasSearch) {
-        // Use MongoDB Atlas Search ($search aggregation)
-        const pipeline = this.buildAtlasSearchPipeline(query, options);
-        results = await Product.aggregate(pipeline);
-        total = results.length;
-      } else {
-        // Fallback to MongoDB text search
-        const textQuery = this.buildTextSearchQuery(query, options);
-        results = await Product.find(textQuery)
-          .populate('category', 'name slug')
-          .limit(limit)
-          .lean<IProduct[]>();
-        total = await Product.countDocuments(textQuery);
+      // Add category filter
+      if (options.categoryId) {
+        where.categoryId = options.categoryId;
       }
+
+      // Add price range filter
+      if (options.minPrice !== undefined || options.maxPrice !== undefined) {
+        where.price = {};
+        if (options.minPrice !== undefined) where.price.gte = options.minPrice;
+        if (options.maxPrice !== undefined) where.price.lte = options.maxPrice;
+      }
+
+      // Add text search filter - using OR conditions for name and description
+      if (query) {
+        where.OR = [
+          { name: { contains: query } },
+          { description: { contains: query } }
+        ];
+      }
+
+      // Execute search with pagination
+      const [results, total] = await Promise.all([
+        prisma.product.findMany({
+          where,
+          include: {
+            category: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+              },
+            },
+          },
+          take: limit,
+          orderBy: {
+            createdAt: 'desc',
+          },
+        }),
+        prisma.product.count({ where }),
+      ]);
 
       const took = Date.now() - startTime;
 
       return {
-        hits: results.slice(0, limit),
+        hits: results,
         total,
         query,
         took,
@@ -65,20 +93,23 @@ export class SearchService {
    */
   async suggest(query: string, limit: number = 5): Promise<string[]> {
     try {
-      if (config.search.useAtlasSearch) {
-        // Atlas Search autocomplete
-        const pipeline = this.buildAtlasSearchPipeline(query, { limit });
-        const results = await Product.aggregate(pipeline);
-        return results.map((p) => p.name).slice(0, limit);
-      } else {
-        // Text search fallback
-        const textQuery = this.buildTextSearchQuery(query, { limit });
-        const results = await Product.find(textQuery)
-          .select('name')
-          .limit(limit)
-          .lean();
-        return results.map((p) => p.name);
-      }
+      const results = await prisma.product.findMany({
+        where: {
+          isAvailable: true,
+          OR: [
+            { name: { contains: query } }
+          ],
+        },
+        select: {
+          name: true,
+        },
+        take: limit,
+        orderBy: {
+          name: 'asc',
+        },
+      });
+
+      return results.map((p) => p.name);
     } catch (error) {
       console.error('Suggest error:', error);
       return [];
@@ -86,116 +117,55 @@ export class SearchService {
   }
 
   /**
-   * Build MongoDB Atlas Search aggregation pipeline
+   * Search products by category
    */
-  private buildAtlasSearchPipeline(query: string, options: SearchOptions): any[] {
-    const pipeline: any[] = [
-      {
-        $search: {
-          index: config.search.indexName,
-          compound: {
-            should: [
-              {
-                // Autocomplete on name field
-                autocomplete: {
-                  query: query,
-                  path: 'name',
-                  fuzzy: {
-                    maxEdits: 2,
-                    prefixLength: 1,
-                  },
-                },
-              },
-              {
-                // Text search on name, description, tags
-                text: {
-                  query: query,
-                  path: ['name', 'description', 'tags'],
-                  fuzzy: {
-                    maxEdits: 2,
-                  },
-                },
-              },
-            ],
-          },
-        },
-      },
-      {
-        $addFields: {
-          score: { $meta: 'searchScore' },
-        },
-      },
-    ];
-
-    // Add filters
-    const filters: any[] = [];
-
-    if (options.category) {
-      filters.push({
-        equals: {
-          path: 'category',
-          value: new mongoose.Types.ObjectId(options.category),
-        },
-      });
-    }
-
-    if (options.minPrice !== undefined || options.maxPrice !== undefined) {
-      const rangeFilter: any = { path: 'price' };
-      if (options.minPrice !== undefined) rangeFilter.gte = options.minPrice;
-      if (options.maxPrice !== undefined) rangeFilter.lte = options.maxPrice;
-      filters.push({ range: rangeFilter });
-    }
-
-    if (filters.length > 0) {
-      pipeline[0].$search.compound.filter = filters;
-    }
-
-    // Lookup category
-    pipeline.push({
-      $lookup: {
-        from: 'categories',
-        localField: 'category',
-        foreignField: '_id',
-        as: 'category',
-      },
-    });
-
-    pipeline.push({
-      $unwind: {
-        path: '$category',
-        preserveNullAndEmptyArrays: true,
-      },
-    });
-
-    // Limit results
-    if (options.limit) {
-      pipeline.push({ $limit: options.limit });
-    }
-
-    return pipeline;
+  async searchByCategory(categoryId: number, options: SearchOptions = {}): Promise<SearchResult> {
+    return this.search('', { ...options, categoryId });
   }
 
   /**
-   * Build MongoDB text search query (fallback)
+   * Search products by price range
    */
-  private buildTextSearchQuery(query: string, options: SearchOptions): any {
-    const searchQuery: any = {
-      $text: { $search: query },
-      isAvailable: true,
-    };
+  async searchByPriceRange(
+    minPrice: number,
+    maxPrice: number,
+    options: SearchOptions = {}
+  ): Promise<SearchResult> {
+    return this.search('', { ...options, minPrice, maxPrice });
+  }
 
-    // Add filters
-    if (options.category) {
-      searchQuery.category = options.category;
+  /**
+   * Get trending/popular products (most ordered)
+   * Note: This requires OrderItem table to track product orders
+   */
+  async getTrendingProducts(limit: number = 10): Promise<Product[]> {
+    try {
+      // For now, just return recent products
+      // TODO: Implement proper trending logic based on order statistics
+      const products = await prisma.product.findMany({
+        where: {
+          isAvailable: true,
+        },
+        take: limit,
+        orderBy: {
+          createdAt: 'desc',
+        },
+        include: {
+          category: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+            },
+          },
+        },
+      });
+
+      return products;
+    } catch (error) {
+      console.error('Get trending products error:', error);
+      return [];
     }
-
-    if (options.minPrice !== undefined || options.maxPrice !== undefined) {
-      searchQuery.price = {};
-      if (options.minPrice !== undefined) searchQuery.price.$gte = options.minPrice;
-      if (options.maxPrice !== undefined) searchQuery.price.$lte = options.maxPrice;
-    }
-
-    return searchQuery;
   }
 }
 

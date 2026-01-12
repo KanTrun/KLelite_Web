@@ -1,8 +1,8 @@
 import { Response, NextFunction } from 'express';
+import prisma from '../lib/prisma';
 import { asyncHandler, successResponse } from '../utils';
 import { AuthRequest } from '../types';
 import { recommendationService } from '../services/recommendationService';
-import Product from '../models/Product';
 
 // @desc    Get similar products
 // @route   GET /api/recommendations/similar/:productId
@@ -12,9 +12,30 @@ export const getSimilarProducts = asyncHandler(async (req: AuthRequest, res: Res
   const limit = parseInt(req.query.limit as string) || 6;
 
   const productIds = await recommendationService.getSimilarProducts(productId, limit);
-  const products = await Product.find({ _id: { $in: productIds } })
-    .select('name slug price images rating numReviews category isAvailable')
-    .populate('category', 'name slug');
+
+  const products = await prisma.product.findMany({
+    where: { id: { in: productIds } },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      price: true,
+      rating: true,
+      numReviews: true,
+      isAvailable: true,
+      images: {
+        where: { isMain: true },
+        take: 1
+      },
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true
+        }
+      }
+    }
+  });
 
   successResponse(res, products);
 });
@@ -29,11 +50,31 @@ export const getForYou = asyncHandler(async (req: AuthRequest, res: Response, _n
   }
 
   const limit = parseInt(req.query.limit as string) || 8;
-  const productIds = await recommendationService.getPersonalizedRecommendations(req.user._id.toString(), limit);
+  const productIds = await recommendationService.getPersonalizedRecommendations(req.user.id.toString(), limit);
 
-  const products = await Product.find({ _id: { $in: productIds } })
-    .select('name slug price images rating numReviews category isAvailable')
-    .populate('category', 'name slug');
+  const products = await prisma.product.findMany({
+    where: { id: { in: productIds } },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      price: true,
+      rating: true,
+      numReviews: true,
+      isAvailable: true,
+      images: {
+        where: { isMain: true },
+        take: 1
+      },
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true
+        }
+      }
+    }
+  });
 
   successResponse(res, products);
 });
@@ -45,9 +86,29 @@ export const getTrending = asyncHandler(async (req: AuthRequest, res: Response, 
   const limit = parseInt(req.query.limit as string) || 8;
   const productIds = await recommendationService.getTrending(limit);
 
-  const products = await Product.find({ _id: { $in: productIds } })
-    .select('name slug price images rating numReviews category isAvailable')
-    .populate('category', 'name slug');
+  const products = await prisma.product.findMany({
+    where: { id: { in: productIds } },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      price: true,
+      rating: true,
+      numReviews: true,
+      isAvailable: true,
+      images: {
+        where: { isMain: true },
+        take: 1
+      },
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true
+        }
+      }
+    }
+  });
 
   successResponse(res, products);
 });

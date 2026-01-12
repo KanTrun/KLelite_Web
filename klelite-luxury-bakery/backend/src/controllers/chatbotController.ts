@@ -8,7 +8,7 @@ import { chatbotService } from '../services/chatbotService';
 // @access  Public (Optional Auth)
 export const sendMessage = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   const { message, conversationHistory } = req.body;
-  const userId = req.user?._id?.toString();
+  const userId = req.user?.id;
 
   const response = await chatbotService.handleMessage(message, userId, conversationHistory);
 

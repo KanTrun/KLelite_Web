@@ -2,7 +2,7 @@ import api from './api';
 
 export interface FlashSaleProduct {
   productId: {
-    _id: string;
+    id: string;
     name: string;
     slug: string;
     images: string[];
@@ -18,7 +18,7 @@ export interface FlashSaleProduct {
 }
 
 export interface FlashSale {
-  _id: string;
+  id: string;
   name: string;
   slug: string;
   description?: string;
@@ -33,7 +33,7 @@ export interface FlashSale {
 }
 
 export interface StockReservation {
-  _id: string;
+  id: string;
   flashSaleId: string;
   productId: string;
   userId: string;

@@ -15,6 +15,7 @@
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--header-border);
   transition: all 0.3s $ease-out;
+  // Note: Do NOT use overflow: hidden here - it breaks dropdowns
 
   // Enhanced shadow on scroll
   &.scrolled {
@@ -22,6 +23,15 @@
     box-shadow: var(--shadow-sm);
     border-bottom-color: var(--color-border-strong);
   }
+}
+
+// Wrapper for seasonal effects - prevents overflow issues with dropdowns
+.seasonalEffectsWrapper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .container {
@@ -32,6 +42,8 @@
   align-items: center;
   justify-content: space-between;
   height: 72px;
+  position: relative;
+  z-index: 1;
 
   @media (min-width: 768px) {
     padding: 0 $spacing-lg;
@@ -183,7 +195,7 @@
   min-height: 44px;
   background: transparent;
   border: none;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   cursor: pointer;
   border-radius: $radius-full;
   position: relative;
@@ -323,7 +335,7 @@
   background: transparent;
   border: 1px solid $border-light;
   border-radius: $radius-md;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   font-family: $font-body;
   font-size: $text-sm;
   cursor: pointer;
@@ -398,7 +410,7 @@
   min-height: 44px; // Ensure minimum height for touch
   font-family: $font-body;
   font-size: $text-sm;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   text-decoration: none;
   text-align: left;
   background: transparent;

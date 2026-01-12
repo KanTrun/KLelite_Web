@@ -3,6 +3,7 @@ export interface ApiResponse<T> {
   success: boolean;
   data: T;
   message?: string;
+  pagination?: Pagination;
 }
 
 export interface ApiError {
@@ -20,6 +21,7 @@ export interface Pagination {
   total: number;
   page: number;
   limit: number;
+  pages: number; // Add alias for totalPages
   totalPages: number;
 }
 
@@ -30,9 +32,9 @@ export interface SelectOption {
 
 // Cart Types
 export interface CartItem {
-  _id: string;
+  id: string;
   product: {
-    _id: string;
+    id: string;
     name: string;
     price: number;
     images: string[];
@@ -42,7 +44,7 @@ export interface CartItem {
 }
 
 export interface Cart {
-  _id: string;
+  id: string;
   user: string;
   items: CartItem[];
   totalItems: number;
@@ -51,9 +53,9 @@ export interface Cart {
 
 // Review Types
 export interface Review {
-  _id: string;
+  id: string;
   user: {
-    _id: string;
+    id: string;
     firstName: string;
     lastName: string;
     avatar?: string;
@@ -75,7 +77,7 @@ export interface CreateReviewData {
 
 // Voucher Types
 export interface Voucher {
-  _id: string;
+  id: string;
   code: string;
   description: string;
   discountType: 'percentage' | 'fixed';
@@ -91,9 +93,9 @@ export interface Voucher {
 
 // Wishlist Types
 export interface WishlistItem {
-  _id: string;
+  id: string;
   product: {
-    _id: string;
+    id: string;
     name: string;
     slug: string;
     price: number;

@@ -1,35 +1,75 @@
 import { Response, NextFunction } from 'express';
-import Voucher from '../models/Voucher';
+import prisma from '../lib/prisma';
 import { asyncHandler, successResponse, createdResponse, NotFoundError, BadRequestError, parsePagination, generatePaginationInfo } from '../utils';
 import { AuthRequest } from '../types';
+import { VoucherType } from '@prisma/client';
 
 // @desc    Validate voucher
 // @route   POST /api/vouchers/validate
 // @access  Private
 export const validateVoucher = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   const { code, orderTotal } = req.body;
-  
-  const voucher = await Voucher.findOne({ code: code.toUpperCase() });
-  
+
+  const voucher = await prisma.voucher.findUnique({
+    where: { code: code.toUpperCase() },
+    include: {
+      usedByUsers: {
+        where: { userId: req.user!.id }
+      }
+    }
+  });
+
   if (!voucher) {
     throw NotFoundError('Mã voucher không tồn tại');
   }
-  
-  const validation = (voucher as any).isValid(req.user?._id.toString(), orderTotal);
-  
-  if (!validation.valid) {
-    throw BadRequestError(validation.message);
+
+  // Validate voucher
+  const now = new Date();
+  const isActive = voucher.isActive;
+  const isTimeValid = voucher.startDate <= now && (!voucher.endDate || voucher.endDate >= now);
+  const isUsageLimitValid = !voucher.usageLimit || voucher.usedCount < voucher.usageLimit;
+  const isMinOrderValid = orderTotal >= Number(voucher.minOrderValue);
+  const userUsageCount = voucher.usedByUsers.length;
+  const isUserLimitValid = !voucher.userLimit || userUsageCount < voucher.userLimit;
+
+  if (!isActive) {
+    throw BadRequestError('Mã voucher không còn hoạt động');
   }
-  
-  const discount = (voucher as any).calculateDiscount(orderTotal);
-  
+
+  if (!isTimeValid) {
+    throw BadRequestError('Mã voucher đã hết hạn hoặc chưa đến thời gian sử dụng');
+  }
+
+  if (!isUsageLimitValid) {
+    throw BadRequestError('Mã voucher đã hết lượt sử dụng');
+  }
+
+  if (!isMinOrderValid) {
+    throw BadRequestError(`Đơn hàng tối thiểu ${voucher.minOrderValue} VND`);
+  }
+
+  if (!isUserLimitValid) {
+    throw BadRequestError('Bạn đã sử dụng hết lượt sử dụng voucher này');
+  }
+
+  // Calculate discount
+  let discount = 0;
+  if (voucher.type === VoucherType.PERCENTAGE) {
+    discount = (orderTotal * Number(voucher.value)) / 100;
+    if (voucher.maxDiscount) {
+      discount = Math.min(discount, Number(voucher.maxDiscount));
+    }
+  } else if (voucher.type === VoucherType.FIXED_AMOUNT) {
+    discount = Number(voucher.value);
+  }
+
   successResponse(res, {
     code: voucher.code,
     description: voucher.description,
     type: voucher.type,
     value: voucher.value,
     discount,
-    message: validation.message,
+    message: 'Mã voucher hợp lệ',
   });
 });
 
@@ -38,27 +78,39 @@ export const validateVoucher = asyncHandler(async (req: AuthRequest, res: Respon
 // @access  Private
 export const getAvailableVouchers = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
   const now = new Date();
-  
-  const vouchers = await Voucher.find({
-    isActive: true,
-    startDate: { $lte: now },
-    endDate: { $gte: now },
-    $or: [
-      { usageLimit: -1 },
-      { $expr: { $lt: ['$usedCount', '$usageLimit'] } },
-    ],
-  }).select('code description type value minOrderValue maxDiscount endDate usedByUsers userLimit');
-  
+
+  const vouchers = await prisma.voucher.findMany({
+    where: {
+      isActive: true,
+      startDate: { lte: now },
+      OR: [
+        { endDate: null },
+        { endDate: { gte: now } }
+      ]
+    },
+    select: {
+      id: true,
+      code: true,
+      description: true,
+      type: true,
+      value: true,
+      minOrderValue: true,
+      maxDiscount: true,
+      endDate: true,
+      usedByUsers: {
+        where: { userId: req.user!.id }
+      },
+      userLimit: true
+    }
+  });
+
   // Filter out vouchers user has exhausted their limit
   const availableVouchers = vouchers.filter(voucher => {
-    const usedByUsers = voucher.usedByUsers || [];
-    const userUsageCount = usedByUsers.filter(
-      id => id.toString() === req.user?._id.toString()
-    ).length;
+    const userUsageCount = voucher.usedByUsers.length;
     const userLimit = voucher.userLimit || 1;
     return userUsageCount < userLimit;
-  });
-  
+  }).map(({ usedByUsers, ...voucher }) => voucher);
+
   successResponse(res, availableVouchers);
 });
 
@@ -67,30 +119,32 @@ export const getAvailableVouchers = asyncHandler(async (req: AuthRequest, res: R
 // @route   GET /api/vouchers
 // @access  Private/Admin
 export const getVouchers = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const { skip, limit, page, sort } = parsePagination(req.query);
-  
-  const filter: Record<string, unknown> = {};
-  
+  const { skip, limit, page, sort, sortField } = parsePagination(req.query);
+
+  const filter: any = {};
+
   // Status filter
   if (req.query.isActive !== undefined) {
     filter.isActive = req.query.isActive === 'true';
   }
-  
+
   // Type filter
   if (req.query.type) {
-    filter.type = req.query.type;
+    filter.type = (req.query.type as string).toUpperCase() as VoucherType;
   }
-  
+
   const [vouchers, total] = await Promise.all([
-    Voucher.find(filter)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit),
-    Voucher.countDocuments(filter),
+    prisma.voucher.findMany({
+      where: filter,
+      orderBy: { [sortField]: sort },
+      skip,
+      take: limit,
+    }),
+    prisma.voucher.count({ where: filter }),
   ]);
-  
+
   const pagination = generatePaginationInfo(page, limit, total);
-  
+
   successResponse(res, vouchers, undefined, 200, pagination);
 });
 
@@ -98,12 +152,28 @@ export const getVouchers = asyncHandler(async (req: AuthRequest, res: Response, 
 // @route   GET /api/vouchers/:id
 // @access  Private/Admin
 export const getVoucher = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const voucher = await Voucher.findById(req.params.id);
-  
+  const voucher = await prisma.voucher.findUnique({
+    where: { id: req.params.id },
+    include: {
+      usedByUsers: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              firstName: true,
+              lastName: true
+            }
+          }
+        }
+      }
+    }
+  });
+
   if (!voucher) {
     throw NotFoundError('Không tìm thấy voucher');
   }
-  
+
   successResponse(res, voucher);
 });
 
@@ -111,8 +181,13 @@ export const getVoucher = asyncHandler(async (req: AuthRequest, res: Response, _
 // @route   POST /api/vouchers
 // @access  Private/Admin
 export const createVoucher = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const voucher = await Voucher.create(req.body);
-  
+  const voucher = await prisma.voucher.create({
+    data: {
+      ...req.body,
+      code: req.body.code.toUpperCase()
+    }
+  });
+
   createdResponse(res, voucher, 'Tạo voucher thành công');
 });
 
@@ -120,31 +195,37 @@ export const createVoucher = asyncHandler(async (req: AuthRequest, res: Response
 // @route   PUT /api/vouchers/:id
 // @access  Private/Admin
 export const updateVoucher = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  let voucher = await Voucher.findById(req.params.id);
-  
+  const voucher = await prisma.voucher.findUnique({
+    where: { id: req.params.id }
+  });
+
   if (!voucher) {
     throw NotFoundError('Không tìm thấy voucher');
   }
-  
-  voucher = await Voucher.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
+
+  const updatedVoucher = await prisma.voucher.update({
+    where: { id: req.params.id },
+    data: req.body
   });
-  
-  successResponse(res, voucher, 'Cập nhật voucher thành công');
+
+  successResponse(res, updatedVoucher, 'Cập nhật voucher thành công');
 });
 
 // @desc    Delete voucher (admin)
 // @route   DELETE /api/vouchers/:id
 // @access  Private/Admin
 export const deleteVoucher = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const voucher = await Voucher.findById(req.params.id);
-  
+  const voucher = await prisma.voucher.findUnique({
+    where: { id: req.params.id }
+  });
+
   if (!voucher) {
     throw NotFoundError('Không tìm thấy voucher');
   }
-  
-  await voucher.deleteOne();
-  
+
+  await prisma.voucher.delete({
+    where: { id: req.params.id }
+  });
+
   successResponse(res, null, 'Xóa voucher thành công');
 });

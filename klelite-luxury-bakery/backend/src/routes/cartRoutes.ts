@@ -14,7 +14,7 @@ const router = Router();
 
 // Validation rules
 const addToCartValidation = [
-  commonValidations.objectId('productId', 'body'),
+  commonValidations.uuid('productId', 'body'),
   body('quantity')
     .notEmpty()
     .withMessage('Vui lòng nhập số lượng')

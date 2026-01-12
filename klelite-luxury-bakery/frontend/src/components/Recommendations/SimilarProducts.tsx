@@ -51,14 +51,14 @@ const SimilarProducts: React.FC<SimilarProductsProps> = ({ productId }) => {
           className={styles.swiper}
         >
           {products.map((product) => (
-            <SwiperSlide key={product._id}>
+            <SwiperSlide key={product.id}>
               <ProductCard
-                id={product._id}
+                id={product.id}
                 name={product.name}
                 slug={product.slug}
                 price={product.price}
                 image={product.images[0]?.url || '/placeholder.png'}
-                rating={product.rating}
+                rating={product.rating ? Number(product.rating) : 0}
                 reviewCount={product.numReviews}
                 category={typeof product.category === 'object' ? product.category.name : undefined}
                 isOutOfStock={!product.isAvailable}

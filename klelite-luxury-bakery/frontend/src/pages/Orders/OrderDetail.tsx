@@ -66,8 +66,8 @@ const OrderDetail: React.FC = () => {
 
     try {
       setCancelling(true);
-      await orderService.cancelOrder(order._id);
-      await fetchOrder(order._id);
+      await orderService.cancelOrder(order.id);
+      await fetchOrder(order.id);
       alert('Đã hủy đơn hàng thành công');
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Không thể hủy đơn hàng';
@@ -82,7 +82,7 @@ const OrderDetail: React.FC = () => {
     try {
       for (const item of order.items) {
         // Handle both populated object and string ID
-        const productId = typeof item.product === 'string' ? item.product : item.product._id;
+        const productId = typeof item.product === 'string' ? item.product : item.product.id;
         await dispatch(addToCart({ productId, quantity: item.quantity })).unwrap();
       }
       navigate('/cart');

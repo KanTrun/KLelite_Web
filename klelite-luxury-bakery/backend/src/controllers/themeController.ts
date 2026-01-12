@@ -1,9 +1,12 @@
 import { Request, Response } from 'express';
-import { ThemeConfig } from '../models/ThemeConfig';
+import prisma from '../lib/prisma';
+import { ThemeType } from '@prisma/client';
 
 export const getPublicConfig = async (req: Request, res: Response): Promise<void> => {
   try {
-    const activeTheme = await ThemeConfig.findOne({ isActive: true });
+    const activeTheme = await prisma.themeConfig.findFirst({
+      where: { isActive: true }
+    });
 
     if (activeTheme) {
       res.json(activeTheme);
@@ -13,7 +16,7 @@ export const getPublicConfig = async (req: Request, res: Response): Promise<void
     // Fallback if no active theme found
     res.json({
       name: 'Default Fallback',
-      type: 'default',
+      type: ThemeType.LIGHT,
       header: { variant: 'transparent' },
       hero: {
         title: "KL'élite Luxury Bakery",
@@ -31,7 +34,9 @@ export const getPublicConfig = async (req: Request, res: Response): Promise<void
 
 export const getAllConfigs = async (req: Request, res: Response): Promise<void> => {
   try {
-    const themes = await ThemeConfig.find().sort({ updatedAt: -1 });
+    const themes = await prisma.themeConfig.findMany({
+      orderBy: { updatedAt: 'desc' }
+    });
     res.json(themes);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching themes', error });
@@ -40,9 +45,10 @@ export const getAllConfigs = async (req: Request, res: Response): Promise<void> 
 
 export const createConfig = async (req: Request, res: Response): Promise<void> => {
   try {
-    const newTheme = new ThemeConfig(req.body);
-    const savedTheme = await newTheme.save();
-    res.status(201).json(savedTheme);
+    const newTheme = await prisma.themeConfig.create({
+      data: req.body
+    });
+    res.status(201).json(newTheme);
   } catch (error) {
     res.status(500).json({ message: 'Error creating theme', error });
   }
@@ -51,16 +57,32 @@ export const createConfig = async (req: Request, res: Response): Promise<void> =
 export const updateConfig = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const updatedTheme = await ThemeConfig.findByIdAndUpdate(id, req.body, { new: true });
 
-    if (!updatedTheme) {
+    // Validate UUID format (basic check)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) {
+      res.status(400).json({ message: 'Invalid theme ID format' });
+      return;
+    }
+
+    const updatedTheme = await prisma.themeConfig.update({
+      where: { id },
+      data: req.body
+    });
+
+    res.json(updatedTheme);
+  } catch (error: any) {
+    // Prisma error code P2025: Record not found
+    if (error.code === 'P2025') {
       res.status(404).json({ message: 'Theme not found' });
       return;
     }
 
-    res.json(updatedTheme);
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating theme', error });
+    console.error('Theme update error:', error);
+    res.status(500).json({
+      message: 'Error updating theme',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 
@@ -68,39 +90,67 @@ export const activateConfig = async (req: Request, res: Response): Promise<void>
   try {
     const { id } = req.params;
 
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) {
+      res.status(400).json({ message: 'Invalid theme ID format' });
+      return;
+    }
+
     // Deactivate all themes
-    await ThemeConfig.updateMany({}, { isActive: false });
+    await prisma.themeConfig.updateMany({
+      data: { isActive: false }
+    });
 
     // Activate selected theme
-    const activatedTheme = await ThemeConfig.findByIdAndUpdate(
-      id,
-      { isActive: true },
-      { new: true }
-    );
+    const activatedTheme = await prisma.themeConfig.update({
+      where: { id },
+      data: { isActive: true }
+    });
 
-    if (!activatedTheme) {
+    res.json(activatedTheme);
+  } catch (error: any) {
+    // Prisma error code P2025: Record not found
+    if (error.code === 'P2025') {
       res.status(404).json({ message: 'Theme not found' });
       return;
     }
 
-    res.json(activatedTheme);
-  } catch (error) {
-    res.status(500).json({ message: 'Error activating theme', error });
+    console.error('Theme activation error:', error);
+    res.status(500).json({
+      message: 'Error activating theme',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 
 export const deleteConfig = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params;
-        const deletedTheme = await ThemeConfig.findByIdAndDelete(id);
+  try {
+    const { id } = req.params;
 
-        if (!deletedTheme) {
-            res.status(404).json({ message: 'Theme not found' });
-            return;
-        }
-
-        res.json({ message: 'Theme deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ message: 'Error deleting theme', error });
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) {
+      res.status(400).json({ message: 'Invalid theme ID format' });
+      return;
     }
+
+    const deletedTheme = await prisma.themeConfig.delete({
+      where: { id }
+    });
+
+    res.json({ message: 'Theme deleted successfully', data: deletedTheme });
+  } catch (error: any) {
+    // Prisma error code P2025: Record not found
+    if (error.code === 'P2025') {
+      res.status(404).json({ message: 'Theme not found' });
+      return;
+    }
+
+    console.error('Theme deletion error:', error);
+    res.status(500).json({
+      message: 'Error deleting theme',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
 };

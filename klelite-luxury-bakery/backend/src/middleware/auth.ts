@@ -129,7 +129,7 @@ export const authorizeOwnerOrAdmin = (
       }
 
       // Admin can access everything
-      if (req.user.role === 'admin') {
+      if (req.user.role === 'ADMIN') {
         return next();
       }
 

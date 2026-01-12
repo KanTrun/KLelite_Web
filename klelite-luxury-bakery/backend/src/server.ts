@@ -5,7 +5,6 @@ import compression from 'compression';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
-import mongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
 
 import { config } from './config';
@@ -19,7 +18,7 @@ import { initSseRedis, cleanup as sseCleanup } from './services/sseService';
 import { initQueues, cleanupQueues } from './queues';
 import { startEmailWorker, stopEmailWorker } from './workers/emailWorker';
 
-// Create Express app 
+// Create Express app
 const app: Application = express();
 
 // Trust proxy for Render/Vercel deployment
@@ -33,7 +32,6 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
   crossOriginEmbedderPolicy: false,
 }));
-app.use(mongoSanitize()); // Sanitize data against NoSQL injection
 app.use(hpp()); // Prevent HTTP parameter pollution
 
 // Rate limiting

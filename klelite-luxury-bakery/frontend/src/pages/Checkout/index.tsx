@@ -133,9 +133,9 @@ const Checkout: React.FC = () => {
       if (Array.isArray(addressList) && addressList.length > 0) {
         const defaultAddr = addressList.find((a: Address) => a.isDefault);
         if (defaultAddr) {
-          setSelectedAddressId(defaultAddr._id);
+          setSelectedAddressId(defaultAddr.id);
         } else {
-          setSelectedAddressId(addressList[0]._id);
+          setSelectedAddressId(addressList[0].id);
         }
       }
     } catch (err) {
@@ -150,7 +150,7 @@ const Checkout: React.FC = () => {
   const discount = appliedVoucher?.discount || 0;
   const total = subtotal + shippingFee - discount;
 
-  const selectedAddress = addresses.find(a => a._id === selectedAddressId);
+  const selectedAddress = addresses.find(a => a.id === selectedAddressId);
 
   const handleAddressSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -163,7 +163,7 @@ const Checkout: React.FC = () => {
       setAddresses(updatedAddresses);
       // Select the last added address
       if (updatedAddresses.length > 0) {
-        setSelectedAddressId(updatedAddresses[updatedAddresses.length - 1]._id);
+        setSelectedAddressId(updatedAddresses[updatedAddresses.length - 1].id);
       }
       setShowAddressForm(false);
       setNewAddress({
@@ -259,7 +259,7 @@ const Checkout: React.FC = () => {
 
       const orderData = {
         items: cart.items.map(item => ({
-          product: item.product._id,
+          product: item.product.id,
           quantity: item.quantity,
           price: item.price,
           size: item.size,
@@ -284,7 +284,7 @@ const Checkout: React.FC = () => {
       // Handle online payment methods
       if (selectedPayment === 'momo') {
         const momoPayment = await paymentService.createMoMoPayment(
-          order._id,
+          order.id,
           total,
           `Thanh toán đơn hàng ${order.orderNumber}`
         );
@@ -294,7 +294,7 @@ const Checkout: React.FC = () => {
 
       if (selectedPayment === 'vnpay') {
         const vnpayPayment = await paymentService.createVNPayPayment(
-          order._id,
+          order.id,
           total,
           `Thanh toan don hang ${order.orderNumber}`
         );
@@ -407,7 +407,7 @@ const Checkout: React.FC = () => {
             )}
 
             <div className={styles.successActions}>
-              <Link to={`/orders/${createdOrder._id}`} className={styles.viewOrderBtn}>
+              <Link to={`/orders/${createdOrder.id}`} className={styles.viewOrderBtn}>
                 Xem đơn hàng
               </Link>
               <Link to="/products" className={styles.continueBtn}>
@@ -486,16 +486,16 @@ const Checkout: React.FC = () => {
                 <div className={styles.addressList}>
                   {addresses.map(addr => (
                     <div
-                      key={addr._id}
-                      className={`${styles.addressCard} ${selectedAddressId === addr._id ? styles.selected : ''}`}
-                      onClick={() => setSelectedAddressId(addr._id)}
+                      key={addr.id}
+                      className={`${styles.addressCard} ${selectedAddressId === addr.id ? styles.selected : ''}`}
+                      onClick={() => setSelectedAddressId(addr.id)}
                     >
                       <div className={styles.addressRadio}>
                         <input
                           type="radio"
                           name="address"
-                          checked={selectedAddressId === addr._id}
-                          onChange={() => setSelectedAddressId(addr._id)}
+                          checked={selectedAddressId === addr.id}
+                          onChange={() => setSelectedAddressId(addr.id)}
                         />
                         <span className={styles.radioMark}></span>
                       </div>
@@ -727,7 +727,7 @@ const Checkout: React.FC = () => {
                             <div className={styles.voucherList}>
                               {availableVouchers.map((voucher) => (
                                 <div
-                                  key={voucher._id}
+                                  key={voucher.id}
                                   className={styles.voucherItem}
                                   onClick={() => handleSelectVoucher(voucher)}
                                 >
@@ -836,7 +836,7 @@ const Checkout: React.FC = () => {
                           : item.product.images[0].url
                         : '/images/placeholder.png';
                       return (
-                        <div key={item._id} className={styles.orderItem}>
+                        <div key={item.id} className={styles.orderItem}>
                           <img
                             src={imgSrc}
                             alt={item.product.name}
@@ -912,7 +912,7 @@ const Checkout: React.FC = () => {
                     : item.product.images[0].url
                   : '/images/placeholder.png';
                 return (
-                  <div key={item._id} className={styles.summaryItem}>
+                  <div key={item.id} className={styles.summaryItem}>
                     <div className={styles.summaryItemImg}>
                       <img src={imgSrc} alt={item.product.name} />
                       <span className={styles.itemQty}>{item.quantity}</span>

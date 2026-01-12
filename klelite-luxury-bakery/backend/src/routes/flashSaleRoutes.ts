@@ -59,7 +59,7 @@ router.post(
 router.get(
   '/admin/all',
   protect,
-  authorize('admin'),
+  authorize('ADMIN'),
   flashSaleController.getAllFlashSales
 );
 
@@ -69,7 +69,7 @@ router.get(
 router.post(
   '/',
   protect,
-  authorize('admin'),
+  authorize('ADMIN'),
   flashSaleController.createFlashSale
 );
 
@@ -79,7 +79,7 @@ router.post(
 router.put(
   '/:id',
   protect,
-  authorize('admin'),
+  authorize('ADMIN'),
   flashSaleController.updateFlashSale
 );
 
@@ -89,7 +89,7 @@ router.put(
 router.delete(
   '/:id',
   protect,
-  authorize('admin'),
+  authorize('ADMIN'),
   flashSaleController.cancelFlashSale
 );
 

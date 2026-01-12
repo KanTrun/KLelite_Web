@@ -1,5 +1,5 @@
 export interface IThemeConfig {
-  _id: string;
+  id: string;
   isActive: boolean;
   name: string;
   type: 'default' | 'christmas' | 'tet' | 'valentine';

@@ -64,9 +64,9 @@ const ProductDetail: React.FC = () => {
   // Check wishlist status when product loads
   useEffect(() => {
     const checkWishlistStatus = async () => {
-      if (isAuthenticated && product?._id) {
+      if (isAuthenticated && product?.id) {
         try {
-          const inWishlist = await userService.isInWishlist(product._id);
+          const inWishlist = await userService.isInWishlist(product.id);
           setIsWishlisted(inWishlist);
         } catch (error) {
           console.error('Error checking wishlist status:', error);
@@ -74,15 +74,15 @@ const ProductDetail: React.FC = () => {
       }
     };
     checkWishlistStatus();
-  }, [isAuthenticated, product?._id]);
+  }, [isAuthenticated, product?.id]);
 
   // Load reviews when product changes or tab changes to reviews
   useEffect(() => {
     const loadReviews = async () => {
-      if (product?._id && activeTab === 'reviews') {
+      if (product?.id && activeTab === 'reviews') {
         try {
           setReviewsLoading(true);
-          const response = await reviewService.getProductReviews(product._id);
+          const response = await reviewService.getProductReviews(product.id);
           setReviews(response.reviews);
         } catch (error) {
           console.error('Error loading reviews:', error);
@@ -92,7 +92,7 @@ const ProductDetail: React.FC = () => {
       }
     };
     loadReviews();
-  }, [product?._id, activeTab]);
+  }, [product?.id, activeTab]);
 
   useEffect(() => {
     if (slug) {
@@ -142,7 +142,7 @@ const ProductDetail: React.FC = () => {
     try {
       setReviewSubmitting(true);
       setReviewError(null);
-      const newReview = await reviewService.addReview(product._id, {
+      const newReview = await reviewService.addReview(product.id, {
         rating: reviewRating,
         comment: reviewComment.trim()
       });
@@ -171,7 +171,7 @@ const ProductDetail: React.FC = () => {
     try {
       await dispatch(
         addToCart({
-          productId: product._id,
+          productId: product.id,
           quantity,
           size: selectedSize || undefined,
         })
@@ -195,10 +195,10 @@ const ProductDetail: React.FC = () => {
     try {
       setWishlistLoading(true);
       if (isWishlisted) {
-        await userService.removeFromWishlist(product._id);
+        await userService.removeFromWishlist(product.id);
         setIsWishlisted(false);
       } else {
-        await userService.addToWishlist(product._id);
+        await userService.addToWishlist(product.id);
         setIsWishlisted(true);
       }
     } catch (error) {
@@ -293,7 +293,7 @@ const ProductDetail: React.FC = () => {
           <span className={styles.separator}>/</span>
           {product.category && (
             <>
-              <Link to={`/products?category=${typeof product.category === 'object' ? product.category._id : product.category}`}>
+              <Link to={`/products?category=${typeof product.category === 'object' ? product.category.id : product.category}`}>
                 {typeof product.category === 'object' ? product.category.name : 'Danh mục'}
               </Link>
               <span className={styles.separator}>/</span>
@@ -428,9 +428,9 @@ const ProductDetail: React.FC = () => {
               transition={{ delay: 0.4 }}
             >
               <div className={styles.starsWrapper}>
-                {renderStars(product.rating || 0)}
+                {renderStars(product.rating ? Number(product.rating) : 0)}
               </div>
-              <span className={styles.ratingValue}>{product.rating?.toFixed(1) || '0.0'}</span>
+              <span className={styles.ratingValue}>{product.rating ? Number(product.rating).toFixed(1) : '0.0'}</span>
               <span className={styles.reviewCount}>({product.numReviews || 0} đánh giá)</span>
               <span className={styles.divider}>|</span>
               <span className={styles.soldCount}>Đã bán: {product.soldCount || 0}</span>
@@ -642,7 +642,7 @@ const ProductDetail: React.FC = () => {
             >
               <span>SKU: <strong>{product.sku}</strong></span>
               {product.category && (
-                <span>Danh mục: <Link to={`/products?category=${typeof product.category === 'object' ? product.category._id : product.category}`}>
+                <span>Danh mục: <Link to={`/products?category=${typeof product.category === 'object' ? product.category.id : product.category}`}>
                   {typeof product.category === 'object' ? product.category.name : 'Xem thêm'}
                 </Link></span>
               )}
@@ -880,9 +880,9 @@ const ProductDetail: React.FC = () => {
                       {/* Review Summary */}
                       <div className={styles.reviewSummary}>
                         <div className={styles.overallRating}>
-                          <span className={styles.bigRating}>{product.rating?.toFixed(1) || '0.0'}</span>
+                          <span className={styles.bigRating}>{product.rating ? Number(product.rating).toFixed(1) : '0.0'}</span>
                           <div className={styles.starsWrapper}>
-                            {renderStars(product.rating || 0)}
+                            {renderStars(product.rating ? Number(product.rating) : 0)}
                           </div>
                           <span className={styles.totalReviews}>{product.numReviews || reviews.length} đánh giá</span>
                         </div>
@@ -899,7 +899,7 @@ const ProductDetail: React.FC = () => {
                           
                           return (
                             <motion.div 
-                              key={review._id.toString()} 
+                              key={review.id.toString()} 
                               className={styles.reviewCard}
                               initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
@@ -955,7 +955,7 @@ const ProductDetail: React.FC = () => {
         </motion.div>
 
         {/* Similar Products */}
-        {product && <SimilarProducts productId={product._id} />}
+        {product && <SimilarProducts productId={product.id} />}
 
       </div>
     </div>
