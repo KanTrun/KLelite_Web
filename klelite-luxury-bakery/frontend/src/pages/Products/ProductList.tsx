@@ -135,18 +135,15 @@ const ProductList: React.FC = () => {
   useEffect(() => {
     const [sortBy, sortOrder] = currentSort.split('-');
     const newFilters: any = {
-      ...filters,
       category: categorySlug || undefined,
       sortBy: sortBy as 'price' | 'rating' | 'createdAt' | 'name',
       sortOrder: sortOrder as 'asc' | 'desc',
       page: currentPage,
       search: searchTerm || undefined,
+      minPrice: priceMin ? Number(priceMin) : undefined,
+      maxPrice: priceMax ? Number(priceMax) : undefined,
+      rating: rating ? Number(rating) : undefined,
     };
-
-    // Add price filters
-    if (priceMin) newFilters.minPrice = Number(priceMin);
-    if (priceMax) newFilters.maxPrice = Number(priceMax);
-    if (rating) newFilters.rating = Number(rating);
 
     dispatch(setFilters(newFilters));
     dispatch(fetchProducts(newFilters));

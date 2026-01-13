@@ -35,6 +35,13 @@ export const getProducts = asyncHandler(async (req: AuthRequest, res: Response, 
     }
   }
 
+  // Rating filter
+  if (req.query.rating) {
+    filter.rating = {
+      gte: Number(req.query.rating)
+    };
+  }
+
   // Search filter (MySQL full-text search or LIKE)
   if (req.query.search) {
     const searchTerm = req.query.search as string;
