@@ -7,14 +7,51 @@ import { asyncHandler, successResponse, BadRequestError } from '../utils';
 import { AuthRequest } from '../types';
 import { PaymentMethod, PaymentStatus, OrderStatus } from '@prisma/client';
 
+const MOMO_SANDBOX_ENDPOINT = 'https://test-payment.momo.vn/v2/gateway/api/create';
+const MOMO_ORDER_ID_SEPARATOR = '_momo_';
+
+export const normalizeMomoText = (value: string): string => {
+  return value
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^\x20-\x7E]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+};
+
+export const buildMomoOrderInfo = (orderNumber: string): string => {
+  return normalizeMomoText(`Thanh toan don hang ${orderNumber}`);
+};
+
+export const buildMomoOrderId = (originalOrderId: string, requestId: string): string => {
+  return `${originalOrderId}${MOMO_ORDER_ID_SEPARATOR}${requestId}`;
+};
+
+export const extractOriginalMomoOrderId = (providerOrderId: string): string => {
+  if (!providerOrderId) {
+    return '';
+  }
+
+  const separatorIndex = providerOrderId.indexOf(MOMO_ORDER_ID_SEPARATOR);
+  if (separatorIndex === -1) {
+    return providerOrderId;
+  }
+
+  return providerOrderId.slice(0, separatorIndex);
+};
+
+const momoEndpoint = process.env.MOMO_ENDPOINT || MOMO_SANDBOX_ENDPOINT;
+
 // MoMo Payment Configuration
 const MOMO_CONFIG = {
   partnerCode: process.env.MOMO_PARTNER_CODE || '',
   accessKey: process.env.MOMO_ACCESS_KEY || '',
   secretKey: process.env.MOMO_SECRET_KEY || '',
-  endpoint: process.env.MOMO_ENDPOINT || 'https://test-payment.momo.vn/v2/gateway/api/create',
+  endpoint: momoEndpoint,
   redirectUrl: `${config.frontendUrl}/payment/callback`,
-  ipnUrl: `${process.env.BACKEND_URL || 'http://localhost:5000'}/api/payments/momo/ipn`,
+  ipnUrl: `${config.backendUrl}/api/payments/momo/ipn`,
 };
 
 // VNPay Configuration
@@ -29,27 +66,48 @@ const VNPAY_CONFIG = {
 // @route   POST /api/payments/momo/create
 // @access  Private
 export const createMoMoPayment = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
-  const { orderId, amount, orderInfo } = req.body;
+  const { orderId } = req.body;
 
-  if (!orderId || !amount) {
+  if (!orderId) {
     throw BadRequestError('Order ID và số tiền là bắt buộc');
   }
 
   // Validate MoMo config
   if (!MOMO_CONFIG.partnerCode || !MOMO_CONFIG.accessKey || !MOMO_CONFIG.secretKey) {
-    throw BadRequestError('Cấu hình MoMo không hợp lệ');
+    throw BadRequestError('Cấu hình MoMo không hợp lệ: thiếu partner code, access key hoặc secret key');
   }
 
-  // Amount must be integer and >= 1000 VND
-  const amountInt = Math.round(Number(amount));
+  const order = await prisma.order.findFirst({
+    where: {
+      id: orderId,
+      userId: req.user?.id,
+    },
+    select: {
+      id: true,
+      orderNumber: true,
+      total: true,
+      paymentStatus: true,
+    },
+  });
+
+  if (!order) {
+    throw BadRequestError('Không tìm thấy đơn hàng');
+  }
+
+  if (order.paymentStatus === PaymentStatus.PAID) {
+    throw BadRequestError('Đơn hàng này đã thanh toán');
+  }
+
+  // Sign using canonical order data from the database, not client-provided fields.
+  const amountInt = Math.round(Number(order.total));
   if (amountInt < 1000) {
     throw BadRequestError('Số tiền tối thiểu là 1,000 VND');
   }
 
-  const requestId = `${MOMO_CONFIG.partnerCode}${Date.now()}`;
-  const momoOrderId = requestId;
+  const requestId = `${MOMO_CONFIG.partnerCode}_${Date.now()}`;
+  const momoOrderId = buildMomoOrderId(orderId, requestId);
   const extraData = '';
-  const orderInfoText = `Payment for order ${orderId}`;
+  const orderInfoText = buildMomoOrderInfo(order.orderNumber);
   const requestType = 'captureWallet';
 
   // Build signature data object
@@ -151,9 +209,9 @@ export const momoIPN = async (req: AuthRequest, res: Response, _next: NextFuncti
     }
 
     // Extract original order ID
-    const originalOrderId = orderId.split('-')[0];
+    const originalOrderId = extractOriginalMomoOrderId(orderId);
 
-    if (resultCode === 0) {
+    if (Number(resultCode) === 0) {
       await prisma.order.update({
         where: { id: originalOrderId },
         data: {

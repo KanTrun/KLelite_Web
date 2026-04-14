@@ -5,6 +5,21 @@ import { FiCheckCircle, FiXCircle, FiLoader, FiShoppingBag, FiHome } from 'react
 import { paymentService } from '@/services/paymentService';
 import styles from './Payment.module.scss';
 
+const MOMO_ORDER_ID_SEPARATOR = '_momo_';
+
+const extractOriginalMomoOrderId = (providerOrderId: string | null): string => {
+  if (!providerOrderId) {
+    return '';
+  }
+
+  const separatorIndex = providerOrderId.indexOf(MOMO_ORDER_ID_SEPARATOR);
+  if (separatorIndex === -1) {
+    return providerOrderId;
+  }
+
+  return providerOrderId.slice(0, separatorIndex);
+};
+
 const PaymentCallback: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -36,7 +51,7 @@ const PaymentCallback: React.FC = () => {
         }
       } else if (momoResultCode !== null) {
         // MoMo callback
-        const originalOrderId = momoOrderId?.split('-')[0] || '';
+        const originalOrderId = extractOriginalMomoOrderId(momoOrderId);
         setOrderId(originalOrderId);
         
         if (momoResultCode === '0') {
@@ -51,7 +66,7 @@ const PaymentCallback: React.FC = () => {
         const orderIdParam = searchParams.get('orderId');
         if (orderIdParam) {
           try {
-            const originalOrderId = orderIdParam.split('-')[0];
+            const originalOrderId = extractOriginalMomoOrderId(orderIdParam);
             setOrderId(originalOrderId);
             const paymentStatus = await paymentService.getPaymentStatus(originalOrderId);
             

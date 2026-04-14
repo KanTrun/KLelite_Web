@@ -64,3 +64,4 @@ uploads/*
 *.key
 *.crt
 .cache/
+.vercel
