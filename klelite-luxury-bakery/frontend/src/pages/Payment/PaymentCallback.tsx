@@ -20,6 +20,19 @@ const extractOriginalMomoOrderId = (providerOrderId: string | null): string => {
   return providerOrderId.slice(0, separatorIndex);
 };
 
+const normalizePaymentStatus = (value?: string | null): 'PAID' | 'FAILED' | 'PENDING' | '' => {
+  if (!value) {
+    return '';
+  }
+
+  const normalized = value.toUpperCase();
+  if (normalized === 'PAID' || normalized === 'FAILED' || normalized === 'PENDING') {
+    return normalized;
+  }
+
+  return '';
+};
+
 const PaymentCallback: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -70,15 +83,17 @@ const PaymentCallback: React.FC = () => {
             setOrderId(originalOrderId);
             const paymentStatus = await paymentService.getPaymentStatus(originalOrderId);
             
-            if (paymentStatus.paymentStatus === 'paid') {
+            const normalizedStatus = normalizePaymentStatus(paymentStatus.paymentStatus);
+
+            if (normalizedStatus === 'PAID') {
               setStatus('success');
               setMessage('Thanh toán thành công!');
-            } else if (paymentStatus.paymentStatus === 'failed') {
+            } else if (normalizedStatus === 'FAILED') {
               setStatus('failed');
               setMessage('Thanh toán thất bại. Vui lòng thử lại.');
             } else {
               setStatus('loading');
-              setMessage('Đang xử lý thanh toán...');
+              setMessage('Thanh toán đang được xử lý. Vui lòng kiểm tra lại sau ít phút.');
             }
           } catch {
             setStatus('failed');
@@ -109,7 +124,7 @@ const PaymentCallback: React.FC = () => {
                 <FiLoader className={styles.spinIcon} />
               </div>
               <h1>Đang xử lý thanh toán</h1>
-              <p>Vui lòng đợi trong giây lát...</p>
+              <p>{message || 'Vui lòng đợi trong giây lát...'}</p>
             </>
           )}
 
@@ -126,10 +141,17 @@ const PaymentCallback: React.FC = () => {
                 </p>
               )}
               <div className={styles.actions}>
-                <Link to={`/orders/${orderId}`} className={styles.primaryBtn}>
-                  <FiShoppingBag />
-                  Xem đơn hàng
-                </Link>
+                {orderId ? (
+                  <Link to={`/orders/${orderId}`} className={styles.primaryBtn}>
+                    <FiShoppingBag />
+                    Xem đơn hàng
+                  </Link>
+                ) : (
+                  <Link to="/orders" className={styles.primaryBtn}>
+                    <FiShoppingBag />
+                    Xem đơn hàng
+                  </Link>
+                )}
                 <Link to="/" className={styles.secondaryBtn}>
                   <FiHome />
                   Về trang chủ

@@ -2,10 +2,21 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const port = parseInt(process.env.PORT || '5000', 10);
+const corsOrigins = (process.env.CORS_ORIGINS || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+const frontendUrl = process.env.FRONTEND_URL || corsOrigins[0] || 'http://localhost:3003';
+const backendUrl =
+  process.env.BACKEND_URL ||
+  process.env.RENDER_EXTERNAL_URL ||
+  `http://localhost:${process.env.PORT || '5000'}`;
+
 export const config = {
   // Server
   nodeEnv: process.env.NODE_ENV || 'development',
-  port: parseInt(process.env.PORT || '5000', 10),
+  port,
 
   // MySQL/Prisma
   databaseUrl: process.env.DATABASE_URL || 'mysql://root:@localhost:3306/klelite_bakery',
@@ -49,12 +60,9 @@ export const config = {
   },
 
   // Frontend URL
-  frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3003',
-  backendUrl: process.env.BACKEND_URL || `http://localhost:${process.env.PORT || '5000'}`,
-  corsOrigins: (process.env.CORS_ORIGINS || '')
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter(Boolean),
+  frontendUrl,
+  backendUrl,
+  corsOrigins,
 
   // Rate Limiting
   rateLimit: {
