@@ -449,7 +449,6 @@ const Login: React.FC = () => {
                     onSuccess={handleGoogleSuccess}
                     onError={handleGoogleError}
                     onNonOAuthError={handleGooglePopupError}
-                    useOneTap
                     theme="outline"
                     size="large"
                     text="signin_with"
