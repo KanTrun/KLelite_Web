@@ -43,15 +43,37 @@ const createTempSchemaWithDatabaseUrl = (databaseUrl: string): string => {
   const tempSchemaPath = path.resolve(process.cwd(), 'prisma/schema.render.prisma');
   const sourceSchema = fs.readFileSync(sourceSchemaPath, 'utf8');
   const escapedDatabaseUrl = databaseUrl.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-  const patchedSchema = sourceSchema.replace(
-    /url\s*=\s*env\("DATABASE_URL"\)/,
-    `url      = "${escapedDatabaseUrl}"`,
-  );
+  const lines = sourceSchema.split(/\r?\n/);
 
-  if (patchedSchema === sourceSchema) {
-    throw new Error('Failed to patch prisma schema datasource url for production startup.');
+  const datasourceStart = lines.findIndex((line) => /^\s*datasource\s+db\s*\{/.test(line));
+  if (datasourceStart === -1) {
+    throw new Error('Failed to locate `datasource db` in prisma/schema.prisma.');
   }
 
+  let datasourceEnd = -1;
+  let datasourceUrlLine = -1;
+  for (let i = datasourceStart + 1; i < lines.length; i += 1) {
+    if (datasourceEnd === -1 && /^\s*}/.test(lines[i])) {
+      datasourceEnd = i;
+      break;
+    }
+    if (datasourceUrlLine === -1 && /^\s*url\s*=/.test(lines[i])) {
+      datasourceUrlLine = i;
+    }
+  }
+
+  if (datasourceEnd === -1) {
+    throw new Error('Failed to parse datasource block in prisma/schema.prisma.');
+  }
+
+  const replacementLine = `  url      = "${escapedDatabaseUrl}"`;
+  if (datasourceUrlLine >= 0) {
+    lines[datasourceUrlLine] = replacementLine;
+  } else {
+    lines.splice(datasourceEnd, 0, replacementLine);
+  }
+
+  const patchedSchema = lines.join('\n');
   fs.writeFileSync(tempSchemaPath, patchedSchema, 'utf8');
   return tempSchemaPath;
 };
