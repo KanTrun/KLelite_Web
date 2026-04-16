@@ -26,16 +26,44 @@ const getDatabaseUrl = (): string => {
   return databaseUrl;
 };
 
-const run = (command: string, args: string[], env: NodeJS.ProcessEnv): void => {
+type CommandResult = {
+  output: string;
+  status: number | null;
+};
+
+const run = (command: string, args: string[], env: NodeJS.ProcessEnv): CommandResult => {
   const result = spawnSync(command, args, {
-    stdio: 'inherit',
+    encoding: 'utf8',
     env,
     shell: false,
   });
 
+  const stdout = result.stdout || '';
+  const stderr = result.stderr || '';
+  const output = `${stdout}\n${stderr}`.trim();
+
+  if (stdout) {
+    process.stdout.write(stdout);
+  }
+  if (stderr) {
+    process.stderr.write(stderr);
+  }
+
+  return { status: result.status, output };
+};
+
+const assertSuccess = (result: CommandResult, command: string, args: string[]) => {
   if (result.status !== 0) {
     throw new Error(`Command failed: ${command} ${args.join(' ')}`);
   }
+};
+
+const isKnownInitialMigrationFailure = (output: string): boolean => {
+  const normalized = output.toLowerCase();
+  return (
+    normalized.includes('p3018') &&
+    (normalized.includes('error code: 1146') || normalized.includes("doesn't exist"))
+  );
 };
 
 const createTempSchemaWithDatabaseUrl = (databaseUrl: string): string => {
@@ -95,9 +123,20 @@ const prepareProductionDb = () => {
   console.log(`Preparing production database via ${dbHost}`);
 
   try {
-    run(npxCommand, ['prisma', 'migrate', 'deploy', '--schema', tempSchemaPath], env);
-    run(npxCommand, ['prisma', 'db', 'push', '--schema', tempSchemaPath], env);
-    run('node', ['dist/scripts/seed-if-empty.js'], env);
+    const migrateResult = run(npxCommand, ['prisma', 'migrate', 'deploy', '--schema', tempSchemaPath], env);
+    if (migrateResult.status !== 0) {
+      if (isKnownInitialMigrationFailure(migrateResult.output)) {
+        console.warn('Migration baseline mismatch detected, continuing with prisma db push.');
+      } else {
+        assertSuccess(migrateResult, npxCommand, ['prisma', 'migrate', 'deploy', '--schema', tempSchemaPath]);
+      }
+    }
+
+    const dbPushResult = run(npxCommand, ['prisma', 'db', 'push', '--schema', tempSchemaPath], env);
+    assertSuccess(dbPushResult, npxCommand, ['prisma', 'db', 'push', '--schema', tempSchemaPath]);
+
+    const seedResult = run('node', ['dist/scripts/seed-if-empty.js'], env);
+    assertSuccess(seedResult, 'node', ['dist/scripts/seed-if-empty.js']);
   } finally {
     if (fs.existsSync(tempSchemaPath)) {
       fs.unlinkSync(tempSchemaPath);
