@@ -19,6 +19,10 @@ if (nodeEnv === 'production' && !process.env.DATABASE_URL) {
   throw new Error('Missing DATABASE_URL in production environment');
 }
 
+if (nodeEnv === 'production' && /(localhost|127\.0\.0\.1)/i.test(databaseUrl)) {
+  throw new Error('Invalid DATABASE_URL in production: localhost is not allowed');
+}
+
 export const config = {
   // Server
   nodeEnv,
