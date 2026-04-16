@@ -5,7 +5,7 @@ import prisma from '../lib/prisma';
 const generateSlug = (name: string) =>
   slugify(name, { lower: true, strict: true, locale: 'vi' });
 
-const seedAll = async () => {
+export const seedAll = async () => {
   try {
     console.log('Connecting to database...');
 
@@ -371,12 +371,16 @@ const seedAll = async () => {
     console.log('Manager: manager@klelite.com / manager123');
     console.log('User: user@test.com / user123');
     console.log('===========================================\n');
-
-    process.exit(0);
   } catch (error) {
     console.error('Error seeding database:', error);
-    process.exit(1);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
   }
 };
 
-seedAll();
+if (require.main === module) {
+  seedAll()
+    .then(() => process.exit(0))
+    .catch(() => process.exit(1));
+}
