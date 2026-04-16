@@ -63,11 +63,13 @@ const assertSuccess = (result: CommandResult, command: string, args: string[]) =
   }
 };
 
-const isKnownInitialMigrationFailure = (output: string): boolean => {
+const isRecoverableMigrationFailure = (output: string): boolean => {
   const normalized = output.toLowerCase();
   return (
-    normalized.includes('p3018') &&
-    (normalized.includes('error code: 1146') || normalized.includes("doesn't exist"))
+    normalized.includes('p3018') ||
+    normalized.includes('found failed migrations in the target database') ||
+    normalized.includes('error code: 1146') ||
+    normalized.includes("doesn't exist")
   );
 };
 
@@ -136,8 +138,8 @@ const prepareProductionDb = () => {
   try {
     const migrateResult = run(prismaCommand, ['migrate', 'deploy', '--schema', tempSchemaPath], env);
     if (migrateResult.status !== 0) {
-      if (isKnownInitialMigrationFailure(migrateResult.output)) {
-        console.warn('Migration baseline mismatch detected, continuing with prisma db push.');
+      if (isRecoverableMigrationFailure(migrateResult.output)) {
+        console.warn('Prisma migrate deploy failed on startup, continuing with prisma db push recovery.');
       } else {
         assertSuccess(migrateResult, prismaCommand, ['migrate', 'deploy', '--schema', tempSchemaPath]);
       }
