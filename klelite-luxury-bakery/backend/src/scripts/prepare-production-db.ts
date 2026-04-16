@@ -29,6 +29,7 @@ const getDatabaseUrl = (): string => {
 type CommandResult = {
   output: string;
   status: number | null;
+  error?: Error;
 };
 
 const run = (command: string, args: string[], env: NodeJS.ProcessEnv): CommandResult => {
@@ -49,10 +50,14 @@ const run = (command: string, args: string[], env: NodeJS.ProcessEnv): CommandRe
     process.stderr.write(stderr);
   }
 
-  return { status: result.status, output };
+  return { status: result.status, output, error: result.error as Error | undefined };
 };
 
 const assertSuccess = (result: CommandResult, command: string, args: string[]) => {
+  if (result.error) {
+    throw new Error(`Command execution error: ${command} ${args.join(' ')} -> ${result.error.message}`);
+  }
+
   if (result.status !== 0) {
     throw new Error(`Command failed: ${command} ${args.join(' ')}`);
   }
@@ -109,7 +114,12 @@ const createTempSchemaWithDatabaseUrl = (databaseUrl: string): string => {
 const prepareProductionDb = () => {
   const resolvedDatabaseUrl = getDatabaseUrl();
   const env = { ...process.env, DATABASE_URL: resolvedDatabaseUrl };
-  const npxCommand = process.platform === 'win32' ? 'npx.cmd' : 'npx';
+  const prismaCommand = path.resolve(
+    process.cwd(),
+    'node_modules',
+    '.bin',
+    process.platform === 'win32' ? 'prisma.cmd' : 'prisma',
+  );
   const tempSchemaPath = createTempSchemaWithDatabaseUrl(resolvedDatabaseUrl);
 
   const dbHost = (() => {
@@ -121,19 +131,20 @@ const prepareProductionDb = () => {
   })();
 
   console.log(`Preparing production database via ${dbHost}`);
+  console.log(`Using Prisma CLI at ${prismaCommand}`);
 
   try {
-    const migrateResult = run(npxCommand, ['prisma', 'migrate', 'deploy', '--schema', tempSchemaPath], env);
+    const migrateResult = run(prismaCommand, ['migrate', 'deploy', '--schema', tempSchemaPath], env);
     if (migrateResult.status !== 0) {
       if (isKnownInitialMigrationFailure(migrateResult.output)) {
         console.warn('Migration baseline mismatch detected, continuing with prisma db push.');
       } else {
-        assertSuccess(migrateResult, npxCommand, ['prisma', 'migrate', 'deploy', '--schema', tempSchemaPath]);
+        assertSuccess(migrateResult, prismaCommand, ['migrate', 'deploy', '--schema', tempSchemaPath]);
       }
     }
 
-    const dbPushResult = run(npxCommand, ['prisma', 'db', 'push', '--schema', tempSchemaPath], env);
-    assertSuccess(dbPushResult, npxCommand, ['prisma', 'db', 'push', '--schema', tempSchemaPath]);
+    const dbPushResult = run(prismaCommand, ['db', 'push', '--schema', tempSchemaPath], env);
+    assertSuccess(dbPushResult, prismaCommand, ['db', 'push', '--schema', tempSchemaPath]);
 
     const seedResult = run('node', ['dist/scripts/seed-if-empty.js'], env);
     assertSuccess(seedResult, 'node', ['dist/scripts/seed-if-empty.js']);
