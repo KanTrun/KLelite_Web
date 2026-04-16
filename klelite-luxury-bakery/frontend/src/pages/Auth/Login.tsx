@@ -3,10 +3,9 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiShield, FiGift, FiHeart } from 'react-icons/fi';
-import { GoogleLogin, GoogleOAuthProvider, CredentialResponse } from '@react-oauth/google';
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import { login, googleLogin, clearError } from '@/store/slices/authSlice';
 import { AppDispatch, RootState } from '@/store';
-import { config } from '@/config/config';
 import styles from './Auth.module.scss';
 
 // Animation variants
@@ -444,19 +443,17 @@ const Login: React.FC = () => {
 
             <motion.div className={styles.socialLogin} variants={itemVariants}>
               <div className={styles.googleLoginWrapper}>
-                <GoogleOAuthProvider clientId={config.googleClientId}>
-                  <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={handleGoogleError}
-                    onNonOAuthError={handleGooglePopupError}
-                    theme="outline"
-                    size="large"
-                    text="signin_with"
-                    shape="rectangular"
-                    logo_alignment="left"
-                    width="350"
-                  />
-                </GoogleOAuthProvider>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                  onNonOAuthError={handleGooglePopupError}
+                  theme="outline"
+                  size="large"
+                  text="signin_with"
+                  shape="rectangular"
+                  logo_alignment="left"
+                  width="350"
+                />
               </div>
             </motion.div>
 

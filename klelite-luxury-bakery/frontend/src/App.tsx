@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, useLocation } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { Toaster } from 'react-hot-toast';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { store } from '@/store';
 import { ThemeProvider } from '@/contexts';
 import AppRoutes from '@/routes';
@@ -11,6 +12,7 @@ import ChatWidget from '@/components/Chat/ChatWidget';
 import { SkipLink } from '@/components/common/SkipLink/SkipLink';
 import { AriaLiveRegion } from '@/components/common/AriaLiveRegion/AriaLiveRegion';
 import { useNotifications } from '@/hooks/useNotifications';
+import { config } from '@/config/config';
 import '@/styles/global.scss';
 
 // Layout wrapper to conditionally show Header/Footer
@@ -45,42 +47,44 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 const App: React.FC = () => {
   return (
-    <Provider store={store}>
-      <ThemeProvider>
-        <BrowserRouter
-          future={{
-            v7_startTransition: true,
-            v7_relativeSplatPath: true,
-          }}
-        >
-          <AppLayout>
-            <AppRoutes />
-          </AppLayout>
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: 'var(--color-surface)',
-                color: 'var(--color-text)',
-              },
-              success: {
-                style: {
-                  background: '#28a745',
-                  color: '#fff',
-                },
-              },
-              error: {
-                style: {
-                  background: '#dc3545',
-                  color: '#fff',
-                },
-              },
+    <GoogleOAuthProvider clientId={config.googleClientId}>
+      <Provider store={store}>
+        <ThemeProvider>
+          <BrowserRouter
+            future={{
+              v7_startTransition: true,
+              v7_relativeSplatPath: true,
             }}
-          />
-        </BrowserRouter>
-      </ThemeProvider>
-    </Provider>
+          >
+            <AppLayout>
+              <AppRoutes />
+            </AppLayout>
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: 'var(--color-surface)',
+                  color: 'var(--color-text)',
+                },
+                success: {
+                  style: {
+                    background: '#28a745',
+                    color: '#fff',
+                  },
+                },
+                error: {
+                  style: {
+                    background: '#dc3545',
+                    color: '#fff',
+                  },
+                },
+              }}
+            />
+          </BrowserRouter>
+        </ThemeProvider>
+      </Provider>
+    </GoogleOAuthProvider>
   );
 };
 

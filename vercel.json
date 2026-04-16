@@ -2,5 +2,11 @@
   "framework": "vite",
   "buildCommand": "cd klelite-luxury-bakery/frontend && npm install && npm run build",
   "outputDirectory": "klelite-luxury-bakery/frontend/dist",
-  "installCommand": "npm install && cd klelite-luxury-bakery/frontend && npm install"
+  "installCommand": "npm install && cd klelite-luxury-bakery/frontend && npm install",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
