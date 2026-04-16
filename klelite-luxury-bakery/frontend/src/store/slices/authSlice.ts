@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import type { User, LoginCredentials, RegisterData, AuthResponse } from '@/types';
-import { authService } from '@/services';
+import { authService, getErrorMessage } from '@/services';
 
 interface AuthState {
   user: User | null;
@@ -24,10 +24,7 @@ export const login = createAsyncThunk<AuthResponse, LoginCredentials>(
       const response = await authService.login(credentials);
       return response;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
-      return rejectWithValue('Đăng nhập thất bại');
+      return rejectWithValue(getErrorMessage(error));
     }
   }
 );
@@ -39,10 +36,7 @@ export const register = createAsyncThunk<AuthResponse, RegisterData>(
       const response = await authService.register(data);
       return response;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
-      return rejectWithValue('Đăng ký thất bại');
+      return rejectWithValue(getErrorMessage(error));
     }
   }
 );
@@ -54,10 +48,7 @@ export const googleLogin = createAsyncThunk<AuthResponse, string>(
       const response = await authService.googleLogin(credential);
       return response;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
-      return rejectWithValue('Đăng nhập Google thất bại');
+      return rejectWithValue(getErrorMessage(error));
     }
   }
 );
@@ -69,10 +60,7 @@ export const getCurrentUser = createAsyncThunk<User>(
       const user = await authService.getCurrentUser();
       return user;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
-      return rejectWithValue('Không thể lấy thông tin người dùng');
+      return rejectWithValue(getErrorMessage(error));
     }
   }
 );
@@ -192,3 +180,4 @@ const authSlice = createSlice({
 
 export const { clearError, setUser, updateUserProfile } = authSlice.actions;
 export default authSlice.reducer;
+
