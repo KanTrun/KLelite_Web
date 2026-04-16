@@ -1,5 +1,16 @@
-const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const defaultApiUrl = import.meta.env.PROD
+  ? 'https://klelite-web.onrender.com/api'
+  : 'http://localhost:5000/api';
+const envApiUrl = import.meta.env.VITE_API_URL?.trim();
+const invalidProdApiUrl = Boolean(
+  import.meta.env.PROD && envApiUrl && /(localhost|127\.0\.0\.1)/i.test(envApiUrl)
+);
+const apiUrl = invalidProdApiUrl ? defaultApiUrl : envApiUrl || defaultApiUrl;
 const apiOrigin = apiUrl.replace(/\/api\/?$/, '');
+
+if (invalidProdApiUrl) {
+  console.error('Invalid production VITE_API_URL detected, fallback applied:', envApiUrl);
+}
 
 // Application Configuration
 export const config = {
