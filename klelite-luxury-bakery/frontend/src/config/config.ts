@@ -1,13 +1,22 @@
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const apiOrigin = apiUrl.replace(/\/api\/?$/, '');
+
 // Application Configuration
 export const config = {
   // API
-  apiUrl: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  apiUrl,
+  apiOrigin,
   
   // App Info
   appName: import.meta.env.VITE_APP_NAME || "KL'élite Luxury Bakery",
   
   // Stripe
   stripePublicKey: import.meta.env.VITE_STRIPE_PUBLIC_KEY || '',
+
+  // Auth
+  googleClientId:
+    import.meta.env.VITE_GOOGLE_CLIENT_ID ||
+    '637284354563-r3pbcr10l8ra104f7gpqtiok6ilf5vom.apps.googleusercontent.com',
   
   // Pagination
   defaultPageSize: 12,
