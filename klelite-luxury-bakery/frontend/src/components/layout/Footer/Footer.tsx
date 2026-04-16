@@ -91,7 +91,7 @@ export const Footer: React.FC = () => {
             <ul className={styles.contact}>
               <li>
                 <FiMapPin />
-                <span>206/23 X? Vi?t Ngh? T?nh, ph??ng Th?nh M? T?y, TP.HCM</span>
+                <span>206/23 Xô Viết Nghệ Tĩnh, phường Thạnh Mỹ Tây, TP.HCM</span>
               </li>
               <li>
                 <FiPhone />
