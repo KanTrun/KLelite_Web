@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon -L --watch src --ext ts,js,json --exec ts-node src/server.ts",
     "build": "npm install --include=dev && tsc",
-    "start": "node dist/server.js",
+    "db:prepare:prod": "npx prisma migrate deploy && npx prisma db push && node dist/scripts/seed-if-empty.js",
+    "start": "npm run db:prepare:prod && node dist/server.js",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "test": "jest --detectOpenHandles --forceExit",
