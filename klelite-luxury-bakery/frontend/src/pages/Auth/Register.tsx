@@ -3,8 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMail, FiLock, FiUser, FiPhone, FiEye, FiEyeOff, FiArrowRight, FiCheck, FiAward, FiStar, FiTrendingUp } from 'react-icons/fi';
-import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
-import { register, googleLogin, clearError } from '@/store/slices/authSlice';
+import { register, clearError } from '@/store/slices/authSlice';
 import { AppDispatch, RootState } from '@/store';
 import styles from './Auth.module.scss';
 
@@ -135,18 +134,6 @@ const Register: React.FC = () => {
       dispatch(clearError());
     };
   }, [dispatch]);
-
-  // Handle Google Login Success
-  const handleGoogleSuccess = (response: CredentialResponse) => {
-    if (response.credential) {
-      dispatch(googleLogin(response.credential));
-    }
-  };
-
-  // Handle Google Login Error
-  const handleGoogleError = () => {
-    console.error('Google login failed');
-  };
 
   const validateForm = useCallback((): boolean => {
     const newErrors: Record<string, string> = {};
@@ -715,28 +702,6 @@ const Register: React.FC = () => {
                 <div className={styles.btnShine} />
               </motion.button>
             </motion.form>
-
-            <motion.div className={styles.formDivider} variants={itemVariants}>
-              <span className={styles.dividerLine} />
-              <span className={styles.dividerText}>hoặc</span>
-              <span className={styles.dividerLine} />
-            </motion.div>
-
-            <motion.div className={styles.socialLogin} variants={itemVariants}>
-              <div className={styles.googleLoginWrapper}>
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={handleGoogleError}
-                  useOneTap
-                  theme="outline"
-                  size="large"
-                  text="signup_with"
-                  shape="rectangular"
-                  logo_alignment="left"
-                  width="350"
-                />
-              </div>
-            </motion.div>
 
             <motion.p className={styles.formFooter} variants={itemVariants}>
               Đã có tài khoản?{' '}

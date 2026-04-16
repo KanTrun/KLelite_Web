@@ -166,7 +166,14 @@ const Login: React.FC = () => {
   };
 
   const handleGoogleError = () => {
-    setErrors({ ...errors, general: 'Đăng nhập Google thất bại. Vui lòng thử lại.' });
+    setErrors((prev) => ({ ...prev, general: 'Đăng nhập Google thất bại. Vui lòng thử lại.' }));
+  };
+
+  const handleGooglePopupError = () => {
+    setErrors((prev) => ({
+      ...prev,
+      general: 'Không thể mở cửa sổ Google. Vui lòng tắt chặn popup và thử lại.',
+    }));
   };
 
   const features = [
@@ -439,6 +446,8 @@ const Login: React.FC = () => {
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
                   onError={handleGoogleError}
+                  onNonOAuthError={handleGooglePopupError}
+                  useOneTap
                   theme="outline"
                   size="large"
                   text="signin_with"
