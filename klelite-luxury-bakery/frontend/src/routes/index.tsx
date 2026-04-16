@@ -53,8 +53,8 @@ const AppRoutes: React.FC = () => {
 
   return (
     <Suspense fallback={<Loading fullScreen text="Đang tải..." />}>
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
+      <AnimatePresence mode="sync">
+        <Routes location={location} key={location.key || location.pathname}>
           {/* Public Routes */}
           <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
           <Route path="/products" element={<PageWrapper><ProductList /></PageWrapper>} />

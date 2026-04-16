@@ -54,7 +54,7 @@ export const Footer: React.FC = () => {
               mang đến trải nghiệm ẩm thực tuyệt vời cho khách hàng.
             </p>
             <div className={styles.social}>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <a href="https://www.facebook.com/kan.trun.204" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
                 <FiFacebook />
               </a>
               <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
@@ -91,15 +91,15 @@ export const Footer: React.FC = () => {
             <ul className={styles.contact}>
               <li>
                 <FiMapPin />
-                <span>123 Đường ABC, Quận 1, TP.HCM</span>
+                <span>206/23 X? Vi?t Ngh? T?nh, ph??ng Th?nh M? T?y, TP.HCM</span>
               </li>
               <li>
                 <FiPhone />
-                <a href="tel:0123456789">0123 456 789</a>
+                <a href="tel:0909073847">0909073847</a>
               </li>
               <li>
                 <FiMail />
-                <a href="mailto:contact@klelite.com">contact@klelite.com</a>
+                <a href="mailto:khangtruongminh.work@gmail.com">khangtruongminh.work@gmail.com</a>
               </li>
             </ul>
           </div>
