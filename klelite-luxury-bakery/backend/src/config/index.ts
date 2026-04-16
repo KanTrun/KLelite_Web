@@ -2,24 +2,30 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const nodeEnv = process.env.NODE_ENV || 'development';
 const port = parseInt(process.env.PORT || '5000', 10);
 const corsOrigins = (process.env.CORS_ORIGINS || '')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
+const databaseUrl = process.env.DATABASE_URL || 'mysql://root:@localhost:3306/klelite_bakery';
 const frontendUrl = process.env.FRONTEND_URL || corsOrigins[0] || 'http://localhost:3003';
 const backendUrl =
   process.env.BACKEND_URL ||
   process.env.RENDER_EXTERNAL_URL ||
   `http://localhost:${process.env.PORT || '5000'}`;
 
+if (nodeEnv === 'production' && !process.env.DATABASE_URL) {
+  throw new Error('Missing DATABASE_URL in production environment');
+}
+
 export const config = {
   // Server
-  nodeEnv: process.env.NODE_ENV || 'development',
+  nodeEnv,
   port,
 
   // MySQL/Prisma
-  databaseUrl: process.env.DATABASE_URL || 'mysql://root:@localhost:3306/klelite_bakery',
+  databaseUrl,
 
   // JWT
   jwt: {

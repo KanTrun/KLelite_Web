@@ -45,18 +45,47 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
+const allowedOrigins = new Set([
+  config.frontendUrl,
+  ...config.corsOrigins,
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:3002',
+  'http://localhost:3003',
+  'https://localhost:3000',
+  'https://localhost:3001',
+  'https://localhost:3002',
+  'https://localhost:3003',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:3001',
+  'http://127.0.0.1:3002',
+  'http://127.0.0.1:3003',
+  'https://127.0.0.1:3000',
+  'https://127.0.0.1:3001',
+  'https://127.0.0.1:3002',
+  'https://127.0.0.1:3003',
+  'http://localhost:5173',
+  'https://k-lelite-web-a5fc.vercel.app',
+]);
+
+const allowedOriginPatterns = [
+  /^https?:\/\/192\.168\.\d+\.\d+(?::\d+)?$/,
+  /^https?:\/\/10\.\d+\.\d+\.\d+(?::\d+)?$/,
+  /^https?:\/\/172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+(?::\d+)?$/,
+  /^https:\/\/.+\.vercel\.app$/,
+];
+
 // CORS
 app.use(
   cors({
-    origin: [
-      config.frontendUrl,
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://localhost:3002',
-      'http://localhost:5173',
-      'https://k-lelite-web-a5fc.vercel.app',
-      /\.vercel\.app$/
-    ],
+    origin: (origin, callback) => {
+      const isAllowed =
+        !origin ||
+        allowedOrigins.has(origin) ||
+        allowedOriginPatterns.some((pattern) => pattern.test(origin));
+
+      callback(null, isAllowed);
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -118,7 +147,7 @@ const server = app.listen(PORT, async () => {
 ║                                                          ║
 ║   Server running in ${config.nodeEnv} mode                    ║
 ║   Port: ${PORT}                                            ║
-║   API: http://localhost:${PORT}/api                        ║
+║   API: ${config.backendUrl}/api                        ║
 ║                                                          ║
 ╚══════════════════════════════════════════════════════════╝
     `);
