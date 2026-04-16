@@ -1,4 +1,6 @@
 import { spawnSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
 
 const getDatabaseUrl = (): string => {
   const candidates = [
@@ -36,10 +38,29 @@ const run = (command: string, args: string[], env: NodeJS.ProcessEnv): void => {
   }
 };
 
+const createTempSchemaWithDatabaseUrl = (databaseUrl: string): string => {
+  const sourceSchemaPath = path.resolve(process.cwd(), 'prisma/schema.prisma');
+  const tempSchemaPath = path.resolve(process.cwd(), 'prisma/schema.render.prisma');
+  const sourceSchema = fs.readFileSync(sourceSchemaPath, 'utf8');
+  const escapedDatabaseUrl = databaseUrl.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  const patchedSchema = sourceSchema.replace(
+    /url\s*=\s*env\("DATABASE_URL"\)/,
+    `url      = "${escapedDatabaseUrl}"`,
+  );
+
+  if (patchedSchema === sourceSchema) {
+    throw new Error('Failed to patch prisma schema datasource url for production startup.');
+  }
+
+  fs.writeFileSync(tempSchemaPath, patchedSchema, 'utf8');
+  return tempSchemaPath;
+};
+
 const prepareProductionDb = () => {
   const resolvedDatabaseUrl = getDatabaseUrl();
   const env = { ...process.env, DATABASE_URL: resolvedDatabaseUrl };
   const npxCommand = process.platform === 'win32' ? 'npx.cmd' : 'npx';
+  const tempSchemaPath = createTempSchemaWithDatabaseUrl(resolvedDatabaseUrl);
 
   const dbHost = (() => {
     try {
@@ -51,9 +72,15 @@ const prepareProductionDb = () => {
 
   console.log(`Preparing production database via ${dbHost}`);
 
-  run(npxCommand, ['prisma', 'migrate', 'deploy'], env);
-  run(npxCommand, ['prisma', 'db', 'push'], env);
-  run('node', ['dist/scripts/seed-if-empty.js'], env);
+  try {
+    run(npxCommand, ['prisma', 'migrate', 'deploy', '--schema', tempSchemaPath], env);
+    run(npxCommand, ['prisma', 'db', 'push', '--schema', tempSchemaPath], env);
+    run('node', ['dist/scripts/seed-if-empty.js'], env);
+  } finally {
+    if (fs.existsSync(tempSchemaPath)) {
+      fs.unlinkSync(tempSchemaPath);
+    }
+  }
 };
 
 if (require.main === module) {
